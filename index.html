@@ -1,0 +1,158 @@
+<!doctype html>
+<!-- ==========================================================
+     Component: Desktop (index.html)
+     Purpose: Desktop surface + Start + Taskbar + Tray
+     ----------------------------------------------------------
+     Sections
+     1) Head (meta, CSP, styles)
+     2) Top chrome (title + user menu)
+     3) Desktop surface (icons host)
+     4) Start Menu v2
+     5) Taskbar (apps, tray, clock popover)
+     6) Window host
+     7) Scripts (load order matters)
+========================================================== -->
+<html lang="en">
+<head>
+  <!-- 1) Head -->
+  <meta charset="utf-8" />
+  <title>Desktop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' file: data:; style-src 'self' 'unsafe-inline';">
+  <link rel="icon" href="assets/favicon.ico" />
+  <link rel="stylesheet" href="global-style.css" />
+  <link rel="stylesheet" href="taskbar/taskbar.css" />
+  <link rel="stylesheet" href="startmenu/startmenu.css" />
+</head>
+<body>
+  <!-- 2) Top chrome -->
+  <header class="chrome" role="banner">
+    <div class="drag">Desktop4Kids</div>
+
+    <!-- User chip + dropdown -->
+    <div
+      id="userChip"
+      class="userchip"
+      tabindex="0"
+      aria-haspopup="menu"
+      aria-expanded="false"
+      aria-controls="userMenu"
+      role="button"
+      aria-label="Account menu"
+    >
+      <img class="avatar" src="assets/ui/default-avatar.svg" alt="" />
+      <span class="uname">User</span>
+    </div>
+
+    <div id="userMenu" class="umenu hidden" role="menu" aria-labelledby="userChip">
+      <div class="mi" role="menuitem" data-k="account">Account information</div>
+      <div class="mi" role="menuitem" data-k="login">Log in</div>
+      <div class="mi" role="menuitem" data-k="register">Register</div>
+      <div class="sep" aria-hidden="true"></div>
+      <div class="mi" role="menuitem" data-k="logout">Log out</div>
+    </div>
+
+    <button id="closeApp" class="close-btn" type="button" aria-label="Close">×</button>
+  </header>
+
+  <!-- 3) Desktop surface -->
+  <div id="desktop" role="main" aria-label="Desktop">
+    <div id="desktopIcons" class="desktop-icons"></div>
+  </div>
+
+  <!-- 4) Start Menu v2 -->
+  <div id="startMenu" class="startv2 hidden" role="menu" aria-label="Start">
+    <div class="start-body">
+      <!-- Left rail -->
+      <aside class="start-rail" aria-label="Quick folders">
+        <div class="usr">
+          <img src="assets/logo.png" alt="" onerror="this.style.visibility='hidden'">
+        </div>
+
+        <button class="rail-btn" type="button" data-app="files" title="Files">
+          <img src="assets/icons/folder.svg" alt="" aria-hidden="true">
+        </button>
+        <button class="rail-btn" type="button" data-app="documents" title="Documents">
+          <img src="assets/icons/folder-text.svg" alt="" aria-hidden="true">
+        </button>
+        <button class="rail-btn" type="button" data-app="images" title="Pictures">
+          <img src="assets/icons/folder-images.svg" alt="" aria-hidden="true">
+        </button>
+        <button class="rail-btn" type="button" data-app="videos" title="Videos">
+          <img src="assets/icons/folder-video.svg" alt="" aria-hidden="true">
+        </button>
+
+        <div class="rail-grow" aria-hidden="true"></div>
+
+        <button id="btnPower" class="rail-btn danger" type="button" title="Power">
+          <img src="assets/power.png" alt="" aria-hidden="true">
+        </button>
+      </aside>
+
+      <!-- Main -->
+      <section class="start-main" aria-label="Start content">
+        <div class="start-top">
+          <label for="startSearch" class="visually-hidden">Search apps</label>
+          <input id="startSearch" class="start-search" type="text" placeholder="Search apps…" />
+        </div>
+
+        <div class="start-section">
+          <div class="sect-title">Pinned</div>
+          <div id="pinnedGrid" class="app-grid"></div>
+        </div>
+
+        <div class="start-section">
+          <div class="sect-title">All apps</div>
+          <div id="allApps" class="app-list"></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Power flyout -->
+    <div id="powerFlyout" class="power hidden" role="menu" aria-label="Power">
+      <button type="button" data-power="sleep">Sleep</button>
+      <button type="button" data-power="restart">Restart</button>
+      <button type="button" data-power="shutdown" class="danger">Power Off</button>
+    </div>
+  </div>
+
+  <!-- 5) Taskbar -->
+  <footer id="taskbar" role="contentinfo" aria-label="Taskbar">
+    <button id="startBtn" class="start-btn" type="button" aria-label="Open Start" aria-controls="startMenu" aria-expanded="false">Start</button>
+
+    <div id="taskbarList" role="tablist" aria-label="Open windows"></div>
+    <div id="taskbarTray"></div>
+
+    <!-- Taskbar Clock (tray) -->
+    <div
+      id="trayClock"
+      class="tray-clock"
+      aria-label="Open clock and calendar"
+      role="button"
+      tabindex="0"
+      aria-controls="trayPopover"
+      aria-expanded="false"
+    ></div>
+
+    <!-- Popover host (appears above taskbar) -->
+    <div id="trayPopover" class="tray-popover hidden" aria-hidden="true"></div>
+  </footer>
+
+  <!-- 6) Window host -->
+  <div id="winHost" aria-live="polite"></div>
+
+  <!-- 7) Scripts (order matters) -->
+  <script src="taskbar/taskbar.js"></script>
+  <script src="accounts/accounts.js"></script>
+  <script src="renderer.js"></script>
+  <script src="startmenu/startmenu.js" defer></script>
+
+  <!-- a11y utility (optional to have globally) -->
+  <style>
+    .visually-hidden{
+      position:absolute!important;clip:rect(1px,1px,1px,1px);
+      padding:0;border:0;height:1px;width:1px;overflow:hidden;white-space:nowrap
+    }
+  </style>
+</body>
+</html>

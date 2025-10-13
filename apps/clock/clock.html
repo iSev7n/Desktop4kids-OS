@@ -1,0 +1,36 @@
+<!doctype html>
+<!-- ==========================================================
+     Component: Clock & Calendar (clock.html)
+     Purpose: Time display + navigable month view
+========================================================== -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Clock &amp; Calendar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="clock.css" />
+</head>
+<body>
+  <div id="clockApp" class="clock-app">
+    <header class="top" role="banner" aria-label="Current time">
+      <div class="time" id="timeNow" aria-live="polite">--:--</div>
+      <div class="date" id="dateNow" aria-live="polite">—</div>
+    </header>
+
+    <section class="cal" aria-label="Calendar">
+      <div class="cal-head">
+        <button id="prevMonth" type="button" aria-label="Previous month">◀</button>
+        <div class="month-title" id="monthTitle" aria-live="polite">—</div>
+        <button id="nextMonth" type="button" aria-label="Next month">▶</button>
+      </div>
+
+      <div class="dow" id="dowRow" aria-hidden="true"></div>
+
+      <!-- role=grid for keyboard nav; JS manages focus -->
+      <div id="calGrid" class="grid" role="grid" aria-readonly="true" aria-label="Calendar month" tabindex="0"></div>
+    </section>
+  </div>
+
+  <script src="clock.js"></script>
+</body>
+</html>

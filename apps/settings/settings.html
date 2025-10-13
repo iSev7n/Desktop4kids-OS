@@ -1,0 +1,162 @@
+<!doctype html>
+<!-- ==========================================================
+     Component: Settings App (settings.html)
+     Purpose: App settings UI (nav + panes + modal)
+     ----------------------------------------------------------
+     Sections
+     1) Shell & layout
+     2) Left Nav
+     3) Pane Area (Account, Storage, Personalize, Updates, About)
+     4) Avatar Picker Modal
+     5) Scripts & a11y utilities
+========================================================== -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Settings</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="settings.css" />
+</head>
+<body>
+  <!-- 1) Shell & layout -->
+  <div id="settingsApp" class="settings-app">
+    <!-- 2) Left Nav -->
+    <aside class="nav" role="navigation" aria-label="Settings sections">
+      <div class="nav-title">Settings</div>
+      <button class="nav-btn" type="button" data-pane="account" aria-controls="pane-account">Account</button>
+      <button class="nav-btn" type="button" data-pane="storage" aria-controls="pane-storage">Storage</button>
+      <button class="nav-btn" type="button" data-pane="personalize" aria-controls="pane-personalize">Personalize</button>
+      <button class="nav-btn" type="button" data-pane="updates" aria-controls="pane-updates">Updates</button>
+      <button class="nav-btn" type="button" data-pane="about" aria-controls="pane-about">About</button>
+    </aside>
+
+    <!-- 3) Pane Area -->
+    <main class="pane-area" id="main" tabindex="-1">
+      <h1 class="visually-hidden">Settings</h1>
+
+      <!-- ===== Account ===== -->
+      <section class="pane" id="pane-account" aria-label="Account">
+        <h2>Account</h2>
+
+        <div class="card row">
+          <div class="avatar-wrap">
+            <img id="avatarPreview" src="../../assets/ui/default-avatar.svg" alt="Current avatar" />
+            <div class="avatar-actions">
+              <button id="btnChooseAvatar" class="btn sm" type="button">Choose Avatar</button>
+              <button id="btnAvatarReset" class="btn sm secondary" type="button">Reset</button>
+            </div>
+            <!-- hidden fallback input used by settings.js -->
+            <input id="avatarFile" type="file" accept="image/*" hidden />
+          </div>
+
+          <div class="fields">
+            <div class="field">
+              <label for="acctUser">Username</label>
+              <input id="acctUser" type="text" maxlength="32" placeholder="username" autocomplete="username" />
+            </div>
+            <div class="field">
+              <label for="acctPin">PIN</label>
+              <input id="acctPin" type="password" inputmode="numeric" maxlength="4" placeholder="4 digits" autocomplete="new-password" />
+            </div>
+            <div class="actions">
+              <button id="btnSaveAccount" class="btn" type="button">Save Changes</button>
+              <button id="btnDeleteAccount" class="btn danger" type="button">Delete Account</button>
+            </div>
+            <div class="hint">Changing your username will rename your user folder and update your session.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Storage ===== -->
+      <section class="pane" id="pane-storage" aria-label="Storage">
+        <h2>Storage</h2>
+        <div class="card">
+          <div class="progress" aria-label="Storage usage">
+            <div id="storeBar" class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+          </div>
+          <div class="kvs">
+            <div><span class="k">Used:</span> <span id="storeUsed">—</span></div>
+            <div><span class="k">Free:</span> <span id="storeFree">—</span></div>
+            <div><span class="k">Quota:</span> <span id="storeQuota">—</span></div>
+          </div>
+          <div class="split">
+            <button id="btnRefreshStorage" class="btn sm" type="button">Recalculate</button>
+            <button id="btnOpenUserFolder" class="btn sm secondary" type="button">Open user folder</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Personalize ===== -->
+      <section class="pane" id="pane-personalize" aria-label="Personalize">
+        <h2>Personalize</h2>
+
+        <div class="card">
+          <h3 style="margin-top:0">Wallpaper</h3>
+
+          <!-- preset grid gets filled by JS -->
+          <div id="wallList" class="wall-grid" aria-label="Wallpaper presets"></div>
+
+          <div class="split" style="margin-top:12px">
+            <button id="btnResetWallpaper" class="btn sm secondary" type="button">Reset to default</button>
+          </div>
+
+          <div id="wallpaperStatus" class="muted" style="margin-top:8px;" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <!-- ===== Updates ===== -->
+      <section class="pane" id="pane-updates" aria-label="Updates">
+        <h2>Updates</h2>
+        <div class="card">
+          <p>Automatic updates are not implemented yet.</p>
+          <button id="btnCheckUpdates" class="btn sm" type="button">Check for updates</button>
+          <div id="updMsg" class="muted" style="margin-top:8px;" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <!-- ===== About ===== -->
+      <section class="pane" id="pane-about" aria-label="About">
+        <h2>About</h2>
+        <div class="card">
+          <div class="kvs">
+            <div><span class="k">Product:</span> Desktop4Kids</div>
+            <div><span class="k">Version:</span> <span id="aboutVersion">v0.2.1</span></div>
+            <div><span class="k">License:</span> GPLv3</div>
+          </div>
+          <p class="muted">
+            Desktop4Kids is a kid-centered operating system inspired by Windows &amp; Linux. It's a virtual desktop environment that mimics a real operating system, making it safe and friendly for kids.
+          </p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- 4) Avatar Picker Modal -->
+  <div id="avatarModal" class="dlg-wrap hidden" role="dialog" aria-modal="true" aria-labelledby="avatarDlgTitle">
+    <div class="dlg avatar-dlg" style="min-width:680px">
+      <div class="dlg-title" id="avatarDlgTitle">Choose an avatar</div>
+
+      <div class="dlg-body" style="padding-top:10px">
+        <!-- tabs (built dynamically by avatar.js, this is a placeholder for layout) -->
+        <div class="tabbar" id="avatarTabs" role="tablist" aria-label="Avatar categories" style="margin-bottom:10px"></div>
+
+        <!-- panes (built dynamically by avatar.js) -->
+        <div id="avatarPanes"></div>
+      </div>
+
+      <div class="dlg-actions">
+        <button class="btn sm secondary" data-k="close" type="button">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5) Scripts & a11y utilities -->
+  <script src="avatar.js" defer></script>
+  <script src="settings.js" defer></script>
+
+  <!-- optional: add once in your global CSS -->
+  <style>
+    .visually-hidden{position:absolute!important;clip:rect(1px,1px,1px,1px);padding:0;border:0;height:1px;width:1px;overflow:hidden;white-space:nowrap}
+  </style>
+</body>
+</html>

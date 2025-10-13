@@ -1,0 +1,85 @@
+<!doctype html>
+<!-- ==========================================================
+     Component: Notepad (notepad.html)
+     Purpose: Simple text editor UI (menu + editor + find/replace)
+     ----------------------------------------------------------
+     Sections
+     1) Head (meta, styles, CSP)
+     2) App header (title + menubar)
+     3) Find / Replace panel
+     4) Editor (gutter + textarea)
+     5) Status bar
+     6) Scripts
+========================================================== -->
+<html lang="en">
+<head>
+  <!-- 1) Head (meta, styles, CSP) -->
+  <meta charset="utf-8" />
+  <title>Notepad</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- NOTE: keep CSP aligned with your app needs; data: for icons/previews if required -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'">
+  <link rel="stylesheet" href="notepad.css" />
+</head>
+<body>
+  <!-- 2) App header (title + menubar) -->
+  <header class="np-bar" role="banner">
+    <div class="np-title">
+      <span id="fileName" class="np-filename">Untitled</span>
+      <span id="dirty" class="np-dirty hide" title="Unsaved changes" aria-hidden="true">●</span>
+    </div>
+
+    <!-- Menubar (popups are injected via JS) -->
+    <nav id="menubar" class="np-menubar" aria-label="Menu bar">
+      <button class="mroot" type="button" data-menu="file"   aria-haspopup="true" aria-expanded="false">File</button>
+      <button class="mroot" type="button" data-menu="edit"   aria-haspopup="true" aria-expanded="false">Edit</button>
+      <button class="mroot" type="button" data-menu="view"   aria-haspopup="true" aria-expanded="false">View</button>
+      <button class="mroot" type="button" data-menu="format" aria-haspopup="true" aria-expanded="false">Format</button>
+    </nav>
+  </header>
+
+  <!-- 3) Find / Replace panel -->
+  <section id="findPanel" class="np-find hide" aria-hidden="true" aria-labelledby="findPanelTitle">
+    <h2 id="findPanelTitle" class="visually-hidden">Find and Replace</h2>
+    <div class="row">
+      <label for="findQ">Find:</label>
+      <input id="findQ" type="text" autocomplete="off" />
+      <button id="findPrev" type="button" title="Previous (Shift+F3)">Prev</button>
+      <button id="findNext" type="button" title="Next (F3)">Next</button>
+      <button id="findClose" type="button" class="ghost" aria-label="Close find panel">×</button>
+    </div>
+    <div class="row">
+      <label for="replaceQ">Replace:</label>
+      <input id="replaceQ" type="text" autocomplete="off" />
+      <button id="replaceOne" type="button">Replace</button>
+      <button id="replaceAll" type="button">Replace All</button>
+    </div>
+    <div class="row opts">
+      <label><input id="optCase"  type="checkbox" /> Match case</label>
+      <label><input id="optWord"  type="checkbox" /> Whole word</label>
+      <label><input id="optRegex" type="checkbox" /> Regex</label>
+    </div>
+  </section>
+
+  <!-- 4) Editor (gutter + textarea) -->
+  <main class="np-editor-wrap">
+    <pre id="gutter" aria-hidden="true"></pre>
+    <label for="editor" class="visually-hidden">Editor</label>
+    <textarea id="editor" spellcheck="false" wrap="soft" autocomplete="off"></textarea>
+  </main>
+
+  <!-- 5) Status bar -->
+  <footer class="np-status" role="contentinfo">
+    <div id="statLeft"  aria-live="polite">LF • UTF-8</div>
+    <div id="statRight" aria-live="polite">Ln 1, Col 1 • 0 chars</div>
+  </footer>
+
+  <!-- 6) Scripts -->
+  <script src="notepad.js"></script>
+
+  <!-- Optional utility: include once globally -->
+  <style>
+    .visually-hidden{position:absolute!important;clip:rect(1px,1px,1px,1px);padding:0;border:0;height:1px;width:1px;overflow:hidden;white-space:nowrap}
+  </style>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!-- accounts/account.html -->
+<!-- ==========================================================
+     Desktop4Kids – Account UI Templates
+     0) Login modal
+     1) Register modal
+     2) Account info modal
+========================================================== -->
+
+<!-- 0) Login -->
+<template id="tpl-login">
+  <div class="dlg" role="dialog" aria-modal="true">
+    <div class="dlg-title">Log in</div>
+    <div class="dlg-body" style="display:grid; gap:10px; margin:8px 0 4px">
+      <label>Account
+        <select id="u" style="width:100%"></select>
+      </label>
+      <label>PIN (if set)
+        <input id="p" inputmode="numeric" pattern="\d*" maxlength="4" placeholder="1234">
+      </label>
+    </div>
+    <div class="dlg-actions">
+      <button data-k="cancel" class="secondary">Cancel</button>
+      <button data-k="ok">Log in</button>
+    </div>
+  </div>
+</template>
+
+<!-- 1) Register -->
+<template id="tpl-register">
+  <div class="dlg" role="dialog" aria-modal="true">
+    <div class="dlg-title">Create account</div>
+    <div class="dlg-body" style="display:grid; gap:10px; margin:8px 0 4px">
+      <label>Username
+        <input id="u" placeholder="Kid1" maxlength="32">
+      </label>
+      <label>PIN (optional, 4 digits)
+        <input id="p" inputmode="numeric" pattern="\d*" maxlength="4" placeholder="1234">
+      </label>
+      <label>Role
+        <select id="r">
+          <option value="child">Child</option>
+          <option value="parent">Parent</option>
+        </select>
+      </label>
+    </div>
+    <div class="dlg-actions">
+      <button data-k="cancel" class="secondary">Cancel</button>
+      <button data-k="ok">Create</button>
+    </div>
+  </div>
+</template>
+
+<!-- 2) Account info -->
+<template id="tpl-account">
+  <div class="dlg" role="dialog" aria-modal="true">
+    <div class="dlg-title">Account</div>
+    <div class="dlg-body" style="display:grid; gap:12px; margin:8px 0 4px">
+      <div><strong>User:</strong> <span id="acctName"></span></div>
+      <div><strong>Role:</strong> <span id="acctRole"></span></div>
+      <div>
+        <strong>Storage:</strong>
+        <span id="acctUsedMB"></span> / <span id="acctQuotaMB"></span> MB
+        <div style="height:10px; border-radius:999px; background:rgba(255,255,255,.08); margin-top:6px; overflow:hidden">
+          <div id="acctBar" style="height:100%; width:0%; background:#79a8ff;"></div>
+        </div>
+      </div>
+    </div>
+    <div class="dlg-actions">
+      <button data-k="cancel" class="secondary">Close</button>
+      <button data-k="ok">Log out</button>
+    </div>
+  </div>
+</template>

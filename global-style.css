@@ -1,0 +1,443 @@
+/* ==========================================================
+   Global UI Styles
+   ----------------------------------------------------------
+   Sections
+   1) Design tokens & base
+   2) Top chrome (drag bar)
+   3) Desktop (icons, drag affordances)
+   4) Taskbar & legacy Start
+   5) Window chrome
+   6) Scrollbars (global)
+   7) Context menu (shared)
+   8) Dialogs
+   9) Utilities
+========================================================== */
+
+/* 1) Design tokens & base
+   ------------------------------------------------------ */
+:root{
+  /* Palette */
+  --bg:#0f1115;
+  --glass:#141a21;
+  --line:#273041;
+  --text:#e8e8e8;
+  --muted:#a6b0c0;
+  --accent:#79a8ff;
+  --danger:#de4040;
+  --task:#0c1017f2;
+  --card:#121a28;
+
+  /* Radii, effects, motion */
+  --radius-sm:6px;
+  --radius-md:10px;
+  --radius-lg:12px;
+  --radius-xl:14px;
+  --shadow-1:0 16px 40px rgba(0,0,0,.4);
+  --shadow-2:0 24px 60px rgba(0,0,0,.5);
+  --ease:120ms ease;
+}
+
+*{ box-sizing:border-box; }
+
+html,body{
+  height:100%;
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:system-ui, Segoe UI, Arial, sans-serif;
+}
+
+/* 2) Top chrome (drag bar + right side avatar / profile)
+   ------------------------------------------------------ */
+.chrome{
+  height:36px;
+  display:flex; justify-content:space-between; align-items:center;
+  padding:0 8px;
+  background:#0b0f17;
+  border-bottom:1px solid var(--line);
+}
+.drag{ -webkit-app-region:drag; color:var(--muted); font-size:13px; }
+.close-btn{
+  -webkit-app-region:no-drag;
+  width:36px; height:24px;
+  border:0; border-radius:var(--radius-sm);
+  background:#222735; color:#fff; cursor:pointer; font-size:16px;
+}
+.close-btn:hover{ background:var(--danger); }
+
+/* User chip (top-right) */
+.userchip{
+  display:flex; align-items:center; gap:8px;
+  margin-left:auto;
+  margin-right: 85px;
+  padding:4px 10px; border-radius:999px;
+  background:rgba(0,0,0,.25); border:1px solid rgba(255,255,255,.08);
+  cursor:pointer; user-select:none;
+}
+.userchip:hover{ background:rgba(0,0,0,.35); }
+.userchip:focus-visible{ outline:2px solid var(--accent, #79a8ff); }
+
+.userchip .avatar{
+  width:28px; height:28px; border-radius:50%; object-fit:cover;
+  background:#222; border:1px solid rgba(255,255,255,.15);
+}
+.userchip .uname{ font-size:12px; color:#e8e8e8; max-width:120px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+/* Dropdown */
+.umenu{
+  position:fixed; top:40px; right:64px; /* JS repositions precisely */
+  width: max-content;
+  flex: none;
+  max-width: 320px;
+  min-width:220px; padding:6px; border-radius:12px;
+  background:rgba(17,26,40,.96); border:1px solid #2b3547;
+  box-shadow:0 12px 40px rgba(0,0,0,.45);
+  z-index:9999;
+}
+.umenu.hidden{ display:none; }
+.umenu .mi{ padding:10px 12px; border-radius:10px; color:#e8e8e8; font-size:13px; cursor:pointer; }
+.umenu .mi:hover{ background:rgba(255,255,255,.06); }
+.umenu .sep{ height:1px; margin:6px 4px; background:rgba(255,255,255,.08); }
+
+
+/* 3) Desktop (icons, drag affordances)
+   ------------------------------------------------------ */
+#desktop{
+  position:absolute;
+  inset:36px 0 44px 0; /* below top chrome, above taskbar */
+  background:
+    radial-gradient(1300px 700px at 20% 10%, #1b2230 0%, #0f1115 60%)
+    center/cover no-repeat;
+  overflow:hidden;
+}
+.desktop-icons{ position:absolute; inset:0; pointer-events:auto; overflow:hidden; }
+
+/* Prevent accidental text selection while dragging icons */
+#desktop, #desktop .d-icon{ -webkit-user-select:none; user-select:none; }
+
+/* Icon visual */
+.d-ico{
+  width:72px; height:72px; margin:0 auto 6px;
+  display:grid; place-items:center;
+  background:transparent !important;
+  border:0 !important; outline:0 !important; box-shadow:none !important;
+  border-radius:16px;
+}
+.d-ico-img{ width:42px; height:42px; display:block; }
+.d-icon:hover .d-ico{ filter:none !important; }
+.d-icon.sel .d-ico{ outline:none !important; }
+
+/* Icon tile */
+.d-icon{
+  position:absolute;
+width:100px; text-align:center; cursor:default;
+  padding:12px 10px;
+  background:transparent;
+  border:1px solid transparent;
+  box-shadow:none;
+  border-radius:14px;                            
+  transition:left var(--ease), top var(--ease), background .12s, border-color .12s, box-shadow var(--ease);
+}
+#desktop .d-icon img{
+  width:40px; height:40px; display:block;
+  transition: transform .12s, filter .15s;
+}
+#desktop .d-icon .label{
+  margin-top:6px; font-size:12px; color:#e8e8e8; text-align:center;
+  max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  text-shadow:0 2px 3px rgba(0,0,0,.105);
+  background:transparent !important; padding:0; border:0;
+}
+
+/* Hover/selected: image + text glow (no background tile) */
+#desktop .d-icon:hover{
+  background:var(--tile);
+  border-color:var(--line);
+  box-shadow:0 8px 28px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.06);
+}
+#desktop .d-icon.selected{
+  background:rgba(17, 26, 40, 0.356);
+  border-color:#3a4b67;
+  box-shadow:0 8px 28px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.06);
+}
+/* Keep your image lift + label emphasis */
+#desktop .d-icon:hover img,
+#desktop .d-icon.selected img{
+  filter: drop-shadow(0 6px 14px rgba(0,0,0,.35));
+  transform: translateY(-1px);
+}
+#desktop .d-icon:hover .label,
+#desktop .d-icon.selected .label{
+  color:#fff;
+  text-shadow:0 0 10px rgba(121,168,255,.45), 0 2px 2px rgba(0,0,0,.7);
+}
+
+/* Rounded dashed outline via pseudo-element (matches Explorer) */
+#desktop .d-icon.dragging::after{
+  content:"";
+  position:absolute;
+  inset:-4px;
+  border:2px dashed rgba(255,255,255,.6);
+  border-radius:calc(var(--radius-lg) + 6px);
+  pointer-events:none;
+}
+#desktop .d-icon.dragging{
+  box-shadow:0 12px 34px rgba(0,0,0,.45);
+  cursor:grabbing;
+}
+#desktop .d-icon.dragging img{ transform: translateY(-1px) scale(1.02); }
+
+
+/* 4) Taskbar & legacy Start
+   ------------------------------------------------------ */
+.taskbar{
+  position:fixed; left:0; right:0; bottom:0;
+  height:44px; background:var(--task);
+  display:flex; align-items:center; gap:10px;
+  padding:0 10px; border-top:1px solid var(--line);
+}
+.start-btn{
+  border:0; padding:8px 12px; border-radius:8px;
+  background:#1f2632; color:#fff; cursor:pointer;
+}
+.start-btn:hover{ filter:brightness(1.12); }
+.brand{ opacity:.85; }
+.clock{ margin-left:auto; opacity:.85; min-width:86px; text-align:right; }
+
+/* Small/legacy start panel */
+.start{
+  position:fixed; left:10px; bottom:54px; width:240px;
+  background:#121a21ee; backdrop-filter:blur(6px);
+  border:1px solid var(--line); border-radius:12px; padding:10px;
+  box-shadow:var(--shadow-1);
+}
+.start-title{ font-size:12px; color:var(--muted); margin:2px 0 8px; }
+.start-item{
+  width:100%; text-align:left; border:0; padding:10px;
+  border-radius:10px; background:#1a2130; color:#fff; margin-bottom:8px; cursor:pointer;
+}
+.start-item:hover{ background:#253047; }
+.start-item.danger:hover{ background:#7a2a2a; }
+
+/* ========== Taskbar Clock (tray) ========== */
+.tray-clock{
+  padding: 0 10px;
+  height: 100%;
+  display:flex; align-items:center; justify-content:center;
+  font: 12px/1.2 var(--sans, system-ui, Arial);
+  color:#d7dbe7;
+  cursor: default;
+  user-select: none;
+  white-space: nowrap;
+}
+.tray-clock:hover{ background: rgba(255,255,255,0.06); }
+
+/* ========== Tray Popover ========== */
+.tray-popover{
+  position: fixed;
+  bottom: 42px; /* just above your taskbar height */
+  right: 8px;
+  width: 340px;
+  height: 420px;
+  background: #10141d;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  overflow: hidden;
+  z-index: 10000;
+}
+.tray-popover.hidden{ display:none; }
+.tray-popover > iframe{
+  width:100%; height:100%; border:0; display:block;
+}
+
+/* 5) Window chrome
+   ------------------------------------------------------ */
+.win{
+  position:absolute; width:820px; height:540px;
+  background:#0f131c; border:1px solid #2a3242; border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-2); overflow:hidden;
+}
+.win .title{
+  height:36px; background:#121721;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 8px; cursor:pointer;
+  border-bottom:1px solid #222a3b;
+  font-size:13px; color:var(--muted);
+}
+.win .btns{ display:flex; gap:6px; }
+.win .btns button{
+  width:28px; height:22px; border:0; border-radius:var(--radius-sm);
+  background:#222735; color:#fff; cursor:pointer;
+}
+.win .btns .close:hover{ background:var(--danger); }
+.win iframe{ width:100%; height:calc(100% - 36px); border:0; display:block; background:#000; }
+
+/* 6) Scrollbars (global)
+   ------------------------------------------------------ */
+*::-webkit-scrollbar{ width:10px; height:10px; }
+*::-webkit-scrollbar-track{ background:#0a0f17; border-radius:8px; }
+*::-webkit-scrollbar-thumb{
+  background:#1f2a3e; border:2px solid #0a0f17; border-radius:8px;
+}
+*::-webkit-scrollbar-thumb:hover{ background:#2a3a56; }
+
+/* 7) Context menu (shared)
+   ------------------------------------------------------ */
+.ctx{
+  position:fixed; min-width:190px;
+  background:#0f1522; border:1px solid var(--line); border-radius:var(--radius-md);
+  box-shadow:0 18px 50px rgba(0,0,0,.45);
+  padding:6px; z-index:10000;
+}
+.ctx.hidden{ display:none; }
+.ctx .mi{
+  display:flex; align-items:center; gap:8px;
+  padding:8px 10px; border-radius:var(--radius-md); cursor:pointer; color:#e8e8e8;
+}
+.ctx .mi:hover{ background:#1a2232; }
+
+/* 8) Dialogs
+   ------------------------------------------------------ */
+.dlg-wrap{
+  position:fixed; inset:0; background:rgba(0,0,0,.45);
+  display:flex; align-items:center; justify-content:center;
+  z-index:999999;
+}
+.dlg{
+  width:320px; background:#0f1623; border:1px solid #2a3242;
+  border-radius:var(--radius-lg); box-shadow:0 20px 50px rgba(0,0,0,.5); padding:16px;
+}
+.dlg-title{ font-weight:600; margin-bottom:10px; color:#cfd6e6; }
+.dlg-input{
+  width:100%; padding:10px; border:1px solid #2a3242; border-radius:8px;
+  background:#0b101a; color:#e8e8e8;
+}
+.dlg-actions{ display:flex; gap:8px; justify-content:flex-end; margin-top:12px; }
+.dlg-actions button{
+  padding:8px 12px; border-radius:8px; border:1px solid #2a3242;
+  background:#121826; color:#e8e8e8; cursor:pointer;
+}
+.dlg-actions button:hover{ background:#aecdff; }
+
+/* ==========================================================
+   Dialog v2 (modern glass, rounded inputs + buttons)
+   ========================================================== */
+
+/* Container */
+.dlg {
+  border-radius: 16px;
+  background: rgba(14, 22, 34, 0.78);       /* glassy dark */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 10px 36px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+  color: #eaf0ff;
+}
+
+/* Title */
+.dlg-title {
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: .2px;
+  padding: 14px 18px 8px;
+}
+
+/* Body layout */
+.dlg-body {
+  padding: 4px 18px 10px;
+  display: grid;
+  gap: 12px;
+}
+
+.dlg-body label {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+  color: #cfd6e6;
+}
+
+/* Inputs / selects */
+.dlg-body input,
+.dlg-body select {
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #f4f7ff;
+  outline: none;
+  transition: border-color .15s ease, box-shadow .15s ease, background .15s ease, transform .03s ease;
+}
+
+.dlg-body input::placeholder { color: rgba(244, 247, 255, 0.45); }
+
+/* Focus glow */
+.dlg-body input:focus,
+.dlg-body select:focus {
+  border-color: #79a8ff;
+  box-shadow: 0 0 0 3px rgba(121, 168, 255, 0.25);
+  background: rgb(43, 60, 90);
+}
+
+/* Optional tiny press feedback */
+.dlg-body input:active,
+.dlg-body select:active { transform: scale(0.995); }
+
+/* Nice select arrow */
+.dlg-body select {
+  background-image:
+    linear-gradient(transparent, transparent),
+    url("data:image/svg+xml,%3Csvg width='14' height='9' viewBox='0 0 14 9' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 2l5 5 5-5' stroke='%23cfd6e6' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat, no-repeat;
+  background-position: right 10px center, 0 0;
+  background-size: 14px 9px, auto;
+  padding-right: 34px;
+}
+
+/* Actions row */
+.dlg-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding: 12px 18px 16px;
+}
+
+/* Buttons */
+.dlg-actions button {
+  border: 0;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 600;
+  color: #0b1422;
+  background: linear-gradient(180deg, #9bc1ff, #6ea5ff);
+  box-shadow: 0 6px 20px rgba(110, 165, 255, 0.35), 0 0 0 1px rgba(255,255,255,.12) inset;
+  transition: filter .15s ease, transform .03s ease, box-shadow .15s ease;
+  cursor: pointer;
+}
+
+.dlg-actions button:hover { filter: brightness(1.04); }
+.dlg-actions button:active { transform: translateY(1px); }
+
+/* Secondary button */
+.dlg-actions .secondary {
+  color: #eaf0ff;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.12) inset;
+}
+
+.dlg-actions .secondary:hover { background: rgba(255, 255, 255, 0.10); }
+
+
+/* 9) Utilities
+   ------------------------------------------------------ */
+.hidden{ display:none !important; }
+:focus{ outline:none; }
+input:focus, button:focus, textarea:focus, select:focus{
+  box-shadow:0 0 0 2px var(--accent);
+  border-color:var(--accent);
+}

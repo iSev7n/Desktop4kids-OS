@@ -1,0 +1,175 @@
+/* ==========================================================
+   Notepad — Styles (menubar edition)
+   ----------------------------------------------------------
+   Sections
+   1) Theme + reset
+   2) Header (title + menubar)
+   3) Menus (dropdowns)
+   4) Find/Replace panel
+   5) Editor (gutter + textarea)
+   6) Status bar / layout toggles
+   7) Scrollbars & selection
+   8) Motion & a11y
+========================================================== */
+
+
+/* 1) Theme + reset
+   ------------------------------------------------------ */
+/* Kill page scrollbars; the editor handles its own scroll */
+html, body { height:100%; overflow:hidden; }
+
+:root{
+  --bg:#0f1115; --panel:#0b1019; --line:#273041;
+  --text:#e8e8e8; --muted:#a6b0c0;
+  --btn:#1a2232; --btnb:#273041; --btnHover:#233049;
+  --accent:#79a8ff; --accentSoft:rgba(120,170,255,.2);
+  --radius:10px;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --sans: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  --ease:120ms ease;
+  --shadow:0 10px 28px rgba(0,0,0,.35);
+}
+*{ box-sizing:border-box; }
+html,body{
+  height:100%; margin:0;
+  background:var(--bg); color:var(--text);
+  font-family:var(--mono);
+}
+.hide{ display:none !important; }
+
+
+/* 2) Header (title + menubar)
+   ------------------------------------------------------ */
+.np-bar{
+  display:flex; align-items:center; justify-content:space-between;
+  height:44px; padding:0 10px;
+  background:var(--panel); border-bottom:1px solid var(--line);
+}
+.np-title{ display:flex; gap:8px; align-items:center; }
+.np-filename{ font-weight:600; }
+.np-dirty{ color:var(--accent); }
+
+.np-menubar{ display:flex; align-items:center; gap:6px; }
+.np-menubar .mroot{
+  font-family:var(--sans); font-size:13px;
+  height:28px; padding:0 10px;
+  border:1px solid transparent; border-radius:8px;
+  color:#fff; background:transparent; cursor:pointer;
+  transition: background var(--ease), border-color var(--ease), transform var(--ease);
+}
+.np-menubar .mroot:hover,
+.np-menubar .mroot[aria-expanded="true"]{
+  background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.08);
+}
+.np-menubar .mroot:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+
+/* 3) Menus (dropdowns)
+   ------------------------------------------------------ */
+.menu-popup{
+  position:absolute; z-index:20;
+  min-width:220px;
+  max-width:min(320px, calc(100vw - 16px));
+  background:var(--panel); border:1px solid var(--line);
+  border-radius:10px; padding:6px; box-shadow:var(--shadow);
+}
+.menu-item{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  width:100%; border:0; background:transparent; color:#fff; cursor:pointer;
+  padding:8px 10px; border-radius:8px; font:13px var(--sans);
+  transition: background var(--ease), transform var(--ease);
+}
+.menu-item:hover{ background:rgba(255,255,255,.08); }
+.menu-item:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+.menu-item .accel{ color:var(--muted); margin-left:24px; }
+.menu-item[aria-checked="true"]::before{ content:"✓"; margin-right:6px; opacity:.9; }
+.menu-sep{ height:1px; background:var(--line); margin:6px 4px; }
+
+
+/* 4) Find/Replace panel
+   ------------------------------------------------------ */
+.np-find{
+  position:absolute; right:12px; top:56px; z-index:10;
+  width:min(520px, calc(100% - 24px));
+  background:var(--panel); border:1px solid var(--line);
+  border-radius:var(--radius); box-shadow:var(--shadow); padding:10px;
+}
+.np-find .row{ display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+.np-find .row:last-child{ margin-bottom:0; }
+.np-find label{ min-width:64px; color:var(--muted); font-size:13px; }
+.np-find input[type=text]{
+  flex:1; height:28px;
+  border:1px solid var(--btnb); background:#0f131c; color:#fff;
+  border-radius:8px; padding:0 8px;
+  transition: border-color var(--ease), box-shadow var(--ease), background var(--ease);
+}
+.np-find input[type=text]:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--accentSoft);
+  background:#0f1726;
+}
+.np-find .opts{ gap:18px; font-size:13px; }
+.np-find button{
+  height:28px; padding:0 10px; border-radius:8px; border:1px solid var(--btnb);
+  background:var(--btn); color:#fff; cursor:pointer;
+  transition: filter var(--ease), transform var(--ease), border-color var(--ease);
+}
+.np-find button:hover{ border-color:#2d3a55; }
+.np-find button:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+.np-find .ghost{ background:transparent; border-color:transparent; }
+.np-find .ghost:hover{ background:rgba(255,255,255,.06); }
+
+
+/* 5) Editor (gutter + textarea)
+   ------------------------------------------------------ */
+.np-editor-wrap{
+  height:calc(100% - 44px - 28px); /* header + status */
+  display:flex; min-height:0;
+}
+#gutter{
+  width:56px; padding:10px 6px 10px 10px; margin:0;
+  overflow:hidden; text-align:right;
+  color:var(--muted); background:#0a0f17; border-right:1px solid var(--line);
+  user-select:none; line-height:1.5; white-space:pre;
+}
+#editor{
+  flex:1; min-width:0;
+  border:0; outline:none; background:var(--bg); color:var(--text);
+  font:14px/1.5 var(--mono);
+  padding:10px 14px; resize:none; overflow:auto;
+}
+
+
+/* 6) Status bar / layout toggles
+   ------------------------------------------------------ */
+.np-status{
+  height:28px; display:flex; align-items:center; justify-content:space-between;
+  padding:0 10px; border-top:1px solid var(--line); color:var(--muted);
+  background:var(--panel); font-size:12px;
+}
+body.no-status .np-status{ display:none; }
+body.no-status .np-editor-wrap{ height:calc(100% - 44px); }
+
+
+/* 7) Scrollbars & selection
+   ------------------------------------------------------ */
+#editor::-webkit-scrollbar{ width:12px; height:12px; }
+#editor::-webkit-scrollbar-track{ background:#0a0f17; border-radius:10px; }
+#editor::-webkit-scrollbar-thumb{
+  background:#1b2435; border:3px solid #0a0f17; border-radius:10px;
+}
+#editor::-webkit-scrollbar-thumb:hover{ background:#24324a; }
+
+#editor::selection{ background:rgba(121,168,255,.25); }
+#gutter::selection{ background:transparent; }
+
+
+/* 8) Motion & a11y
+   ------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce){
+  .np-menubar .mroot,
+  .menu-item,
+  .np-find button{
+    transition:none !important;
+  }
+}

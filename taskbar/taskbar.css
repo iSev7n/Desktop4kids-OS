@@ -1,0 +1,89 @@
+/* =============================================================================
+   Desktop4Kids — Taskbar
+   ---------------------------------------------------------------------------
+   Structure:
+   #taskbar            → the bar (already place Start, list, tray, clock)
+   #taskbarList        → container for open-window buttons
+   #taskbarTray        → (optional) system area
+   .tb-item            → per-window button
+   .tb-ctx             → right-click context menu
+   ============================================================================= */
+
+/* Bar ---------------------------------------------------------------------- */
+#taskbar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  height: 44px;
+  background: var(--task);
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 10px;
+  border-top: 1px solid var(--line);
+  z-index: 10000;
+}
+
+#taskbarList { display: flex; gap: 6px; overflow-x: auto; flex: 1; align-items: center; }
+#taskbarTray  { display: flex; gap: 6px; }
+
+/* Start button (lives inside #taskbar, leftmost) ---------------------- */
+.start-btn {
+  border: 0; padding: 8px 12px; border-radius: 8px;
+  background: #1f2632; color: #fff; cursor: pointer;
+}
+.start-btn:hover { filter: brightness(1.12); }
+
+/* Window Buttons ----------------------------------------------------------- */
+.tb-item {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 8px; border-radius: 10px; cursor: pointer;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.08);
+  white-space: nowrap; max-width: 160px;
+  transition: transform .05s, background .15s, border-color .15s;
+}
+.tb-item:hover  { background: rgba(255,255,255,.10); }
+.tb-item.active { outline: 2px solid rgba(120,170,255,.5); background: rgba(255,255,255,.12); }
+.tb-item.minimized { opacity: .75; }
+.tb-item .ico { width: 18px; height: 18px; display: inline-block; } /* clamps SVG size */
+.tb-item .t   { font-size: 13px; overflow: hidden; text-overflow: ellipsis; }
+
+/* Minimized windows (the floating window element itself) ------------------- */
+.win.minimized { display: none !important; }
+
+/* Modes -------------------------------------------------------------------- */
+#taskbar.icons-only .tb-item .t { display: none; }
+#taskbar.icons-only .tb-item    { padding: 6px; max-width: 40px; }
+#taskbar.tight       .tb-item   { max-width: 120px; }
+
+/* Attention pulse (nudging a button) -------------------------------------- */
+.tb-item.attn { animation: tbPulse 1s ease-in-out 1; }
+@keyframes tbPulse { 0%,100% { box-shadow: none } 50% { box-shadow: 0 0 0 4px rgba(120,170,255,.25) } }
+
+/* Context Menu ------------------------------------------------------------- */
+.tb-ctx{
+  position: fixed; z-index: 12000;
+  background: rgba(20,22,28,.98);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 10px; padding: 6px; min-width: 160px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.35);
+}
+.tb-ctx button{
+  display: block; width: 100%; text-align: left;
+  padding: 8px 12px; background: none; border: 0; color: #fff;
+  border-radius: 8px; cursor: pointer;
+}
+.tb-ctx button:hover{ background: rgba(255,255,255,.08); }
+
+/* arrow pointing to the taskbar button */
+.tb-ctx::after{
+  content: ""; position: absolute; bottom: -6px;
+  left: var(--arrow-left, 16px);
+  border-width: 6px 6px 0 6px;
+  border-style: solid;
+  border-color: rgba(20,22,28,.98) transparent transparent transparent;
+}
+
+/* Motion respect ----------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .tb-item, .tb-item:hover, .tb-item.active { transition: none; }
+  .tb-item.attn { animation: none; }
+}

@@ -1,0 +1,27 @@
+{
+  "name": "desktop4kids-os",
+  "version": "0.2.1",
+  "description": "Windows-like desktop shell for kids, built with Electron",
+  "author": "Thomas Davis",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electronmon .",
+    "dist": "electron-builder -w"
+  },
+  "devDependencies": {
+    "electron": "^31.7.7",
+    "electron-builder": "^24.13.3",
+    "electron-reload": "^2.0.0",
+    "electronmon": "^2.0.2"
+  },
+  "build": {
+    "appId": "com.desktop4kids.desktop",
+    "productName": "Desktop",
+    "win": {
+      "target": "nsis",
+      "icon": "assets/favicon.ico"
+    }
+  }
+}

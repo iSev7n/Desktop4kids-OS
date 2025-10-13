@@ -1,0 +1,99 @@
+<!doctype html>
+<!-- ==========================================================
+     Component: Files (explorer.html)
+     Purpose: File explorer UI (sidebar + toolbar + content)
+     ----------------------------------------------------------
+     Sections
+     1) Head (meta, CSP, styles)
+     2) App frame (sidebar + main)
+     3) Toolbar (nav, address/search, actions)
+     4) Content (grid or details)
+     5) Context menu
+     6) Scripts & a11y utility
+========================================================== -->
+<html lang="en">
+<head>
+  <!-- 1) Head (meta, CSP, styles) -->
+  <meta charset="utf-8" />
+  <title>Files</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' file: data:; style-src 'self' 'unsafe-inline';">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="explorer.css?v=7" />
+</head>
+<body>
+  <!-- 2) App frame -->
+  <div class="frame">
+    <!-- Sidebar -->
+    <nav class="side" aria-label="Locations">
+      <button class="sitem" type="button" data-goto="">
+        <img src="../../assets/icons/folder.svg" alt="" aria-hidden="true"><span>Home</span>
+      </button>
+      <button class="sitem" type="button" data-goto="user/Desktop">
+        <img src="../../assets/icons/folder.svg" alt="" aria-hidden="true"><span>Desktop</span>
+      </button>
+      <button class="sitem" type="button" data-goto="user/Pictures">
+        <img src="../../assets/icons/folder-images.svg" alt="" aria-hidden="true"><span>Images</span>
+      </button>
+      <button class="sitem" type="button" data-goto="user/Videos">
+        <img src="../../assets/icons/folder-video.svg" alt="" aria-hidden="true"><span>Videos</span>
+      </button>
+      <button class="sitem" type="button" data-goto="user/Documents">
+        <img src="../../assets/icons/folder-text.svg" alt="" aria-hidden="true"><span>Documents</span>
+      </button>
+    </nav>
+
+    <!-- Main -->
+    <section class="main" aria-label="Explorer">
+      <!-- 3) Toolbar -->
+      <div class="toolbar" role="toolbar" aria-label="File navigation">
+        <div class="nav" role="group" aria-label="History">
+          <button id="btnBack" class="tb" type="button" title="Back" aria-label="Back">◀</button>
+          <button id="btnNext" class="tb" type="button" title="Forward" aria-label="Forward">▶</button>
+          <button id="btnUp"   class="tb" type="button" title="Up" aria-label="Up one folder">▲</button>
+        </div>
+
+        <div class="center">
+          <label for="addr" class="visually-hidden">Address</label>
+          <input id="addr" class="addrbox" type="text" spellcheck="false" />
+
+          <div class="searchWrap">
+            <button id="btnSearch" class="tb" type="button" title="Search" aria-controls="search" aria-expanded="false" aria-label="Toggle search">🔍</button>
+            <label for="search" class="visually-hidden">Search</label>
+            <input id="search" class="search hide" type="text" placeholder="Search…" />
+          </div>
+        </div>
+
+        <div class="actions" role="group" aria-label="View">
+          <button id="toggleView" class="tb" type="button" title="Toggle grid/details" aria-pressed="false" aria-controls="grid listView">☰</button>
+        </div>
+      </div>
+
+      <!-- 4) Content: exactly ONE pane at a time -->
+      <div class="content">
+        <!-- Grid view -->
+        <div id="grid" class="grid" role="list" aria-label="Items (grid)"></div>
+
+        <!-- List (details) view -->
+        <div id="listView" class="list" role="table" aria-label="Items (details)">
+          <div class="hdr row" role="row">
+            <div class="c name" role="columnheader">Name</div>
+            <div class="c type" role="columnheader">Type</div>
+            <div class="c size" role="columnheader">Size</div>
+            <div class="c date" role="columnheader">Date modified</div>
+          </div>
+          <div id="rows" role="rowgroup"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- 5) Context menu -->
+  <div id="ctx" class="ctx hide" role="menu" aria-hidden="true"></div>
+
+  <!-- 6) Scripts & a11y utility -->
+  <script src="explorer.js?v=7"></script>
+  <style>
+    .visually-hidden{position:absolute!important;clip:rect(1px,1px,1px,1px);padding:0;border:0;height:1px;width:1px;overflow:hidden;white-space:nowrap}
+  </style>
+</body>
+</html>

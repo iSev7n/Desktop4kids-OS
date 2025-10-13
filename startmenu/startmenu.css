@@ -1,0 +1,232 @@
+/* ==========================================================
+   Component: Start Menu v2 (decoupled)
+   Depends on global tokens: --line, --radius-*, --shadow-*, --ease
+   ----------------------------------------------------------
+   Sections
+   1) Shell & layout
+   2) Left rail
+   3) Main & search
+   4) Sections (titles)
+   5) Pinned grid (apps)
+   6) All apps list
+   7) Power flyout
+   8) Scrollbars (scoped)
+   9) Motion & a11y
+========================================================== */
+
+
+/* 1) Shell & layout
+   ------------------------------------------------------ */
+.startv2{
+  position: fixed;
+  left: 10px; bottom: 54px;
+  width: 740px; max-height: 70vh;
+  background: #0f131c;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-2, 0 28px 80px rgba(0,0,0,.55));
+  display: grid;
+  grid-template-rows: auto;
+  overflow: hidden;
+  z-index: 2000;
+}
+.startv2.hidden{ display: none; }
+
+.start-body{
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  height: 100%;
+}
+
+@media (max-width: 820px){
+  .startv2{ width: min(92vw, 740px); left: 4vw; }
+}
+@media (max-width: 560px){
+  .start-body{ grid-template-columns: 60px 1fr; }
+}
+
+
+/* 2) Left rail
+   ------------------------------------------------------ */
+.start-rail{
+  background: #0b1019;
+  border-right: 1px solid var(--line);
+  display: flex; flex-direction: column; align-items: center;
+  gap: 10px; padding: 10px 8px;
+}
+.start-rail .usr{
+  width: 100%;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 6px; margin-bottom: 6px;
+}
+.start-rail .usr img{
+  width: 36px; height: 36px; border-radius: 50%; display: block;
+}
+.start-rail .usr .name{
+  width: 100%;
+  font-size: 11px; color: var(--muted);
+  text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.rail-btn{
+  width: 44px; height: 44px;
+  display: grid; place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #1a2232; color: #fff;
+  cursor: pointer;
+  transition: filter var(--ease), transform var(--ease), box-shadow var(--ease);
+}
+.rail-btn img{ width: 20px; height: 20px; display:block; }
+.rail-btn:hover{ filter: brightness(1.08); transform: translateY(-1px); }
+.rail-btn:focus-visible{ outline: 2px solid var(--accent, #79a8ff); outline-offset: 2px; }
+.rail-btn.danger:hover{ background: #7a2a2a; }
+.rail-grow{ flex: 1; }
+
+
+/* 3) Main & search
+   ------------------------------------------------------ */
+.start-main{
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  background: #0f131c;
+}
+
+.start-top{
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+  background: #0b1019;
+}
+
+.start-search{
+  width: 100%; height: 34px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #121828; color: #e8e8e8;
+  transition: border-color var(--ease), box-shadow var(--ease), background var(--ease);
+}
+.start-search::placeholder{ color: rgba(232,232,232,.55); }
+.start-search:focus{
+  border-color: var(--accent, #79a8ff);
+  box-shadow: 0 0 0 3px rgba(121,168,255,.25);
+  background: #142033;
+}
+
+
+/* 4) Sections (titles)
+   ------------------------------------------------------ */
+.start-section{ padding: 12px; }
+.sect-title{
+  margin: 2px 0 8px;
+  font-size: 12px; color: var(--muted);
+}
+
+
+/* 5) Pinned grid (apps)
+   ------------------------------------------------------ */
+.app-grid{
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+}
+@media (max-width: 740px){
+  .app-grid{ grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 520px){
+  .app-grid{ grid-template-columns: repeat(3, 1fr); }
+}
+
+.app-tile{
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px;
+  border: 1px solid #223049;
+  border-radius: 12px;
+  background: #121a28; color: #e8e8e8;
+  cursor: pointer;
+  transition: filter var(--ease), transform var(--ease), box-shadow var(--ease);
+}
+.app-tile:hover{ filter: brightness(1.08); transform: translateY(-1px); }
+.app-tile:focus-visible{ outline: 2px solid var(--accent, #79a8ff); outline-offset: 2px; }
+.app-tile img{ width: 22px; height: 22px; display:block; }
+.app-tile .t-name{ font-size: 13px; }
+
+
+/* 6) All apps list
+   ------------------------------------------------------ */
+.app-list{
+  height: 28vh;
+  overflow: auto;
+  border-top: 1px solid var(--line);
+  padding: 6px 12px 12px;
+}
+
+.app-row{
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background var(--ease), transform var(--ease);
+}
+.app-row:hover{ background: #141b2a; }
+.app-row:focus-visible{ outline: 2px solid var(--accent, #79a8ff); outline-offset: 2px; }
+.app-row img{ width: 20px; height: 20px; display:block; }
+.app-row .r-name{ color: #e8e8e8; }
+.app-row .r-cat{ color: var(--muted); font-size: 12px; }
+
+
+/* 7) Power flyout
+   ------------------------------------------------------ */
+.power{
+  position: absolute; right: 12px; bottom: 12px;
+  display: flex; flex-direction: column; gap: 6px;
+  padding: 8px;
+  background: #121a21ee; backdrop-filter: blur(6px);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: var(--shadow-1, 0 18px 50px rgba(0,0,0,.45));
+}
+.power.hidden{ display: none; }
+
+.power button{
+  height: 32px;
+  padding: 0 12px;
+  text-align: left;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #1a2232; color: #fff;
+  cursor: pointer;
+  transition: filter var(--ease), transform var(--ease);
+}
+.power button:hover{ filter: brightness(1.08); transform: translateY(-1px); }
+.power button:focus-visible{ outline: 2px solid var(--accent, #79a8ff); outline-offset: 2px; }
+.power button.danger{ background: #2a1a1a; }
+.power button.danger:hover{ background: #7a2a2a; }
+
+
+/* 8) Scrollbars (scoped to .app-list)
+   ------------------------------------------------------ */
+.app-list{ scrollbar-width: thin; scrollbar-color: #1f2a3e #0a0f17; }
+.app-list::-webkit-scrollbar{ width: 8px; }
+.app-list::-webkit-scrollbar-track{ background: #0a0f17; border-radius: 8px; }
+.app-list::-webkit-scrollbar-thumb{
+  background: #1f2a3e;
+  border: 2px solid #0a0f17;
+  border-radius: 8px;
+}
+.app-list::-webkit-scrollbar-thumb:hover{ background: #2a3a56; }
+
+
+/* 9) Motion & a11y
+   ------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce){
+  .rail-btn,
+  .app-tile,
+  .app-row,
+  .power button{
+    transition: none !important;
+  }
+}

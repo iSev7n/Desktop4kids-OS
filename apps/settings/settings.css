@@ -1,0 +1,273 @@
+/* ==========================================================
+   Component: Settings App (settings.css)
+   ----------------------------------------------------------
+   Sections
+   0) Design tokens & base
+   1) App layout (grid shell)
+   2) Left nav
+   3) Pane area & cards
+   4) Forms & buttons
+   5) Key/Value + progress
+   6) Avatar block
+   7) Personalize (wallpaper grid)
+   8) Dialog (avatar modal) + tabs
+   9) Utilities & responsive
+  10) Motion & a11y
+========================================================== */
+
+
+/* 0) Design tokens & base
+   ------------------------------------------------------ */
+:root{
+  --bg:#0f131c;
+  --card:#0e1420;
+  --line:#1d2533;
+  --fg:#e6ecf5;
+  --muted:#9aa4b2;
+  --accent:#5aa0ff;
+  --danger:#f16161;
+  --btnb:#1d2636;
+
+  /* niceties */
+  --radius:12px;
+  --ease:120ms ease;
+  --shadow:0 12px 40px rgba(0,0,0,.5);
+}
+
+html,body{
+  height:100%; margin:0;
+  background:var(--bg); color:var(--fg);
+  font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial;
+}
+*{ box-sizing:border-box; }
+h1{ margin:0 0 12px 0; font:600 18px/1.2 system-ui, -apple-system, Segoe UI, Roboto, Arial; }
+
+
+/* 1) App layout (grid shell)
+   ------------------------------------------------------ */
+.settings-app{
+  display:grid;
+  grid-template-columns:220px 1fr;
+  gap:12px;
+  height:100%;
+  padding:12px;
+}
+
+
+/* 2) Left nav
+   ------------------------------------------------------ */
+.nav{ border-right:1px solid var(--line); padding-right:8px; }
+.nav-title{ font-weight:700; margin:4px 0 8px 4px; }
+.nav-btn{
+  width:100%; text-align:left;
+  background:transparent; color:var(--fg);
+  border:0; padding:8px 10px; border-radius:8px; cursor:pointer;
+  transition: background var(--ease), transform var(--ease);
+}
+.nav-btn:hover,
+.nav-btn.active{ background:#1a2233; }
+.nav-btn:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+
+/* 3) Pane area & cards
+   ------------------------------------------------------ */
+.pane-area{ overflow:auto; padding-right:8px; }
+.pane{ display:none; }
+.pane.active{ display:block; }
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:12px;
+  margin-bottom:12px;
+  box-shadow: none; /* keep flat in app theme */
+}
+.row{
+  display:grid;
+  grid-template-columns:160px 1fr;
+  gap:12px;
+}
+
+
+/* 4) Forms & buttons
+   ------------------------------------------------------ */
+.field{ display:flex; flex-direction:column; gap:6px; margin-bottom:10px; }
+.field label{ color:var(--muted); font-size:13px; }
+.field input,
+.field select{
+  height:34px;
+  border:1px solid var(--btnb);
+  background:#0f131c; color:#fff;
+  border-radius:8px; padding:0 10px;
+  transition: border-color var(--ease), box-shadow var(--ease), background var(--ease);
+}
+.field input:focus,
+.field select:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(90,160,255,.25);
+  background:#0f1726;
+}
+
+.actions{ display:flex; gap:8px; flex-wrap:wrap; margin-top:4px; }
+.btn{
+  background:#132038; color:#fff; border:1px solid var(--btnb);
+  border-radius:8px; height:34px; padding:0 12px; cursor:pointer;
+  transition: filter var(--ease), transform var(--ease), border-color var(--ease);
+}
+.btn:hover{ border-color:#2a3855; }
+.btn:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+.btn.secondary{ background:#0e1320; }
+.btn.sm{ height:28px; padding:0 10px; }
+.btn.danger{ background:#3b1717; border-color:#602b2b; }
+.btn.danger:hover{ border-color:#7a3a3a; }
+
+
+/* 5) Key/Value + progress
+   ------------------------------------------------------ */
+.kvs{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:8px; margin:8px 0 0 0;
+}
+.kvs .k{ color:var(--muted); margin-right:6px; }
+
+.progress{
+  height:12px;
+  background:#0b1020;
+  border:1px solid var(--line);
+  border-radius:999px;
+  overflow:hidden;
+}
+.bar{
+  height:100%; width:0%;
+  background:linear-gradient(90deg, var(--accent), #7ab6ff);
+}
+
+
+/* 6) Avatar block
+   ------------------------------------------------------ */
+.avatar-wrap{ display:flex; flex-direction:column; align-items:center; gap:8px; }
+.avatar-wrap img{
+  width:120px; height:120px; border-radius:50%;
+  object-fit:cover; background:#0b0f18; border:1px solid var(--line);
+}
+.avatar-actions{ display:flex; gap:8px; }
+
+
+/* 7) Personalize (wallpaper grid)
+   ------------------------------------------------------ */
+.wall-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); /* column width */
+  gap:12px;                                                    /* tile gap */
+}
+.wall-tile{
+  position:relative; width:100%;
+  aspect-ratio:16 / 10;              /* 16:10 tile; change if desired */
+  border-radius:10px; overflow:hidden;
+  border:1px solid var(--btnb, #2a2f3a);
+  background:#0f131c; cursor:pointer;
+  transition: transform .08s ease, box-shadow .08s ease, border-color .08s ease;
+}
+.wall-tile:hover{
+  transform:translateY(-1px);
+  box-shadow:0 4px 18px rgba(0,0,0,.3);
+  border-color:#3a4150;
+}
+.wall-tile:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+.wall-tile img{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:cover; /* center-crop */
+}
+
+
+/* 8) Dialog (avatar modal) + tabs
+   ------------------------------------------------------ */
+.dlg-wrap.hidden{ display:none; }
+.dlg-wrap{
+  position:fixed; inset:0;
+  background:rgba(0,0,0,.5);
+  display:grid; place-items:center;
+  z-index:9999;
+}
+
+/* base dialog skin (shared) */
+.dlg,
+.dlg.avatar-dlg{
+  width:min(760px, 92vw);
+  background:#0f131c;
+  border:1px solid #262b35;
+  border-radius:12px;
+  padding:14px;
+  box-shadow:var(--shadow);
+}
+.dlg-title{ font:600 16px var(--sans, system-ui); margin-bottom:10px; }
+
+/* tabs */
+.tabbar{ display:flex; gap:6px; margin-bottom:10px; }
+.tabbar .tab{
+  padding:6px 10px; border-radius:8px;
+  border:1px solid #2a2f3a; background:#101522; color:#cfd6e6;
+  cursor:pointer; transition: background var(--ease), border-color var(--ease);
+}
+.tabbar .tab:hover{ border-color:#3a4150; }
+.tabbar .tab:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+.tabbar .tab.active{ background:#172034; border-color:#3a4150; }
+
+.tabpane{ display:none; }
+.tabpane.active{ display:block; }
+
+/* avatar grid inside modal */
+.avatar-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(84px, 1fr));
+  gap:10px;
+}
+.avatar-tile{
+  background:#1a2030;
+  border:1px solid #2a3247;
+  border-radius:14px;
+  padding:8px;
+  cursor:pointer;
+  transition: outline var(--ease), transform var(--ease);
+}
+.avatar-tile:hover{ outline:2px solid #4b6bff; transform:translateY(-1px); }
+.avatar-tile:focus-visible{ outline:2px solid var(--accent); }
+.avatar-tile img{ display:block; width:100%; height:auto; border-radius:12px; }
+
+
+/* 9) Utilities & responsive
+   ------------------------------------------------------ */
+.wall{ display:flex; gap:8px; align-items:center; }
+.muted{ color:var(--muted); font-size:13px; }
+
+@media (max-width:740px){
+  .settings-app{ grid-template-columns:1fr; }
+  .nav{
+    border-right:0; border-bottom:1px solid var(--line);
+    padding:0 0 8px 0; display:flex; gap:8px; overflow:auto;
+  }
+  .row{ grid-template-columns:1fr; }
+}
+
+
+/* 10) Motion & a11y
+   ------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce){
+  .nav-btn,
+  .btn,
+  .wall-tile,
+  .avatar-tile{
+    transition:none !important;
+  }
+}
+
+/* optional utility for screen-reader-only labels */
+.visually-hidden{
+  position:absolute!important;
+  clip:rect(1px,1px,1px,1px);
+  padding:0; border:0; height:1px; width:1px;
+  overflow:hidden; white-space:nowrap;
+}

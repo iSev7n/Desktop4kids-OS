@@ -1,0 +1,71 @@
+<!-- ==========================================================
+     Component: Start Menu v2 (injected by startmenu.js)
+     Purpose: App launcher + search + power controls
+     ----------------------------------------------------------
+     Sections
+     1) Shell & layout
+     2) Left rail (quick folders + power)
+     3) Main (search, pinned, all apps)
+     4) Power flyout
+========================================================== -->
+
+<!-- 1) Shell & layout -->
+<div id="startMenu" class="startv2 hidden" role="menu" aria-label="Start" aria-expanded="false">
+  <div class="start-body">
+
+    <!-- 2) Left rail (quick folders + power) -->
+    <aside class="start-rail" aria-label="Quick access">
+      <div class="usr">
+        <img src="./assets/logo.png" alt="" onerror="this.style.visibility='hidden'">
+        <div class="name" id="smUserName"></div>
+      </div>
+
+      <button class="rail-btn" type="button" data-app="files" title="Files" aria-label="Open Files">
+        <img src="./assets/icons/folder.svg" alt="" aria-hidden="true">
+      </button>
+      <button class="rail-btn" type="button" data-app="documents" title="Documents" aria-label="Open Documents">
+        <img src="./assets/icons/folder-text.svg" alt="" aria-hidden="true">
+      </button>
+      <button class="rail-btn" type="button" data-app="images" title="Pictures" aria-label="Open Pictures">
+        <img src="./assets/icons/folder-images.svg" alt="" aria-hidden="true">
+      </button>
+      <button class="rail-btn" type="button" data-app="videos" title="Videos" aria-label="Open Videos">
+        <img src="./assets/icons/folder-video.svg" alt="" aria-hidden="true">
+      </button>
+
+      <div class="rail-grow" aria-hidden="true"></div>
+
+      <button id="btnPower" class="rail-btn danger" type="button"
+              title="Power" aria-label="Power options"
+              aria-haspopup="menu" aria-controls="powerFlyout" aria-expanded="false">
+        <img src="./assets/power.png" alt="" aria-hidden="true">
+      </button>
+    </aside>
+
+    <!-- 3) Main (search, pinned, all apps) -->
+    <section class="start-main" aria-label="Start content">
+      <div class="start-top">
+        <label for="startSearch" class="visually-hidden">Search apps</label>
+        <input id="startSearch" class="start-search" type="text"
+               placeholder="Search apps…" autocomplete="off" spellcheck="false" inputmode="search">
+      </div>
+
+      <div class="start-section" aria-labelledby="pinnedTitle">
+        <div class="sect-title" id="pinnedTitle">Pinned</div>
+        <div id="pinnedGrid" class="app-grid" role="grid" aria-label="Pinned apps"></div>
+      </div>
+
+      <div class="start-section" aria-labelledby="allAppsTitle">
+        <div class="sect-title" id="allAppsTitle">All apps</div>
+        <div id="allApps" class="app-list" role="list" aria-label="All applications"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- 4) Power flyout -->
+  <div id="powerFlyout" class="power hidden" role="menu" aria-label="Power">
+    <button type="button" data-power="sleep" role="menuitem">Sleep</button>
+    <button type="button" data-power="restart" role="menuitem">Restart</button>
+    <button type="button" data-power="shutdown" class="danger" role="menuitem">Power Off</button>
+  </div>
+</div>

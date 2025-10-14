@@ -100,7 +100,7 @@ async function accountInit() {
   unameEl.value = me.id;
   pinEl.value   = me.pin || '';
 
-  await ensureFolder('appdata/avatars'); // legacy storage compatibility
+ await ensureFolder('user/Config/Avatars'); // legacy storage compatibility
   const DEFAULT_AVATAR = '../../assets/ui/default-avatar.svg';
 
   function renderAvatar() {
@@ -167,8 +167,8 @@ async function accountInit() {
     }
     const base64 = btoa(b64);
 
-    const rel = `appdata/avatars/${meId}.png`; // store base64 text
-    await fs?.writeText?.(rel, base64).catch(() => {});
+    const rel = `user/Config/Avatars/${meId}.png`;
+    await fs?.writeText?.(rel, base64);
 
     me.avatar = rel;
     me.avatarDataUrl = null;

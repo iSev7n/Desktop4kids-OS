@@ -7,12 +7,11 @@
      - Inject startmenu.html
      - Render pinned + all apps
      - Search apps
-     - Power flyout (sleep/restart/shutdown)
+     - Power flyout (signout/restart/shutdown)
      - Open apps by posting messages to the desktop (renderer)
   ========================================================== */
 
   /* ========== 0) Constants ============================================ */
-  const HTML_URL = 'startmenu/startmenu.html';
 
   // App catalog (decoupled from renderer.js)
   const START_APPS = [
@@ -151,7 +150,7 @@
     });
 
     // Power actions
-    powerFlyout?.addEventListener('click', (e) => {
+    powerFlyout?.addEventListener('click', async (e) => {
       const act = e.target.closest('button[data-power]')?.getAttribute('data-power');
       if (!act) return;
 
@@ -159,8 +158,16 @@
         window.system?.exit?.();
       } else if (act === 'restart') {
         location.reload();
-      } else if (act === 'sleep') {
-        // placeholder
+      } else if (act === 'signout') {
+        try {
+          localStorage.setItem('currentUser', JSON.stringify('Guest'));
+          await window.accountsBridge?.setCurrentUser?.('Guest');
+          const unameEl = document.querySelector('#userChip .uname');
+          if (unameEl) unameEl.textContent = 'Guest';
+          window.applyWallpaper?.();
+          window.loadDesktopIcons?.();
+          window.Accounts?.refreshUserChip?.();
+        } catch {}
       }
       hide();
     });
@@ -184,13 +191,7 @@
 
   /* ========== 5) Mount (inject HTML + cache refs) ====================== */
   async function mount() {
-    // Inject Start Menu HTML
-    const html = await fetch(HTML_URL).then(r => r.text());
-    const wrap = document.createElement('div');
-    wrap.innerHTML = html;
-    document.body.appendChild(wrap.firstElementChild);
-
-    // Cache refs
+    // Use the Start Menu that already exists in index.html
     root        = document.getElementById('startMenu');
     pinnedGrid  = document.getElementById('pinnedGrid');
     allAppsEl   = document.getElementById('allApps');
@@ -202,17 +203,29 @@
     try {
       const nameEl = document.getElementById('smUserName');
       if (nameEl) nameEl.textContent = window.Accounts?.getCurrentUserId?.() || '';
-    } catch { /* no-op */ }
+    } catch {}
 
     wireEvents();
   }
 
   /* ========== 6) Public API ============================================ */
-  window.StartMenu = { show, hide, toggle, mount };
-})();
+  async function remount(){
+  const old = document.getElementById('startmenu-wrap');
+  if (old) old.remove();
+  await mount();
+  }
+  window.StartMenu = { show, hide, toggle, mount, remount };
+  })();
 
 /* ========== 7) Auto-mount on DOM ready ================================= */
 document.addEventListener('DOMContentLoaded', () => {
+
+  document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'r') {
+    window.StartMenu?.remount?.();
+  }
+});
+
   // Ensure stylesheet exists (idempotent)
   if (!document.querySelector('link[href="startmenu/startmenu.css"]')) {
     const l = document.createElement('link');

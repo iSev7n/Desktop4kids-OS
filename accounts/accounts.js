@@ -18,6 +18,14 @@
    * 0) Constants
    * ------------------------------------------------------------------ */
   const QUOTA_BYTES  = 50 * 1024 * 1024;          // 50 MB per account
+  function fmtBytes(n){
+  if (n < 1024) return `${n} B`;
+  const u = ['KB', 'MB', 'GB'];
+  let i = -1;
+  do { n /= 1024; i++; } while (n >= 1024 && i < u.length - 1);
+  return `${n.toFixed(2)} ${u[i]}`;
+  }
+
   const USERS_ROOT   = 'users';                   // physical storage root
   const PROFILES_REG = 'appdata/profiles.json';   // registered accounts
   const TPL_URL      = 'accounts/accounts.html';  // HTML <template> bundle
@@ -287,8 +295,8 @@
     await showModalFromTemplate('tpl-account', ({ dlg, ok, close })=>{
       dlg.querySelector('#acctName').textContent    = id;
       dlg.querySelector('#acctRole').textContent    = role || 'parent';
-      dlg.querySelector('#acctUsedMB').textContent  = bytesToMB(usedBytes);
-      dlg.querySelector('#acctQuotaMB').textContent = bytesToMB(quotaBytes);
+      dlg.querySelector('#acctUsedMB').textContent  = fmtBytes(usedBytes);
+      dlg.querySelector('#acctQuotaMB').textContent = fmtBytes(quotaBytes);
       const pct = Math.min(100, Math.round((usedBytes / quotaBytes) * 100));
       dlg.querySelector('#acctBar').style.width = pct + '%';
       ok.addEventListener('click', ()=>{ didLogout = true; close(true); });
@@ -439,6 +447,7 @@ menu.addEventListener('click', async (e)=>{
     const doLogout = await showAccountModal({ id: me.id, role: me.role, usedBytes: used, quotaBytes: QUOTA_BYTES });
     if (doLogout){
       setCurrentUserId('Guest');
+      await window.accountsBridge?.setCurrentUser?.('Guest');
       chip.querySelector('.uname').textContent = 'Guest';
       window.applyWallpaper?.();
       window.loadDesktopIcons?.();

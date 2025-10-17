@@ -3,7 +3,7 @@
    ----------------------------------------------------------
    Sections
    0) Helpers & wiring
-   1) Wallpaper
+   1) Theme / Wallpaper
    2) Desktop icons (icons, grid, load, drag/select, save layout)
    3) Window manager (createWindow, open apps)
    4) Desktop context menu (new folder/file + item menu)
@@ -190,6 +190,11 @@ function initTrayClock(){
     iframe = document.createElement('iframe');
     iframe.src = 'apps/clock/clock.html?mode=tray';
     iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
+    iframe.addEventListener('load', () => {
+    const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+    try { iframe.contentWindow?.postMessage({ type: 'theme', theme }, '*'); } catch {}
+    });
+    
     pop.appendChild(iframe);
   }
 
@@ -219,8 +224,32 @@ function initTrayClock(){
 }
 
 
-/* 1) Wallpaper
+/* 1) Theme / Wallpaper
    ------------------------------------------------------ */
+
+ /* 0b) Theme (read/write user/Config/settings.json) */
+  async function applyTheme(){
+    let theme = 'dark';
+    try {
+      const raw = await window.fsAPI.readText('user/Config/settings.json');
+      const settings = JSON.parse(raw || '{}');
+      theme = settings.theme || 'dark';
+    } catch {}
+
+    // set on the desktop
+    document.documentElement.setAttribute('data-theme', theme);
+
+    // send to every same-origin iframe (app windows, tray popover, etc.)
+    document.querySelectorAll('iframe').forEach((f) => {
+      try { f.contentWindow?.postMessage({ type: 'theme', theme }, '*'); } catch {}
+    });
+
+    return theme;
+  }
+  window.applyTheme = applyTheme;
+
+/* 1) Wallpaper (read user/Config/settings.json + user file) */
+
 async function applyWallpaper() {
   const DEFAULT_WALLPAPER = 'assets/wallpapers/wallpaper-14.png';
   let settings = {};
@@ -824,6 +853,7 @@ window.addEventListener('message', async (ev) => {
   Taskbar?.init?.();
   Taskbar?.setIconsOnly?.(true);
   initTrayClock();
+  await applyTheme();
   await applyWallpaper();
   await loadDesktopIcons();
 })();

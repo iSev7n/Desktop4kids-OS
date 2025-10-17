@@ -18,19 +18,15 @@
 /* 1) Design tokens & base
    ------------------------------------ */
 :root{
-  --bg:#0f1115;
-  --panel:#131926;
-  --line:#273041;
-  --text:#e8e8e8;
-  --muted:#a6b0c0;
-  --accent:#79a8ff;
-  --danger:#de4040;
-  --tile:#111a28;
-
+  /* inherit radius/ease from global */
   --radius-sm:6px;
   --radius-md:10px;
   --radius-lg:12px;
   --ease:120ms ease;
+
+  /* simple aliases to global theme tokens */
+  --panel: var(--glass);
+  --tile:  var(--card);
 }
 
 *{ box-sizing:border-box; }
@@ -62,17 +58,17 @@ html, body{
 /* 3) Sidebar
    ------------------------------------ */
 .side{
-  background:#0b1019;
+  background: var(--panel);
   border-right:1px solid var(--line);
   padding:12px;
   display:flex; flex-direction:column; gap:10px;
 }
 .sitem{
   display:flex; align-items:center; gap:10px;
-  border:0; background:#141a27; color:#fff;
+  border: 1px solid var(--line); background: var(--card); color: var(--text);
   border-radius:12px; padding:10px 12px; cursor:pointer;
 }
-.sitem:hover{ background:#1b2436; }
+.sitem:hover{ background: color-mix(in srgb, var(--card) 86%, white 14%); }
 .sitem img{ width:18px; height:18px; display:block; }
 
 /* 4) Toolbar (nav/actions, address, search)
@@ -81,12 +77,13 @@ html, body{
   display:grid;
   grid-template-columns:auto 1fr auto;
   align-items:center; gap:10px;
-  background:#0b1019; border-bottom:1px solid var(--line);
+  background: var(--panel);
+  border-bottom:1px solid var(--line);
   padding:8px 10px; overflow:hidden;
 }
 .tb{
   height:28px; min-width:34px;
-  border:1px solid var(--line); background:#1a2232; color:#fff;
+  border:1px solid var(--line); background: var(--card); color: var(--text);
   border-radius:7px; padding:0 8px; cursor:pointer;
 }
 .nav{ display:flex; gap:8px; }
@@ -98,13 +95,13 @@ html, body{
 }
 .addrbox{
   height:30px; width:100%; min-width:0;
-  border:1px solid var(--line); background:#101829; color:#e8e8e8;
+  border:1px solid var(--line); background: var(--bg); color: var(--text);
   border-radius:8px; padding:0 10px; font-family:Consolas, ui-monospace, monospace;
 }
 .searchWrap{ display:flex; align-items:center; gap:8px; }
 .search{
   height:30px; width:220px;
-  border:1px solid var(--line); background:#121828; color:#fff;
+  border:1px solid var(--line); background: var(--bg); color: var(--text);
   border-radius:999px; padding:0 12px;
 }
 
@@ -136,7 +133,10 @@ html, body{
   position:relative;  /* for pseudo outline */
 }
 .gitem:hover{ background:var(--tile); border-color:var(--line); }
-.gitem.sel{ background:rgba(17,26,40,.9); border-color:#3a4b67; }
+.gitem.sel{
+  background: color-mix(in srgb, var(--accent) 14%, var(--tile));
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--line));
+}
 
 .gitem img{ width:36px; height:36px; display:block; }
 .gname{
@@ -169,8 +169,8 @@ html, body{
   padding:10px 12px; border-bottom:1px solid #121a2a;
   transition:background .12s; position:relative;
 }
-.row:hover{ background:#151e30; }
-.row.sel{ background:#1a2740; }
+.row:hover{ background: color-mix(in srgb, var(--text) 6%, transparent); }
+.row.sel{ background: color-mix(in srgb, var(--accent) 12%, var(--panel)); }
 .c.name{ display:flex; align-items:center; gap:12px; }
 .icon{ width:22px; height:22px; display:inline-grid; place-items:center; }
 .icon img{ width:22px; height:22px; display:block; }

@@ -1,18 +1,43 @@
 /* ==========================================================
-   Component: Start Menu v2 (decoupled)
-   Depends on global tokens: --line, --radius-*, --shadow-*, --ease
+   Component: Start Menu v2 (theme-aware, cleaned)
+   Depends on global tokens: --bg --panel --card --line --text --muted
+                             --accent --radius-* --shadow-* --ease
    ----------------------------------------------------------
    Sections
+   0) Component variables (scoped)
    1) Shell & layout
    2) Left rail
-   3) Main & search
+   3) Main + search
    4) Sections (titles)
-   5) Pinned grid (apps)
+   5) Pinned grid
    6) All apps list
    7) Power flyout
    8) Scrollbars (scoped)
    9) Motion & a11y
 ========================================================== */
+
+
+/* 0) Component variables (scoped to the menu root)
+   ------------------------------------------------------ */
+.startv2{
+  /* Glassy surface that adapts to theme */
+  --sm-glass-bg: color-mix(in srgb, var(--panel) 94%, transparent);
+
+  /* Shared surfaces/borders/hover tones */
+  --sm-surface: var(--panel);
+  --sm-tile:    var(--card);
+  --sm-border:  var(--line);
+  --sm-hover:   color-mix(in srgb, var(--sm-tile) 88%, white 12%);
+  --sm-press:   color-mix(in srgb, var(--sm-tile) 80%, black 20%);
+
+  /* Search field */
+  --sm-search-bg: var(--bg);
+  --sm-search-ring: color-mix(in srgb, var(--accent) 28%, transparent);
+
+  /* Rail buttons */
+  --sm-rail-bg: var(--card);
+  --sm-rail-hover: color-mix(in srgb, var(--card) 86%, white 14%);
+}
 
 
 /* 1) Shell & layout
@@ -21,16 +46,22 @@
   position: fixed;
   left: 10px; bottom: 54px;
   width: 740px; max-height: 70vh;
-  background: #0f131c;
-  border: 1px solid var(--line);
+
+  background: var(--sm-glass-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  border: 1px solid var(--sm-border);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-2, 0 28px 80px rgba(0,0,0,.55));
+
   display: grid;
   grid-template-rows: auto;
   overflow: hidden;
   z-index: 2000;
+  color: var(--text);
 }
-.startv2.hidden{ display: none; }
+.startv2.hidden{ display:none; }
 
 .start-body{
   display: grid;
@@ -49,8 +80,8 @@
 /* 2) Left rail
    ------------------------------------------------------ */
 .start-rail{
-  background: #0b1019;
-  border-right: 1px solid var(--line);
+  background: var(--sm-surface);
+  border-right: 1px solid var(--sm-border);
   display: flex; flex-direction: column; align-items: center;
   gap: 10px; padding: 10px 8px;
 }
@@ -61,6 +92,7 @@
 }
 .start-rail .usr img{
   width: 36px; height: 36px; border-radius: 50%; display: block;
+  background: var(--sm-tile); border: 1px solid var(--sm-border);
 }
 .start-rail .usr .name{
   width: 100%;
@@ -71,46 +103,56 @@
 .rail-btn{
   width: 44px; height: 44px;
   display: grid; place-items: center;
-  border: 1px solid var(--line);
+  border: 1px solid var(--sm-border);
   border-radius: 10px;
-  background: #1a2232; color: #fff;
+  background: var(--sm-rail-bg); color: var(--text);
   cursor: pointer;
-  transition: filter var(--ease), transform var(--ease), box-shadow var(--ease);
+  transition: filter var(--ease), transform var(--ease), box-shadow var(--ease), background var(--ease);
 }
 .rail-btn img{ width: 20px; height: 20px; display:block; }
-.rail-btn:hover{ filter: brightness(1.08); transform: translateY(-1px); }
-.rail-btn:focus-visible{ outline: 2px solid var(--accent, #79a8ff); outline-offset: 2px; }
-.rail-btn.danger:hover{ background: #7a2a2a; }
+.rail-btn:hover{
+  background: var(--sm-rail-hover);
+  filter: brightness(1.03);
+  transform: translateY(-1px);
+}
+.rail-btn:focus-visible{ outline: 2px solid var(--accent); outline-offset: 2px; }
+.rail-btn.danger{
+  color:#fff;
+  background: color-mix(in srgb, #de4040 20%, var(--sm-rail-bg));
+  border-color: var(--sm-border);
+}
+.rail-btn.danger:hover{ background: color-mix(in srgb, #de4040 35%, var(--sm-rail-bg)); }
 .rail-grow{ flex: 1; }
 
 
-/* 3) Main & search
+/* 3) Main + search
    ------------------------------------------------------ */
 .start-main{
   display: grid;
   grid-template-rows: auto auto 1fr;
-  background: #0f131c;
+  background: var(--sm-surface);
 }
 
 .start-top{
   padding: 10px 12px;
-  border-bottom: 1px solid var(--line);
-  background: #0b1019;
+  border-bottom: 1px solid var(--sm-border);
+  background: var(--sm-surface);
 }
 
 .start-search{
   width: 100%; height: 34px;
   padding: 0 14px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--sm-border);
   border-radius: 999px;
-  background: #121828; color: #e8e8e8;
+  background: var(--sm-search-bg);
+  color: var(--text);
   transition: border-color var(--ease), box-shadow var(--ease), background var(--ease);
 }
-.start-search::placeholder{ color: rgba(232,232,232,.55); }
+.start-search::placeholder{ color: color-mix(in srgb, var(--muted) 85%, transparent); }
 .start-search:focus{
-  border-color: var(--accent, #79a8ff);
-  box-shadow: 0 0 0 3px rgba(121,168,255,.25);
-  background: #142033;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--sm-search-ring);
+  background: color-mix(in srgb, var(--sm-search-bg) 92%, var(--accent) 8%);
 }
 
 
@@ -123,31 +165,32 @@
 }
 
 
-/* 5) Pinned grid (apps)
+/* 5) Pinned grid
    ------------------------------------------------------ */
 .app-grid{
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   gap: 10px;
 }
-@media (max-width: 740px){
-  .app-grid{ grid-template-columns: repeat(4, 1fr); }
-}
-@media (max-width: 520px){
-  .app-grid{ grid-template-columns: repeat(3, 1fr); }
-}
+@media (max-width: 740px){ .app-grid{ grid-template-columns: repeat(4, 1fr); } }
+@media (max-width: 520px){ .app-grid{ grid-template-columns: repeat(3, 1fr); } }
 
 .app-tile{
   display: flex; align-items: center; gap: 10px;
   padding: 10px;
-  border: 1px solid #223049;
+  border: 1px solid var(--sm-border);
   border-radius: 12px;
-  background: #121a28; color: #e8e8e8;
+  background: var(--sm-tile);
+  color: var(--text);
   cursor: pointer;
-  transition: filter var(--ease), transform var(--ease), box-shadow var(--ease);
+  transition: filter var(--ease), transform var(--ease), box-shadow var(--ease), background var(--ease);
 }
-.app-tile:hover{ filter: brightness(1.08); transform: translateY(-1px); }
-.app-tile:focus-visible{ outline: 2px solid var(--accent, #79a8ff); outline-offset: 2px; }
+.app-tile:hover{
+  background: var(--sm-hover);
+  filter: brightness(1.03);
+  transform: translateY(-1px);
+}
+.app-tile:focus-visible{ outline: 2px solid var(--accent); outline-offset: 2px; }
 .app-tile img{ width: 22px; height: 22px; display:block; }
 .app-tile .t-name{ font-size: 13px; }
 
@@ -157,7 +200,7 @@
 .app-list{
   height: 28vh;
   overflow: auto;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--sm-border);
   padding: 6px 12px 12px;
 }
 
@@ -171,10 +214,10 @@
   cursor: pointer;
   transition: background var(--ease), transform var(--ease);
 }
-.app-row:hover{ background: #141b2a; }
-.app-row:focus-visible{ outline: 2px solid var(--accent, #79a8ff); outline-offset: 2px; }
+.app-row:hover{ background: color-mix(in srgb, var(--sm-tile) 85%, black 15%); }
+.app-row:focus-visible{ outline: 2px solid var(--accent); outline-offset: 2px; }
 .app-row img{ width: 20px; height: 20px; display:block; }
-.app-row .r-name{ color: #e8e8e8; }
+.app-row .r-name{ color: var(--text); }
 .app-row .r-cat{ color: var(--muted); font-size: 12px; }
 
 
@@ -184,40 +227,61 @@
   position: absolute; right: 12px; bottom: 12px;
   display: flex; flex-direction: column; gap: 6px;
   padding: 8px;
-  background: #121a21ee; backdrop-filter: blur(6px);
-  border: 1px solid var(--line);
+
+  background: color-mix(in srgb, var(--sm-surface) 92%, transparent);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+
+  border: 1px solid var(--sm-border);
   border-radius: 10px;
   box-shadow: var(--shadow-1, 0 18px 50px rgba(0,0,0,.45));
+  color: var(--text);
 }
-.power.hidden{ display: none; }
+.power.hidden{ display:none; }
 
 .power button{
   height: 32px;
   padding: 0 12px;
   text-align: left;
-  border: 1px solid var(--line);
+  border: 1px solid var(--sm-border);
   border-radius: 8px;
-  background: #1a2232; color: #fff;
+  background: var(--sm-tile); color: var(--text);
   cursor: pointer;
-  transition: filter var(--ease), transform var(--ease);
+  transition: filter var(--ease), transform var(--ease), background var(--ease);
 }
-.power button:hover{ filter: brightness(1.08); transform: translateY(-1px); }
-.power button:focus-visible{ outline: 2px solid var(--accent, #79a8ff); outline-offset: 2px; }
-.power button.danger{ background: #2a1a1a; }
-.power button.danger:hover{ background: #7a2a2a; }
+.power button:hover{
+  background: var(--sm-hover);
+  filter: brightness(1.03);
+  transform: translateY(-1px);
+}
+.power button:focus-visible{ outline: 2px solid var(--accent); outline-offset: 2px; }
+.power button.danger{
+  color:#fff;
+  background: color-mix(in srgb, #de4040 20%, var(--sm-tile));
+  border-color: color-mix(in srgb, #de4040 35%, var(--sm-border));
+}
+.power button.danger:hover{ background: color-mix(in srgb, #de4040 35%, var(--sm-tile)); }
 
 
 /* 8) Scrollbars (scoped to .app-list)
    ------------------------------------------------------ */
-.app-list{ scrollbar-width: thin; scrollbar-color: #1f2a3e #0a0f17; }
+.app-list{
+  scrollbar-width: thin;
+  scrollbar-color: var(--sm-border) color-mix(in srgb, var(--bg) 90%, black 10%);
+}
 .app-list::-webkit-scrollbar{ width: 8px; }
-.app-list::-webkit-scrollbar-track{ background: #0a0f17; border-radius: 8px; }
-.app-list::-webkit-scrollbar-thumb{
-  background: #1f2a3e;
-  border: 2px solid #0a0f17;
+.app-list::-webkit-scrollbar-track{
+  background: color-mix(in srgb, var(--bg) 90%, black 10%);
   border-radius: 8px;
 }
-.app-list::-webkit-scrollbar-thumb:hover{ background: #2a3a56; }
+.app-list::-webkit-scrollbar-thumb{
+  background: var(--sm-border);
+  border: 2px solid color-mix(in srgb, var(--bg) 90%, black 10%);
+  border-radius: 8px;
+}
+.app-list::-webkit-scrollbar-thumb:hover{
+  background: color-mix(in srgb, var(--sm-border) 80%, var(--accent) 20%);
+}
 
 
 /* 9) Motion & a11y

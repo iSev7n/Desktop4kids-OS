@@ -2,22 +2,23 @@
    Component: Settings App (settings.css)
    ----------------------------------------------------------
    Sections
-   0) Design tokens & base
-   1) App layout (grid shell)
-   2) Left nav
-   3) Pane area & cards
-   4) Forms & buttons
-   5) Key/Value + progress
-   6) Avatar block
-   7) Personalize (wallpaper grid)
-   8) Dialog (avatar modal) + tabs
-   9) Utilities & responsive
-  10) Motion & a11y
+   0) Design tokens & themes
+   1) Base & typography
+   2) Layout (grid shell)
+   3) Navigation
+   4) Panes & cards
+   5) Forms & buttons
+   6) Key/Value + progress bars
+   7) Avatar block
+   8) Personalize (theme & wallpaper grid)
+   9) Dialogs (avatar modal + tabs)
+  10) Utilities, responsive, motion, a11y
 ========================================================== */
 
 
-/* 0) Design tokens & base
-   ------------------------------------------------------ */
+/* ==========================================================
+   0) Design tokens & themes
+   ---------------------------------------------------------- */
 :root{
   --bg:#0f131c;
   --card:#0e1420;
@@ -28,23 +29,55 @@
   --danger:#f16161;
   --btnb:#1d2636;
 
-  /* niceties */
   --radius:12px;
   --ease:120ms ease;
   --shadow:0 12px 40px rgba(0,0,0,.5);
 }
 
+/* Themes — synced with global system tokens */
+:root[data-theme="dark"]{
+  --bg:#0f131c; --card:#0e1420; --line:#1d2533;
+  --fg:#e6ecf5; --muted:#9aa4b2;
+  --accent:#5aa0ff; --danger:#f16161; --btnb:#1d2636;
+}
+:root[data-theme="light"]{
+  --bg:#ffffff; --card:#ffffff; --line:#d7deea;
+  --fg:#0f141e; --muted:#516074;
+  --accent:#2f6fff; --danger:#cc2d2d; --btnb:#eef3fb;
+}
+:root[data-theme="pink"]{
+  --bg:#20141c; --card:#271621; --line:#3a2230;
+  --fg:#ffeaf4; --muted:#f0b7cd;
+  --accent:#ff69b4; --danger:#ff6b81; --btnb:#331b26;
+}
+:root[data-theme="purple"]{
+  --bg:#141222; --card:#181630; --line:#2a2a55;
+  --fg:#eceaff; --muted:#b8b3ff;
+  --accent:#8c7bff; --danger:#f16161; --btnb:#20204a;
+}
+
+
+/* ==========================================================
+   1) Base & typography
+   ---------------------------------------------------------- */
 html,body{
-  height:100%; margin:0;
-  background:var(--bg); color:var(--fg);
+  height:100%;
+  margin:0;
+  background:var(--bg);
+  color:var(--fg);
   font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial;
 }
 *{ box-sizing:border-box; }
-h1{ margin:0 0 12px 0; font:600 18px/1.2 system-ui, -apple-system, Segoe UI, Roboto, Arial; }
+
+h1{
+  margin:0 0 12px 0;
+  font:600 18px/1.2 system-ui, -apple-system, Segoe UI, Roboto, Arial;
+}
 
 
-/* 1) App layout (grid shell)
-   ------------------------------------------------------ */
+/* ==========================================================
+   2) Layout (grid shell)
+   ---------------------------------------------------------- */
 .settings-app{
   display:grid;
   grid-template-columns:220px 1fr;
@@ -54,24 +87,45 @@ h1{ margin:0 0 12px 0; font:600 18px/1.2 system-ui, -apple-system, Segoe UI, Rob
 }
 
 
-/* 2) Left nav
-   ------------------------------------------------------ */
-.nav{ border-right:1px solid var(--line); padding-right:8px; }
-.nav-title{ font-weight:700; margin:4px 0 8px 4px; }
+/* ==========================================================
+   3) Navigation
+   ---------------------------------------------------------- */
+.nav{
+  border-right:1px solid var(--line);
+  padding-right:8px;
+}
+.nav-title{
+  font-weight:700;
+  margin:4px 0 8px 4px;
+}
 .nav-btn{
-  width:100%; text-align:left;
-  background:transparent; color:var(--fg);
-  border:0; padding:8px 10px; border-radius:8px; cursor:pointer;
-  transition: background var(--ease), transform var(--ease);
+  width:100%;
+  text-align:left;
+  background:transparent;
+  color:var(--fg);
+  border:0;
+  padding:8px 10px;
+  border-radius:8px;
+  cursor:pointer;
+  transition:background var(--ease), transform var(--ease);
 }
 .nav-btn:hover,
-.nav-btn.active{ background:#1a2233; }
-.nav-btn:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+.nav-btn.active{
+  background:color-mix(in srgb, var(--fg) 7%, transparent);
+}
+.nav-btn:focus-visible{
+  outline:2px solid var(--accent);
+  outline-offset:2px;
+}
 
 
-/* 3) Pane area & cards
-   ------------------------------------------------------ */
-.pane-area{ overflow:auto; padding-right:8px; }
+/* ==========================================================
+   4) Panes & cards
+   ---------------------------------------------------------- */
+.pane-area{
+  overflow:auto;
+  padding-right:8px;
+}
 .pane{ display:none; }
 .pane.active{ display:block; }
 
@@ -81,8 +135,9 @@ h1{ margin:0 0 12px 0; font:600 18px/1.2 system-ui, -apple-system, Segoe UI, Rob
   border-radius:var(--radius);
   padding:12px;
   margin-bottom:12px;
-  box-shadow: none; /* keep flat in app theme */
+  box-shadow:none;
 }
+
 .row{
   display:grid;
   grid-template-columns:160px 1fr;
@@ -90,47 +145,75 @@ h1{ margin:0 0 12px 0; font:600 18px/1.2 system-ui, -apple-system, Segoe UI, Rob
 }
 
 
-/* 4) Forms & buttons
-   ------------------------------------------------------ */
-.field{ display:flex; flex-direction:column; gap:6px; margin-bottom:10px; }
-.field label{ color:var(--muted); font-size:13px; }
+/* ==========================================================
+   5) Forms & buttons
+   ---------------------------------------------------------- */
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  margin-bottom:10px;
+}
+.field label{
+  color:var(--muted);
+  font-size:13px;
+}
 .field input,
 .field select{
   height:34px;
   border:1px solid var(--btnb);
-  background:#0f131c; color:#fff;
-  border-radius:8px; padding:0 10px;
-  transition: border-color var(--ease), box-shadow var(--ease), background var(--ease);
+  background:var(--bg);
+  color:var(--fg);
+  border-radius:8px;
+  padding:0 10px;
+  transition:border-color var(--ease), box-shadow var(--ease), background var(--ease);
 }
 .field input:focus,
 .field select:focus{
   border-color:var(--accent);
   box-shadow:0 0 0 3px rgba(90,160,255,.25);
-  background:#0f1726;
+  background:color-mix(in srgb, var(--bg) 85%, var(--accent) 15%);
 }
 
-.actions{ display:flex; gap:8px; flex-wrap:wrap; margin-top:4px; }
-.btn{
-  background:#132038; color:#fff; border:1px solid var(--btnb);
-  border-radius:8px; height:34px; padding:0 12px; cursor:pointer;
-  transition: filter var(--ease), transform var(--ease), border-color var(--ease);
+.actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:4px;
 }
-.btn:hover{ border-color:#2a3855; }
+
+.btn{
+  background:var(--card);
+  color:var(--fg);
+  border:1px solid var(--btnb);
+  border-radius:8px;
+  height:34px;
+  padding:0 12px;
+  cursor:pointer;
+  transition:filter var(--ease), transform var(--ease), border-color var(--ease);
+}
+.btn:hover{ border-color:color-mix(in srgb, var(--accent) 40%, var(--btnb)); }
 .btn:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
-.btn.secondary{ background:#0e1320; }
+
+.btn.secondary{ background:var(--bg); }
 .btn.sm{ height:28px; padding:0 10px; }
-.btn.danger{ background:#3b1717; border-color:#602b2b; }
+.btn.danger{
+  background:#3b1717;
+  border-color:#602b2b;
+}
 .btn.danger:hover{ border-color:#7a3a3a; }
 
 
-/* 5) Key/Value + progress
-   ------------------------------------------------------ */
+/* ==========================================================
+   6) Key/Value + progress bars
+   ---------------------------------------------------------- */
 .kvs{
   display:grid;
-  grid-template-columns:repeat(3, 1fr);
-  gap:8px; margin:8px 0 0 0;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-top:8px;
 }
-.kvs .k{ color:var(--muted); margin-right:6px; }
+.kvs .k{ color:var(--muted); }
 
 .progress{
   height:12px;
@@ -140,35 +223,79 @@ h1{ margin:0 0 12px 0; font:600 18px/1.2 system-ui, -apple-system, Segoe UI, Rob
   overflow:hidden;
 }
 .bar{
-  height:100%; width:0%;
-  background:linear-gradient(90deg, var(--accent), #7ab6ff);
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,var(--accent),#7ab6ff);
 }
 
 
-/* 6) Avatar block
-   ------------------------------------------------------ */
-.avatar-wrap{ display:flex; flex-direction:column; align-items:center; gap:8px; }
+/* ==========================================================
+   7) Avatar block
+   ---------------------------------------------------------- */
+.avatar-wrap{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+}
 .avatar-wrap img{
-  width:120px; height:120px; border-radius:50%;
-  object-fit:cover; background:#0b0f18; border:1px solid var(--line);
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#0b0f18;
+  border:1px solid var(--line);
 }
-.avatar-actions{ display:flex; gap:8px; }
+.avatar-actions{
+  display:flex;
+  gap:8px;
+}
 
 
-/* 7) Personalize (wallpaper grid)
-   ------------------------------------------------------ */
+/* ==========================================================
+   8) Personalize (theme + wallpaper grid)
+   ---------------------------------------------------------- */
+/* --- Theme picker --- */
+.theme-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+.theme-btn{
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:10px;
+  background:var(--card);
+  cursor:pointer;
+  transition:border-color var(--ease), background var(--ease);
+}
+.theme-btn .swatch{
+  height:40px;
+  border-radius:8px;
+  border:1px solid var(--line);
+  margin-bottom:8px;
+}
+.theme-btn.active{
+  outline:2px solid var(--accent);
+  outline-offset:2px;
+}
+
+/* --- Wallpaper grid --- */
 .wall-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); /* column width */
-  gap:12px;                                                    /* tile gap */
+  grid-template-columns:repeat(auto-fill, minmax(140px,1fr));
+  gap:12px;
 }
 .wall-tile{
-  position:relative; width:100%;
-  aspect-ratio:16 / 10;              /* 16:10 tile; change if desired */
-  border-radius:10px; overflow:hidden;
-  border:1px solid var(--btnb, #2a2f3a);
-  background:#0f131c; cursor:pointer;
-  transition: transform .08s ease, box-shadow .08s ease, border-color .08s ease;
+  position:relative;
+  width:100%;
+  aspect-ratio:16 / 10;
+  border-radius:10px;
+  overflow:hidden;
+  border:1px solid var(--btnb);
+  background:var(--bg);
+  cursor:pointer;
+  transition:transform .08s ease, box-shadow .08s ease, border-color .08s ease;
 }
 .wall-tile:hover{
   transform:translateY(-1px);
@@ -177,84 +304,114 @@ h1{ margin:0 0 12px 0; font:600 18px/1.2 system-ui, -apple-system, Segoe UI, Rob
 }
 .wall-tile:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
 .wall-tile img{
-  position:absolute; inset:0;
-  width:100%; height:100%;
-  object-fit:cover; /* center-crop */
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
 }
 
 
-/* 8) Dialog (avatar modal) + tabs
-   ------------------------------------------------------ */
-.dlg-wrap.hidden{ display:none; }
+/* ==========================================================
+   9) Dialogs (avatar modal + tabs)
+   ---------------------------------------------------------- */
 .dlg-wrap{
-  position:fixed; inset:0;
+  position:fixed;
+  inset:0;
   background:rgba(0,0,0,.5);
-  display:grid; place-items:center;
+  display:grid;
+  place-items:center;
   z-index:9999;
 }
+.dlg-wrap.hidden{ display:none; }
 
-/* base dialog skin (shared) */
 .dlg,
 .dlg.avatar-dlg{
-  width:min(760px, 92vw);
-  background:#0f131c;
-  border:1px solid #262b35;
+  width:min(760px,92vw);
+  background:var(--bg);
+  border:1px solid var(--line);
   border-radius:12px;
   padding:14px;
   box-shadow:var(--shadow);
 }
-.dlg-title{ font:600 16px var(--sans, system-ui); margin-bottom:10px; }
-
-/* tabs */
-.tabbar{ display:flex; gap:6px; margin-bottom:10px; }
-.tabbar .tab{
-  padding:6px 10px; border-radius:8px;
-  border:1px solid #2a2f3a; background:#101522; color:#cfd6e6;
-  cursor:pointer; transition: background var(--ease), border-color var(--ease);
+.dlg-title{
+  font:600 16px var(--sans, system-ui);
+  margin-bottom:10px;
 }
-.tabbar .tab:hover{ border-color:#3a4150; }
+
+/* Tabs */
+.tabbar{
+  display:flex;
+  gap:6px;
+  margin-bottom:10px;
+}
+.tabbar .tab{
+  padding:6px 10px;
+  border-radius:8px;
+  border:1px solid var(--line);
+  background:var(--card);
+  color:var(--fg);
+  cursor:pointer;
+  transition:background var(--ease), border-color var(--ease);
+}
+.tabbar .tab:hover{ border-color:color-mix(in srgb, var(--accent) 40%, var(--line)); }
+.tabbar .tab.active{
+  background:color-mix(in srgb, var(--accent) 15%, var(--card));
+  border-color:var(--accent);
+}
 .tabbar .tab:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
-.tabbar .tab.active{ background:#172034; border-color:#3a4150; }
 
 .tabpane{ display:none; }
 .tabpane.active{ display:block; }
 
-/* avatar grid inside modal */
+/* Avatar grid inside modal */
 .avatar-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(84px, 1fr));
+  grid-template-columns:repeat(auto-fill, minmax(84px,1fr));
   gap:10px;
 }
 .avatar-tile{
-  background:#1a2030;
-  border:1px solid #2a3247;
+  background:var(--card);
+  border:1px solid var(--line);
   border-radius:14px;
   padding:8px;
   cursor:pointer;
-  transition: outline var(--ease), transform var(--ease);
+  transition:outline var(--ease), transform var(--ease);
 }
-.avatar-tile:hover{ outline:2px solid #4b6bff; transform:translateY(-1px); }
+.avatar-tile:hover{
+  outline:2px solid var(--accent);
+  transform:translateY(-1px);
+}
 .avatar-tile:focus-visible{ outline:2px solid var(--accent); }
-.avatar-tile img{ display:block; width:100%; height:auto; border-radius:12px; }
+.avatar-tile img{
+  display:block;
+  width:100%;
+  height:auto;
+  border-radius:12px;
+}
 
 
-/* 9) Utilities & responsive
-   ------------------------------------------------------ */
+/* ==========================================================
+  10) Utilities, responsive, motion, a11y
+   ---------------------------------------------------------- */
 .wall{ display:flex; gap:8px; align-items:center; }
 .muted{ color:var(--muted); font-size:13px; }
 
+/* Responsive */
 @media (max-width:740px){
   .settings-app{ grid-template-columns:1fr; }
   .nav{
-    border-right:0; border-bottom:1px solid var(--line);
-    padding:0 0 8px 0; display:flex; gap:8px; overflow:auto;
+    border-right:0;
+    border-bottom:1px solid var(--line);
+    padding:0 0 8px 0;
+    display:flex;
+    gap:8px;
+    overflow:auto;
   }
   .row{ grid-template-columns:1fr; }
 }
 
-
-/* 10) Motion & a11y
-   ------------------------------------------------------ */
+/* Reduced motion */
 @media (prefers-reduced-motion: reduce){
   .nav-btn,
   .btn,
@@ -264,10 +421,11 @@ h1{ margin:0 0 12px 0; font:600 18px/1.2 system-ui, -apple-system, Segoe UI, Rob
   }
 }
 
-/* optional utility for screen-reader-only labels */
+/* Screen reader only text */
 .visually-hidden{
   position:absolute!important;
   clip:rect(1px,1px,1px,1px);
-  padding:0; border:0; height:1px; width:1px;
+  padding:0; border:0;
+  height:1px; width:1px;
   overflow:hidden; white-space:nowrap;
 }

@@ -1,39 +1,59 @@
 /* ==========================================================
-   Settings App
+   Settings App (organized)
    ----------------------------------------------------------
    Sections
-   0) Wiring & helpers
-   1) Nav
-   2) Account (username, pin, avatar, delete)
-   3) Storage (usage bar, open folder)
-   4) Personalize (wallpaper)
-   5) Updates (placeholder)
-   6) About (version)
+   0) Theme sync (with parent)
+   1) Bridges, constants, helpers
+   2) Nav
+   3) Account (username, pin, avatar, delete)
+   4) Storage (usage bar, open folder)
+   5) Personalize (theme + wallpaper)
+   6) Updates (placeholder)
+   7) About (version)
+   8) Boot
 ========================================================== */
 
-/* ---------- 0) Wiring & helpers ---------- */
-/** bridged (sandboxed) FS */
+
+/* ---------- 0) Theme sync (with parent) ---------- */
+/** Ensure this runs before any UI paints to avoid FOUC. */
+(function initThemeSync(){
+  try {
+    const parentTheme =
+      window.top?.document?.documentElement?.getAttribute('data-theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', parentTheme);
+  } catch {}
+
+  // Live updates from the desktop shell (renderer posts {type:'theme'})
+  window.addEventListener('message', (e) => {
+    if (e?.data?.type === 'theme' && e.data.theme) {
+      document.documentElement.setAttribute('data-theme', e.data.theme);
+    }
+  });
+})();
+
+
+/* ---------- 1) Bridges, constants, helpers ---------- */
+
+/** sandboxed FS bridge (provided by renderer) */
 const fs = window.top?.fsAPI;
 /** profiles bridge: readProfiles, writeProfiles, renameUserRoot, deleteUserRoot, setCurrentUser */
 const bridge = window.top?.accountsBridge || {};
-/** used to refresh UI after changes */
-const Accounts = window.top?.Accounts || null;
 
 const QUOTA_BYTES = 50 * 1024 * 1024; // keep in sync with accounts.js
+
 const $  = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
 
+/** system alert shim (uses desktop-level alert if available) */
 function showAlert(msg, title = 'Notice') {
   if (window.top?.showAlert) return window.top.showAlert(msg, title);
   alert(`${title}\n\n${msg}`);
 }
 
+/** current user id from localStorage (renderer keeps this updated) */
 function getCurrentUser() {
-  try {
-    return JSON.parse(localStorage.getItem('currentUser') || '"Guest"');
-  } catch {
-    return 'Guest';
-  }
+  try { return JSON.parse(localStorage.getItem('currentUser') || '"Guest"'); }
+  catch { return 'Guest'; }
 }
 
 /** Format bytes into human-readable units */
@@ -45,12 +65,13 @@ function fmtBytes(n) {
   return `${n.toFixed(2)} ${u[i]}`;
 }
 
-/** Ensure folder exists (no-throw) */
+/** Ensure a folder exists; ignore errors */
 async function ensureFolder(rel) {
   try { await fs?.createFolder?.(rel); } catch {}
 }
 
-/* ---------- 1) Nav ---------- */
+
+/* ---------- 2) Nav ---------- */
 function navInit() {
   const panes = {
     account:     $('#pane-account'),
@@ -72,35 +93,36 @@ function navInit() {
   showPane('account'); // default
 }
 
+
 /* ==========================================================
-   2) Account
+   3) Account
    - Username + PIN
-   - Avatar (gallery modal, dataURL storage)
+   - Avatar (gallery modal + fallback file input)
    - Delete account
 ========================================================== */
-
 async function accountInit() {
-  const unameEl        = document.getElementById('acctUser');
-  const pinEl          = document.getElementById('acctPin');
-  const avatarImg      = document.getElementById('avatarPreview');
-  const btnChoose      = document.getElementById('btnChooseAvatar');
-  const btnAvatarReset = document.getElementById('btnAvatarReset');
-  const btnSave        = document.getElementById('btnSaveAccount');
-  const btnDelete      = document.getElementById('btnDeleteAccount');
-  const avatarFile     = document.getElementById('avatarFile'); // hidden fallback
+  const unameEl        = $('#acctUser');
+  const pinEl          = $('#acctPin');
+  const avatarImg      = $('#avatarPreview');
+  const btnChoose      = $('#btnChooseAvatar');
+  const btnAvatarReset = $('#btnAvatarReset');
+  const btnSave        = $('#btnSaveAccount');
+  const btnDelete      = $('#btnDeleteAccount');
+  const avatarFile     = $('#avatarFile'); // hidden fallback <input type="file">
 
   if (!unameEl || !pinEl || !avatarImg) return; // pane not present
 
   // Load profiles
   let profiles = await (bridge.readProfiles?.().catch(() => []) || []);
   const meId = getCurrentUser();
-  let me = profiles.find(p => p.id === meId) || { id: meId, role: 'parent', pin: '', avatar: null, avatarDataUrl: null };
+  let me = profiles.find(p => p.id === meId)
+        || { id: meId, role: 'parent', pin: '', avatar: null, avatarDataUrl: null };
 
   // Seed UI
   unameEl.value = me.id;
   pinEl.value   = me.pin || '';
 
- await ensureFolder('user/Config/Avatars'); // legacy storage compatibility
+  await ensureFolder('user/Config/Avatars'); // legacy compatibility
   const DEFAULT_AVATAR = '../../assets/ui/default-avatar.svg';
 
   function renderAvatar() {
@@ -118,7 +140,7 @@ async function accountInit() {
   }
   renderAvatar();
 
-  // In-app gallery (if present)
+  // In-app avatar gallery (if provided by settings/avatars.js)
   let avatarPicker = null;
   if (window.Avatars?.initAvatarModal) {
     avatarPicker = window.Avatars.initAvatarModal({
@@ -127,8 +149,6 @@ async function accountInit() {
         me.avatar = null;           // clear legacy pointer
         avatarImg.src = dataUrl;
         await bridge.writeProfiles?.(profiles).catch(() => {});
-
-        // reflect on desktop chip
         try {
           const chipImg = window.top?.document?.querySelector('#userChip .avatar');
           if (chipImg) chipImg.src = dataUrl;
@@ -138,13 +158,9 @@ async function accountInit() {
     });
   }
 
-  // Unified opener
   function openAvatarPicker() {
-    if (avatarPicker) {
-      avatarPicker.show();
-    } else {
-      avatarFile?.click();
-    }
+    if (avatarPicker) avatarPicker.show();
+    else avatarFile?.click();
   }
 
   btnChoose?.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); openAvatarPicker(); });
@@ -153,7 +169,7 @@ async function accountInit() {
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openAvatarPicker(); }
   });
 
-  // Fallback file input → store as base64 (legacy path)
+  // Fallback: <input type="file"> → store base64 (legacy)
   avatarFile?.addEventListener('change', async () => {
     const file = avatarFile.files?.[0];
     if (!file) return;
@@ -237,10 +253,8 @@ async function accountInit() {
     // PIN change
     me.pin = newPin || '';
 
-    // Persist
+    // Persist + refresh shell bits
     await bridge.writeProfiles?.(profiles).catch(() => {});
-
-    // Refresh header chip + desktop
     try {
       const chip = document.querySelector('#userChip .uname');
       if (chip) chip.textContent = me.id;
@@ -277,7 +291,8 @@ async function accountInit() {
   });
 }
 
-/* ---------- 3) Storage ---------- */
+
+/* ---------- 4) Storage ---------- */
 function storageInit() {
   const usedEl  = $('#storeUsed');
   const freeEl  = $('#storeFree');
@@ -315,21 +330,68 @@ function storageInit() {
   }
 
   btnRe?.addEventListener('click', refresh);
-  btnOpen?.addEventListener('click', () => window.top?.postMessage?.({ type: 'open-explorer', pathRel: 'user' }, '*'));
+  btnOpen?.addEventListener('click', () =>
+    window.top?.postMessage?.({ type: 'open-explorer', pathRel: 'user' }, '*')
+  );
   refresh();
 }
 
-/* ---------- 4) Personalize ---------- */
+
+/* ---------- 5) Personalize (Theme + Wallpaper) ---------- */
 function personalizeInit() {
-  const pane     = document.getElementById('pane-personalize');
+  const pane           = $('#pane-personalize');
+
+  // ===== Theme picker =====
+  const themeGrid      = $('#themeGrid');
+  const btnThemeReset  = $('#btnResetTheme');
+
+  async function readSettings(){
+    try { return JSON.parse(await fs?.readText?.('user/Config/settings.json') || '{}'); }
+    catch { return {}; }
+  }
+  async function writeSettings(obj){
+    await ensureFolder('user/Config');
+    await fs?.writeText?.('user/Config/settings.json', JSON.stringify(obj, null, 2));
+  }
+  function markActive(theme){
+    [...(themeGrid?.querySelectorAll('.theme-btn')||[])].forEach(b=>{
+      const on = b.getAttribute('data-theme') === theme;
+      b.classList.toggle('active', on);
+      b.setAttribute('aria-pressed', String(on));
+    });
+  }
+
+  (async () => {
+    const s = await readSettings();
+    markActive(s.theme || 'dark');
+  })();
+
+  themeGrid?.addEventListener('click', async (e) => {
+    const btn = e.target.closest('.theme-btn');
+    if (!btn) return;
+    const theme = btn.getAttribute('data-theme');
+    const s = await readSettings();
+    s.theme = theme;
+    await writeSettings(s);
+    await window.top?.applyTheme?.(); // renderer updates <html data-theme>
+    markActive(theme);
+  });
+
+  btnThemeReset?.addEventListener('click', async () => {
+    const s = await readSettings();
+    delete s.theme;
+    await writeSettings(s);
+    await window.top?.applyTheme?.();
+    markActive('dark');
+  });
+
   if (!pane) return;
 
-  const grid     = document.getElementById('wallList');
-  const btnReset = document.getElementById('btnResetWallpaper');
-  const statusEl = document.getElementById('wallpaperStatus');
+  // ===== Wallpaper =====
+  const grid     = $('#wallList');
+  const btnReset = $('#btnResetWallpaper');
+  const statusEl = $('#wallpaperStatus');
 
-  // Preset wallpapers (renderer understands 'assets/...').
-  // Thumbnails inside apps/settings/ need '../../' prefix.
   const PRESETS = [
     'assets/wallpapers/wallpaper-1.png',
     'assets/wallpapers/wallpaper-2.png',
@@ -355,7 +417,7 @@ function personalizeInit() {
     try {
       let settings = {};
       try { settings = JSON.parse(await fs?.readText?.('~/Config/settings.json')); } catch {}
-      settings.wallpaper = rel; // keep raw 'assets/...' here
+      settings.wallpaper = rel; // keep raw 'assets/...'
       await fs?.writeText?.('~/Config/settings.json', JSON.stringify(settings, null, 2));
       await window.top?.applyWallpaper?.();
       setStatus('Wallpaper applied.');
@@ -384,7 +446,8 @@ function personalizeInit() {
   btnReset?.addEventListener('click', resetWallpaper);
 }
 
-/* ---------- 5) Updates (placeholder) ---------- */
+
+/* ---------- 6) Updates (placeholder) ---------- */
 function updatesInit() {
   const btn = $('#btnCheckUpdates');
   const msg = $('#updMsg');
@@ -395,13 +458,15 @@ function updatesInit() {
   });
 }
 
-/* ---------- 6) About ---------- */
+
+/* ---------- 7) About ---------- */
 function aboutInit() {
-  // Optionally set real version via preload bridge:
+  // Optionally set a real version via preload bridge:
   // $('#aboutVersion').textContent = 'v1.1.0';
 }
 
-/* ---------- Boot (run after DOM ready) ---------- */
+
+/* ---------- 8) Boot ---------- */
 document.addEventListener('DOMContentLoaded', () => {
   try { navInit(); }           catch (e) { console.error(e); }
   try { accountInit(); }       catch (e) { console.error(e); }

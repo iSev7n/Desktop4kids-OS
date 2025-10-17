@@ -16,6 +16,7 @@
   <title>Settings</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="settings.css" />
+  <link rel="stylesheet" href="../../global-style.css">
 </head>
 <body>
   <!-- 1) Shell & layout -->
@@ -91,6 +92,31 @@
         <h2>Personalize</h2>
 
         <div class="card">
+        <h3 style="margin-top:0">Theme</h3>
+        <div id="themeGrid" class="theme-grid">
+          <button class="theme-btn" type="button" data-theme="dark"   aria-pressed="false">
+            <div class="swatch" style="background:linear-gradient(135deg,#0f1115,#121a28)"></div>
+            <div>Dark</div>
+          </button>
+          <button class="theme-btn" type="button" data-theme="light"  aria-pressed="false">
+            <div class="swatch" style="background:linear-gradient(135deg,#ffffff,#eef3fb)"></div>
+            <div>Light</div>
+          </button>
+          <button class="theme-btn" type="button" data-theme="pink"   aria-pressed="false">
+            <div class="swatch" style="background:linear-gradient(135deg,#2a1822,#ff69b4)"></div>
+            <div>Pink</div>
+          </button>
+          <button class="theme-btn" type="button" data-theme="purple" aria-pressed="false">
+            <div class="swatch" style="background:linear-gradient(135deg,#181630,#8c7bff)"></div>
+            <div>Purple</div>
+          </button>
+        </div>
+        <div class="split" style="margin-top:12px">
+          <button id="btnResetTheme" class="btn sm secondary" type="button">Reset to system default</button>
+        </div>
+      </div>
+
+        <div class="card">
           <h3 style="margin-top:0">Wallpaper</h3>
 
           <!-- preset grid gets filled by JS -->
@@ -120,7 +146,7 @@
         <div class="card">
           <div class="kvs">
             <div><span class="k">Product:</span> Desktop4Kids</div>
-            <div><span class="k">Version:</span> <span id="aboutVersion">v0.2.1</span></div>
+            <div><span class="k">Version:</span> <span id="aboutVersion">v1.2.1</span></div>
             <div><span class="k">License:</span> GPLv3</div>
           </div>
           <p class="muted">

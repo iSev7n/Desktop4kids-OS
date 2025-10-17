@@ -14,6 +14,19 @@
 /* 0) FS wiring ------------------------------------------------------------ */
 const fs = window.top.fsAPI;
 
+// apply theme from parent on load
+try {
+  const t = window.top?.document?.documentElement?.getAttribute('data-theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', t);
+} catch {}
+
+// listen for live theme changes
+window.addEventListener('message', (e) => {
+  if (e?.data?.type === 'theme') {
+    document.documentElement.setAttribute('data-theme', e.data.theme);
+  }
+});
+
 // use the desktop's custom alert dialog if available
 const appAlert = (msg, title) =>
   window.top.showAlert ? window.top.showAlert(msg, title) : window.alert(msg);

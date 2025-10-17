@@ -1,5 +1,5 @@
 # Desktop4Kids OS
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg?style=for-the-badge)](LICENSE) ![Version](https://img.shields.io/badge/Version-v0.2.1-green.svg?style=for-the-badge)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg?style=for-the-badge)](LICENSE) ![Version](https://img.shields.io/badge/Version-v1.2.1-green.svg?style=for-the-badge)
 
 &#x20;   &#x20;
 

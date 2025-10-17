@@ -13,10 +13,14 @@
 
 /* 1) Design tokens & base */
 :root{
-  --bg:#10141d; --fg:#e6ecf5; --muted:#9aa4b2; --line:#1e2532;
-  --accent:#5aa0ff; --today:#2a3a54; --btn:#0e1320;
-  --radius:12px; --ease:120ms ease;
+  /* map clock tokens to globals */
+  --fg:     var(--text);
+  --btn:    var(--card);
+  --today:  #2a3a54; /* decorative */
+  --radius: 12px;
+  --ease:   120ms ease;
 }
+
 html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);}
 *{box-sizing:border-box;}
 
@@ -31,8 +35,8 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);}
 
 /* 3) Calendar (frame, header) */
 .cal{
-  background:#0e1420; border:1px solid var(--line);
-  border-radius:var(--radius); padding:12px;
+  background: var(--panel);
+  border:1px solid var(--line);
 }
 .cal-head{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:8px; }
 .cal-head .month-title{ font-weight:600; font-size:14px; }
@@ -54,15 +58,18 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);}
 .cell{
   height:40px; width:100%;
   border-radius:10px; border:1px solid var(--line);
-  background:#0c111b; color:var(--fg); font-size:13px; font-weight:600;
+  background: var(--card); color:var(--fg); font-size:13px; font-weight:600;
   display:flex; align-items:center; justify-content:center;
   cursor:default;
   transition:outline-color var(--ease), background var(--ease), border-color var(--ease), transform var(--ease);
 }
 .cell.other{ color:#6a7484; opacity:.7; }
 .cell.today,
-.cell[aria-current="date"]{ background:var(--today); border-color:#365277; }
-.cell:hover{ outline:1px solid #2b3850; }
+.cell[aria-current="date"]{
+  background: color-mix(in srgb, var(--accent) 22%, var(--card));
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+}
+.cell:hover{ outline:1px solid color-mix(in srgb, var(--accent) 35%, var(--line)); }
 .cell:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
 .cell[aria-selected="true"]{ box-shadow:0 0 0 2px rgba(90,160,255,.3) inset; }
 .cell:active{ transform:translateY(1px); }

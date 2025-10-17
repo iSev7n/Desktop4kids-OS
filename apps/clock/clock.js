@@ -16,6 +16,17 @@
   const params = new URLSearchParams(location.search);
   if (params.get('mode') === 'tray') document.body.classList.add('tray');
 
+  // Theme sync from parent
+try {
+  const t = window.top?.document?.documentElement?.getAttribute('data-theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', t);
+} catch {}
+window.addEventListener('message', (e) => {
+  if (e?.data?.type === 'theme') {
+    document.documentElement.setAttribute('data-theme', e.data.theme);
+  }
+});
+
   const timeNow    = document.getElementById('timeNow');
   const dateNow    = document.getElementById('dateNow');
   const monthTitle = document.getElementById('monthTitle');

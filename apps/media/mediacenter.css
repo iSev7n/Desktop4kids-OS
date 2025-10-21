@@ -1,0 +1,214 @@
+/* ==========================================================
+   Desktop4Kids — Media Center (Styles)
+   ----------------------------------------------------------
+   Sections
+   0) Base & layout
+   1) Grid & cards
+   2) Viewer surface
+   3) Media elements
+   4) Controls (seek/volume/time)
+   5) Audio visualizer buttons
+   6) Accessibility & polish
+========================================================== */
+
+/* 0) Base & layout
+   ------------------------------------------------------ */
+html, body {
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, Segoe UI, sans-serif;
+}
+.wrap { height: 100%; }
+.content { position: relative; height: 100%; overflow: hidden; }
+
+/* 1) Grid & cards
+   ------------------------------------------------------ */
+.grid {
+  height: 100%;
+  overflow: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+  padding: 12px;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 8px;
+  text-align: left;
+  cursor: pointer;
+  transition: transform .06s ease, box-shadow .12s ease;
+}
+.card:hover { transform: translateY(-1px); box-shadow: 0 4px 18px rgba(0,0,0,.2); }
+.card:active { transform: translateY(0); }
+.card:focus-visible {
+  outline: 2px solid var(--focus, #89b4ff);
+  outline-offset: 2px;
+}
+.thumb {
+  width: 100%;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #000;
+}
+.label {
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 2) Viewer surface
+   ------------------------------------------------------ */
+.viewer {
+  position: absolute;
+  inset: 0;
+  padding: 16px;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+  box-sizing: border-box;
+}
+.viewer.hide { display: none; }
+
+/* 3) Media elements
+   ------------------------------------------------------ */
+.viewer img,
+.viewer video,
+.viewer canvas {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: #000;
+  object-fit: contain;
+}
+
+/* 4) Controls (seek/volume/time)
+   ------------------------------------------------------ */
+.ctrls {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  width: min(900px, 94%);
+  background: #fff;
+  color: #111;
+  border-radius: 24px;
+  box-shadow: 0 4px 24px rgba(0,0,0,.35);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  user-select: none;
+}
+.ctrls .btn {
+  width: 28px; height: 28px;
+  border: 0;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  background: #eee;
+  cursor: pointer;
+}
+.ctrls .btn:active { transform: translateY(1px); }
+.ctrls .btn:focus-visible {
+  outline: 2px solid #111;
+  outline-offset: 2px;
+}
+
+.time {
+  font: 12px/1 system-ui, Segoe UI, sans-serif;
+  color: #333;
+  min-width: 72px;
+  text-align: center;
+}
+
+.seek { flex: 1; }
+.seek input[type="range"],
+.vol  input[type="range"] {
+  width: 100%;
+  appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  background: #ddd;
+  outline: none;
+}
+.seek input[type="range"]::-webkit-slider-thumb,
+.vol  input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: #333;
+  cursor: pointer;
+}
+.seek input[type="range"]::-moz-range-thumb,
+.vol  input[type="range"]::-moz-range-thumb {
+  width: 14px; height: 14px;
+  border: 0;
+  border-radius: 50%;
+  background: #333;
+  cursor: pointer;
+}
+
+.vol {
+  width: 110px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.vol input[type="range"] { width: 90px; }
+
+/* 5) Audio visualizer buttons
+   ------------------------------------------------------ */
+.viz-tools {
+  position: absolute;
+  top: 12px; right: 12px;
+  display: flex; gap: 8px;
+}
+.viz-tools button {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--text-2, #ddd);
+  cursor: pointer;
+}
+.viz-tools button.active { outline: 2px solid #89b4ff; }
+.viz-tools button:focus-visible {
+  outline: 2px solid #89b4ff;
+  outline-offset: 2px;
+}
+
+/* 6) Accessibility & polish
+   ------------------------------------------------------ */
+/* Reduce motion for those who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  .card { transition: none; }
+  .ctrls .btn:active { transform: none; }
+}
+
+/* Subtle scrollbars for the grid (supported engines) */
+.grid {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,.35) transparent;
+}
+.grid::-webkit-scrollbar { width: 10px; height: 10px; }
+.grid::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,.35);
+  border-radius: 999px;
+}
+.grid::-webkit-scrollbar-track { background: transparent; }
+
+/* Hide odd UA download/menus if they appear */
+video::-internal-media-controls-download-button { display: none !important; }
+video::-webkit-media-controls-enclosure { overflow: hidden !important; }

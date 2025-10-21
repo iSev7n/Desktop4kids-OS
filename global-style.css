@@ -77,6 +77,23 @@
   --alert-border:rgba(255,255,255,.08);
 }
 
+/* Theme-aware filter for monochrome (black) SVG icons */
+:root[data-theme="light"] {
+  --mono-icon-filter: none;
+}
+:root[data-theme="dark"],
+:root[data-theme="pink"],
+:root[data-theme="purple"] {
+  --mono-icon-filter: invert(1) brightness(1.05);
+}
+
+/* Apply to Explorer sidebar + Start rail */
+.side .side-ico,
+.start-rail .rail-ico {
+  filter: var(--mono-icon-filter);
+  transition: filter .15s ease; /* smooth swap when theme toggles */
+}
+
 /* === Themes =================================================== */
 /* Dark (default) */
 :root,
@@ -177,6 +194,20 @@ html,body{
   background:#352232; color:#fff; cursor:pointer; font-size:16px;
 }
 .close-btn:hover{ background:var(--danger); }
+
+/* Prevent the page from ever scrolling */
+html, body { height: 100%; overflow: hidden; }
+
+/* Make the window host a fixed, clipped layer like a real desktop */
+#winHost{
+  position: fixed;
+  inset: 36px 0 44px 0;   /* below top chrome, above taskbar (matches #desktop) */
+  overflow: hidden;       /* hide any overshoot during drag */
+  pointer-events: none;   /* pass clicks through by default... */
+}
+
+/* ...but let individual windows receive input */
+#winHost .win{ pointer-events: auto; }
 
 /* user chip + dropdown */
 .userchip{

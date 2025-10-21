@@ -55,6 +55,38 @@
     await window.fsAPI.createFolder(base).catch(()=>{});
     for (const d of dirs) await window.fsAPI.createFolder(`${base}/${d}`).catch(()=>{});
 
+    // copy shipped sample media into the new user's library
+    async function copyAssetToUser(assetUrl, destRel) {
+      try {
+        const ab = await fetch(assetUrl).then(r => r.arrayBuffer());
+        // store as base64 (consistent with avatar handling)
+        const bytes = new Uint8Array(ab);
+        let b64 = ''; const CH = 0x8000;
+        for (let i = 0; i < bytes.length; i += CH) b64 += String.fromCharCode.apply(null, bytes.subarray(i, i + CH));
+        await window.fsAPI.writeText(destRel, btoa(b64));
+      } catch { /* ignore if asset missing */ }
+    }
+
+    const samples = [
+      // ---- pictures ----
+      { asset: 'assets/samples/photo1.png', dest: `${base}/Pictures/Sample - photo1.png` },
+      { asset: 'assets/samples/photo2.jpg', dest: `${base}/Pictures/Sample - photo2.jpg` },
+      { asset: 'assets/samples/photo3.jpg', dest: `${base}/Pictures/Sample - photo3.jpg` },
+  
+      // ---- videos ----
+      { asset: 'assets/samples/video1.mp4',  dest: `${base}/Videos/Sample - video1.mp4` },
+      { asset: 'assets/samples/video2.mp4',  dest: `${base}/Videos/Sample - video2.mp4` },
+      { asset: 'assets/samples/video3.mp4',  dest: `${base}/Videos/Sample - video3.mp4` },
+
+      // ---- music ----
+      { asset: 'assets/samples/song1.mp3',  dest: `${base}/Music/Sample - Song 1.mp3` },
+      { asset: 'assets/samples/song2.mp3',  dest: `${base}/Music/Sample - Song 2.mp3` },
+      { asset: 'assets/samples/song3.mp3',  dest: `${base}/Music/Sample - Song 3.mp3` },
+    ];
+
+    for (const s of samples) { await copyAssetToUser(s.asset, s.dest).catch(()=>{}); }
+
+
     const desk = `${base}/Desktop`;
     try { await window.fsAPI.readText(`${desk}/Welcome.txt`); } catch {
       await window.fsAPI.writeText(`${desk}/Welcome.txt`,
@@ -76,6 +108,28 @@
       await window.fsAPI.writeText(`${base}/Config/settings.json`, '{}');
     }
   }
+
+  async function ensureMediaBaselineFor(id){
+  const base = `users/${id}`;
+
+  await window.fsAPI.createFolder(`${base}/Music`).catch(()=>{});
+
+  async function ensureSample(assetUrl, destRel){
+    try { await window.fsAPI.readText(destRel); return; } catch {}
+    try {
+      const ab = await fetch(assetUrl).then(r => r.arrayBuffer());
+      const bytes = new Uint8Array(ab);
+      let b64 = ''; const CH = 0x8000;
+      for (let i = 0; i < bytes.length; i += CH) {
+        b64 += String.fromCharCode.apply(null, bytes.subarray(i, i + CH));
+      }
+      await window.fsAPI.writeText(destRel, btoa(b64));
+    } catch {}
+  }
+
+  await ensureSample('assets/samples/song1.mp3', `${base}/Music/Sample - Song 1.mp3`);
+  await ensureSample('assets/samples/song2.mp3', `${base}/Music/Sample - Song 2.mp3`);
+}
 
   /* ---------------------------------------------------------------------
    * 2) Quota + fsAPI wrapper (isolation, rewrite, filtering)
@@ -467,6 +521,7 @@ menu.addEventListener('click', async (e)=>{
       await window.accountsBridge?.setCurrentUser?.(getCurrentUserId());
       wrapFs();
       await ensureUserSkeleton(getCurrentUserId()).catch(()=>{});
+      await ensureMediaBaselineFor(getCurrentUserId()).catch(()=>{});
       await ensureTemplatesLoaded();                 // load modal templates
       await initChip();                              // user chip UI
     },

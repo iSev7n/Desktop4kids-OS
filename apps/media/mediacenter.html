@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en" data-app="mediacenter">
+<head>
+  <meta charset="utf-8" />
+  <title>Media Center</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark light" />
+
+  <!-- Global styles first, app styles second so overrides work as intended -->
+  <link rel="stylesheet" href="../../global-style.css" />
+  <link rel="stylesheet" href="mediacenter.css" />
+</head>
+<body>
+  <!-- Main landmark -->
+  <main class="wrap" role="main">
+    <section class="content" aria-label="Media browser and viewer">
+      <!-- Media grid (list of files) -->
+      <div id="grid" class="grid" role="list" aria-label="Media files"></div>
+
+      <!-- Viewer pane (filled dynamically) -->
+      <div id="viewer" class="viewer hide" aria-live="polite" aria-busy="false"></div>
+    </section>
+  </main>
+
+  <noscript>
+    <p style="padding:1rem">JavaScript is required for the Media Center.</p>
+  </noscript>
+
+  <!-- Defer so DOM is ready for the script’s queries -->
+  <script src="mediacenter.js" defer></script>
+</body>
+</html>

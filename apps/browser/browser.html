@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Browser</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="../../global-style.css" />
+  <link rel="stylesheet" href="browser.css" />
+</head>
+<body>
+  <main class="wrap">
+    <header class="toolbar">
+      <div class="nav">
+        <button id="btnBack"    title="Back"    aria-label="Back">◄</button>
+        <button id="btnForward" title="Forward" aria-label="Forward">►</button>
+        <button id="btnReload"  title="Reload"  aria-label="Reload">↻</button>
+        <button id="btnHome"    title="Home"    aria-label="Home">⌂</button>
+      </div>
+
+      <form id="addrForm" class="addr" autocomplete="off">
+        <input id="addr" type="text" spellcheck="false" placeholder="Enter URL" />
+      </form>
+
+      <div class="actions">
+        <!-- keep empty for now (future: whitelist indicator, lock, etc.) -->
+      </div>
+    </header>
+
+    <section class="content">
+      <!-- NOTE: very restricted sandbox (no popups, no download API, no fullscreen) -->
+      <iframe id="webview"
+        sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-top-navigation-by-user-activation"
+        referrerpolicy="no-referrer"
+        allow="autoplay *; clipboard-read *; clipboard-write *"
+        src="about:blank"
+      ></iframe>
+    </section>
+  </main>
+
+  <script src="browser.js"></script>
+</body>
+</html>

@@ -19,13 +19,16 @@
     { id: 'documents', name: 'Documents', icon: 'assets/icons/folder-text.svg',   cat: 'System' },
     { id: 'images',    name: 'Pictures',  icon: 'assets/icons/folder-images.svg', cat: 'System' },
     { id: 'videos',    name: 'Videos',    icon: 'assets/icons/folder-video.svg',  cat: 'System' },
+    { id: 'music',     name: 'Music',     icon: 'assets/icons/folder-music.svg',  cat: 'System' },
     { id: 'games',     name: 'Games',     icon: 'assets/icons/folder-games.svg',  cat: 'Games'  },
     { id: 'notepad',   name: 'Notepad',   icon: 'assets/icons/notepad.svg',       cat: 'Apps'   },
     { id: 'settings',  name: 'Settings',  icon: 'assets/icons/settings.svg',      cat: 'System' },
+    { id: 'browser',   name: 'Browser',   icon: 'assets/icons/browser.svg',       cat: 'Apps'   },
+
   ];
 
-  // Order of the large tiles at the top
-  const PINNED_IDS = ['files', 'documents', 'images', 'videos', 'games'];
+  // Order of the large tiles at the top (PINNED APPS)
+  const PINNED_IDS = ['files', 'documents', 'games'];
 
   // Quick lookup for id → app
   const APP_BY_ID = Object.fromEntries(START_APPS.map(a => [a.id, a]));
@@ -53,6 +56,12 @@
         break;
       case 'videos':
         window.top.postMessage({ type: 'open-explorer', pathRel: 'user/Videos' }, '*');
+        break;
+      case 'music':
+        window.top.postMessage({ type: 'open-explorer', pathRel: 'user/Music' }, '*');
+        break;
+      case 'games':
+        window.top.postMessage({ type: 'open-explorer', pathRel: 'user/Games' }, '*');
         break;
       case 'notepad':
         window.top.postMessage({ type: 'open-notepad', rel: '' }, '*');
@@ -104,9 +113,26 @@
     const q = filter.trim().toLowerCase();
     allAppsEl.innerHTML = '';
 
+    // <<< set your exact order here >>>
+    const ALL_APPS_ORDER = [
+      'settings',
+      'files',
+      'documents',
+      'images',
+      'videos',
+      'music',
+      'games',
+      'notepad',
+      'browser',
+    ];
+    const orderIdx = Object.fromEntries(ALL_APPS_ORDER.map((id, i) => [id, i]));
+
     START_APPS
+      // filter by search box
       .filter(a => !q || a.name.toLowerCase().includes(q) || a.cat.toLowerCase().includes(q))
-      .sort((a, b) => a.name.localeCompare(b.name))
+      // sort by our custom order (unknown items drop to the end)
+      .sort((a, b) => (orderIdx[a.id] ?? 999) - (orderIdx[b.id] ?? 999))
+      // render rows
       .forEach(app => {
         const row = document.createElement('div');
         row.className = 'app-row';

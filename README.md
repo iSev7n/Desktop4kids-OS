@@ -41,7 +41,7 @@
 
 ## 🚦 Current Status
 
-This release **v0.2.1** focuses on the **core desktop foundation** — stability, safety, and a strong base for future apps.
+This release **v1.2.1** focuses on the **core desktop foundation** — stability, safety, and a strong base for future apps.
 
 ### ✅ Currently Functional
 
@@ -52,6 +52,7 @@ This release **v0.2.1** focuses on the **core desktop foundation** — stability
 - **Settings Button / Avatar Menu** – User profile access & framework for future settings.
 - **Desktop Environment** – Wallpapers, draggable icons, context menus, and a boot sequence.
 - **Filesystem API** – Secure wrapper (`fsAPI`) bridging renderer ↔ main via preload.
+- **System Settings** – System wallpaper, system themes, and account storage settings. 
 
 ---
 
@@ -111,7 +112,7 @@ npm run build
 
 ## 🗺️ Roadmap
 
-- 🎨 Theming in Settings for deeper personalization
+- ~~🎨 Theming in Settings for deeper personalization~~ **Completed**
 - 🖼️ Media app for images (**.png, .jpg, .gif**) and videos (**.mp4, .mov, .avi**)
 - 🎮 Game Center with educational & fun activities
 - 👪 Parental Controls + Safe Mode for parent accounts

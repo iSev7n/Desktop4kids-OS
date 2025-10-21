@@ -13,6 +13,7 @@
    9) Context menu
    10) Dialogs
    11) Utilities
+   12) Thumbnails
 ---------------------------------------------------------- */
 
 /* 1) Design tokens & base
@@ -69,7 +70,7 @@ html, body{
   border-radius:12px; padding:10px 12px; cursor:pointer;
 }
 .sitem:hover{ background: color-mix(in srgb, var(--card) 86%, white 14%); }
-.sitem img{ width:18px; height:18px; display:block; }
+.sitem img{ width:28px; height:28px; display:block; }
 
 /* 4) Toolbar (nav/actions, address, search)
    ------------------------------------ */
@@ -115,22 +116,34 @@ html, body{
 /* 6) Grid view (tiles)
    ------------------------------------ */
 .grid{
-  height:100%; overflow-y:auto; overflow-x:hidden;
+  height:100%;
+  overflow-y:auto;
+  overflow-x:hidden;
   padding:16px;
 
   display:grid;
   grid-template-columns:repeat(auto-fill, minmax(150px, 1fr));
-  grid-auto-rows:140px;
+  grid-auto-rows:140px;           /* fixed row height so layout never jumps */
   gap:14px;
 }
+
+/* Tile */
 .gitem{
   height:100%;
   padding:12px 10px;
   border-radius:14px;
-  background:transparent; border:1px solid transparent;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  cursor:default; transition:background .12s, border-color .12s, filter .12s;
-  position:relative;  /* for pseudo outline */
+  background:transparent;
+  border:1px solid transparent;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;     /* keep name under the icon */
+  gap:8px;
+
+  cursor:default;
+  position:relative;              /* for dashed outline on drag */
+  transition:background .12s, border-color .12s, filter .12s;
 }
 .gitem:hover{ background:var(--tile); border-color:var(--line); }
 .gitem.sel{
@@ -138,10 +151,43 @@ html, body{
   border-color: color-mix(in srgb, var(--accent) 40%, var(--line));
 }
 
-.gitem img{ width:36px; height:36px; display:block; }
+/* Icon */
+.gitem img{
+  width:46px;
+  height:46px;
+  display:block;
+}
+
+/* Filename: clamp to 1 line by default; up to 3 lines when selected */
 .gname{
-  margin-top:8px; font-size:12px; text-align:center; line-height:1.2;
-  max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  /* typography */
+  font-size:12px;
+  line-height:1.2;
+  text-align:center;
+
+  /* multi-line ellipsis */
+  display:-webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;          /* webkit legacy */
+  line-clamp: 1;                   /* standard */
+  overflow:hidden;
+
+  /* width + wrapping helpers */
+  max-width:100%;
+  word-break: break-word;
+  hyphens:auto;
+
+  /* smooth expand/collapse without changing grid row height */
+  transition: -webkit-line-clamp .12s, line-clamp .12s, max-height .12s;
+  max-height: calc(1.2em * 1);    /* equals 1 line */
+}
+
+/* Expand name to 3 lines only when the tile is selected/focused */
+.gitem.sel .gname,
+.gitem:focus-within .gname{
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  max-height: calc(1.2em * 3);
 }
 
 /* Rounded dashed outline for dragging/selection (match desktop) */
@@ -152,7 +198,6 @@ html, body{
   border-radius:18px;
   pointer-events:none;
 }
-
 /* 7) Details (list) view
    ------------------------------------ */
 .list{
@@ -244,3 +289,10 @@ input:focus, button:focus, textarea:focus, select:focus{
 
 /* Ensure the top-level #ctx (if used) sits under dialogs but above content */
 #ctx{ position:fixed; z-index:999998; }
+
+/* 12) Thumbnails for images in grid view
+   ------------------------------------ */
+.gitem.thumb img{
+  width:100%; height:64px; object-fit:cover;
+  border-radius:12px; box-shadow:inset 0 0 0 1px var(--line);
+}

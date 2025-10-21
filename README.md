@@ -57,10 +57,14 @@ This release **v1.2.1** focuses on the **core desktop foundation** — stability
 ---
 
 ## 🖼️ Screenshots
-<img src="https://i.postimg.cc/9XprsgVh/Desktop4-Kids-OS2.png" alt="Desktop4-Kids-OS2"></a>
+<img src="https://i.postimg.cc/bvqybbhg/1.png" alt="Desktop4-Kids-OS"></a>
 
-**Current Desktop (Logged In)**
-<img src="https://i.postimg.cc/KjJjLjQt/Desktop4-Kids-OS.png" alt="Desktop4-Kids-OS"></a>
+<img src="https://i.postimg.cc/7LqH77kB/2.png" alt="Desktop4-Kids-OS"></a>
+
+<img src="https://i.postimg.cc/fbMzXXN2/3.png" alt="Desktop4-Kids-OS"></a>
+
+<img src="https://i.postimg.cc/Lsm9ffpQ/4.png" alt="Desktop4-Kids-OS"></a>
+
 ---
 
 ## 🧠 Technical Overview

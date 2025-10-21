@@ -45,14 +45,16 @@ This release **v1.2.1** focuses on the **core desktop foundation** — stability
 
 ### ✅ Currently Functional
 
-- **File Explorer** – Grid/List views, drag-in-place ordering, and persistent folder layouts.
-- **Notepad** – Clean, responsive editor with real‑time save tracking and desktop integration.
-- **Account System** – User login/registration with isolated per‑user directories (**50 MB quota** each).
-- **Window Manager** – App launch, resize, focus, and icon interactions.
-- **Settings Button / Avatar Menu** – User profile access & framework for future settings.
-- **Desktop Environment** – Wallpapers, draggable icons, context menus, and a boot sequence.
-- **Filesystem API** – Secure wrapper (`fsAPI`) bridging renderer ↔ main via preload.
-- **System Settings** – System wallpaper, system themes, and account storage settings. 
+- **File Explorer** – Modern dual-view design (Grid/List) with drag-to-reorder icons, per-folder layout memory, context menus, and persistent order storage via `explorer-order.json`.
+- **Media Center** – Unified viewer for images, audio, and video with custom playback controls, WebAudio visualizer, and lazy-loaded thumbnails.
+- **Notepad** – Clean, responsive text editor with real-time save tracking, font scaling, and cross-window theme synchronization.
+- **Account System** – Multi-user login/registration with isolated directories and configurable storage quotas (**50 MB each**).
+- **Window Manager** – Handles app creation, focus, z-index stacking, and taskbar integration for a true desktop-like experience.
+- **Settings** – User profile editor, theme selection, wallpaper management, and groundwork for future system preferences.
+- **Desktop Environment** – Full desktop simulation featuring wallpapers, draggable icons, snap-to-grid layout, context menus, and boot animations.
+- **Filesystem API** – Secure `fsAPI` bridge between Renderer ↔ Main via Preload, supporting sandboxed read/write, delete, and rename operations.
+- **System Features** – Live tray clock with popover calendar, theme propagation to iframes, and desktop notifications on filesystem changes.
+
 
 ---
 

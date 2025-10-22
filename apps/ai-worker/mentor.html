@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <title>Mentor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Global + Mentor styles -->
+  <link rel="stylesheet" href="../../global-style.css" />
+  <link rel="stylesheet" href="./mentor.css" />
+</head>
+<body>
+  <div id="mentor" class="mentor">
+    <header class="bar">
+      <div class="left">
+        <select id="subject" class="field">
+          <option value="">Subject</option>
+          <option>Math</option>
+          <option>Science</option>
+          <option>Reading</option>
+          <option>Writing</option>
+          <option>History</option>
+        </select>
+        <select id="level" class="field">
+          <option value="">Level</option>
+          <option>Grade 1</option>
+          <option>Grade 2</option>
+          <option>Grade 3</option>
+          <option>Grade 4</option>
+          <option>Grade 5</option>
+          <option>Grade 6</option>
+          <option>Grade 7</option>
+          <option>Grade 8</option>
+        </select>
+      </div>
+      <div class="right modes">
+        <button id="mCoach"   data-mode="coach"   class="chip active" type="button">Coach</button>
+        <button id="mExplain" data-mode="explain" class="chip"        type="button">Explain</button>
+        <button id="btnClear" class="btn btn--danger" type="button" title="Clear conversation">Clear</button>
+      </div>
+    </header>
+
+    <main id="chat" class="chat" aria-live="polite"></main>
+
+    <footer class="composer-wrap">
+      <form id="composer" class="composer" autocomplete="off">
+        <textarea id="q" class="input" rows="2" placeholder="Ask Mentor something…"></textarea>
+        <div class="actions">
+          <button class="btn btn--primary" type="submit">Ask</button>
+        </div>
+      </form>
+    </footer>
+  </div>
+
+  <!-- Local themed confirm (used only if a global confirm isn't exposed) -->
+  <dialog id="mentorConfirm" class="mc">
+    <div class="mc__card">
+      <div class="mc__title">Confirm</div>
+      <div class="mc__message">Are you sure?</div>
+      <div class="mc__actions">
+        <button class="btn btn--ghost mc__no"  type="button">Cancel</button>
+        <button class="btn btn--danger mc__yes" type="button">Clear</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="./mentor.js"></script>
+</body>
+</html>

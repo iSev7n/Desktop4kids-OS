@@ -632,7 +632,7 @@ function createWindow(title, src, opts = {}) {
       <div>${title}</div>
       <div class="btns"><button class="close">×</button></div>
     </div>
-    <iframe src="${src}" sandbox="allow-scripts allow-same-origin allow-modals"></iframe>
+    <iframe src="${src}" sandbox="allow-scripts allow-same-origin allow-modals allow-forms"></iframe>
   `;
   win.addEventListener('mousedown', () => (win.style.zIndex = ++Z));
 
@@ -727,6 +727,9 @@ function openMedia(rel) {
 }
 function openBrowser() {
   createWindow('Browser', 'apps/browser/browser.html', { icon: 'assets/icons/browser.svg' });
+}
+function openMentor() {
+  createWindow('Mentor', 'apps/ai-worker/mentor.html', { icon: 'assets/icons/assistant.svg' });
 }
 
 /* 4) Desktop context menu (background + item)
@@ -937,6 +940,11 @@ window.addEventListener('message', async (ev) => {
 
   if (type === 'open-app' && ev.data?.id === 'settings') {
     openSettings();
+    return;
+  }
+
+    if (type === 'open-app' && ev.data?.id === 'mentor') {
+    openMentor();
     return;
   }
 

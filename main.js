@@ -18,6 +18,10 @@ const fs = require('fs');
 const fsp = fs.promises;
 const { pathToFileURL } = require('url');
 
+// AI Mentor runtime (loads the local model + streams tokens)
+const { askMentorStreaming, askMentorText, modelPath, modelExists } =
+  require('./apps/ai-worker/ai-runtime');
+
 /* ========== 0) Single instance ======================================== */
 if (!app.requestSingleInstanceLock()) app.quit();
 const isDev = !app.isPackaged;
@@ -312,6 +316,50 @@ app.whenReady().then(() => {
   ensureRoot();
   mainWindow = createWindow();
 });
+
+// --- AI Mentor IPC (renderer -> main) ---
+if (ipcMain.listenerCount('mentor:ask') === 0) {
+  ipcMain.on('mentor:ask', async (event, { id, payload }) => {
+    try {
+      console.log('[mentor] model:', modelPath(), 'exists:', modelExists());
+      // Quick sanity so we fail loudly if model missing
+      if (!modelExists()) {
+        throw new Error(`Model missing. Expected at: ${modelPath()}`);
+      }
+
+      const stream = await askMentorStreaming(payload);
+      let full = '';
+      let sawChunk = false;
+
+      for await (const chunk of stream) {
+        const piece = String(chunk ?? '');
+        if (piece) {
+          sawChunk = true;
+          full += piece;
+          event.sender.send(`mentor:chunk:${id}`, piece);
+        }
+      }
+
+      // Fallback if stream yielded nothing
+      if (!sawChunk || !full.trim()) {
+        const text = await askMentorText(payload);
+        full = String(text || '');
+      }
+
+      // Ensure it ends with "Your turn:"
+      if (!/your turn:?$/i.test(full.trim())) {
+        full = full.trim() + '\n\nYour turn:';
+      }
+
+      event.sender.send(`mentor:done:${id}`, { ok: true, text: full });
+    } catch (err) {
+      event.sender.send(`mentor:done:${id}`, {
+        ok: false,
+        error: (err && (err.message || String(err))) || 'Unknown error',
+      });
+    }
+  });
+}
 
 // Focus existing window if a second instance is launched
 app.on('second-instance', () => {

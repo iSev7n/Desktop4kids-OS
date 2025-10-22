@@ -24,6 +24,7 @@
     { id: 'notepad',   name: 'Notepad',   icon: 'assets/icons/notepad.svg',       cat: 'Apps'   },
     { id: 'settings',  name: 'Settings',  icon: 'assets/icons/settings.svg',      cat: 'System' },
     { id: 'browser',   name: 'Browser',   icon: 'assets/icons/browser.svg',       cat: 'Apps'   },
+    { id: 'mentor',    name: 'Mentor',    icon: 'assets/icons/assistant.svg',     cat: 'Apps'   },
 
   ];
 
@@ -66,6 +67,9 @@
       case 'notepad':
         window.top.postMessage({ type: 'open-notepad', rel: '' }, '*');
         break;
+      case 'mentor':
+      window.top.postMessage({ type: 'open-app', id: 'mentor' }, '*');
+      break;
       default:
         window.top.postMessage({ type: 'open-app', id }, '*');
     }
@@ -116,6 +120,7 @@
     // <<< set your exact order here >>>
     const ALL_APPS_ORDER = [
       'settings',
+      'mentor',
       'files',
       'documents',
       'images',

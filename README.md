@@ -13,17 +13,18 @@
 
 ## 📌 Table of Contents
 
-- [About](#-about)
-- [Status](#-current-status)
-- [Features](#-currently-functional)
-- [Screenshots](#-screenshots)
-- [Technical Overview](#-technical-overview)
-- [Installation](#-installation)
-- [Quick Start](#-quick-start)
-- [Roadmap](#-roadmap)
-- [Contributing](#-contributing)
-- [FAQ](#-faq)
-- [License](#-license)
+- [✨ About](#-about)
+- [🚦 Current Status](#-current-status)
+- [✅ Currently Functional](#-currently-functional)
+- [🖼️ Screen Shots](#-screen-shots)
+- [🧠 Technical Overview](#-technical-overview)
+- [🛠️ Installation](#-installation)
+- [✅ Prereqs](#-prereqs)
+- [⚡ Quick Start](#-quick-start)
+- [🗺️ Roadmap](#-roadmap)
+- [🤝 Contributing](#-contributing)
+- [❓ FAQ](#-faq)
+- [📜 License](#-license)
 
 ---
 
@@ -43,22 +44,23 @@
 
 This release **v1.2.1** focuses on the **core desktop foundation** — stability, safety, and a strong base for future apps.
 
-### ✅ Currently Functional
+## ✅ Currently Functional
 
-- **File Explorer** – Modern dual-view design (Grid/List) with drag-to-reorder icons, per-folder layout memory, context menus, and persistent order storage via `explorer-order.json`.
-- **Media Center** – Unified viewer for images, audio, and video with custom playback controls, WebAudio visualizer, and lazy-loaded thumbnails.
-- **Notepad** – Clean, responsive text editor with real-time save tracking, font scaling, and cross-window theme synchronization.
-- **Account System** – Multi-user login/registration with isolated directories and configurable storage quotas (**50 MB each**).
-- **Window Manager** – Handles app creation, focus, z-index stacking, and taskbar integration for a true desktop-like experience.
-- **Settings** – User profile editor, theme selection, wallpaper management, and groundwork for future system preferences.
-- **Desktop Environment** – Full desktop simulation featuring wallpapers, draggable icons, snap-to-grid layout, context menus, and boot animations.
-- **Filesystem API** – Secure `fsAPI` bridge between Renderer ↔ Main via Preload, supporting sandboxed read/write, delete, and rename operations.
-- **System Features** – Live tray clock with popover calendar, theme propagation to iframes, and desktop notifications on filesystem changes.
-
+- **Desktop Environment** – Full simulated desktop with wallpapers, draggable icons, grid snapping, context menus, and boot animations.
+- **Window Manager** – Handles multi-app windows, focus, z-index stacking, resizing, and taskbar integration.  
+- **File Explorer** – Dual-view (Grid/List) with drag-reorder icons, per-folder memory, context menus, and persistent layout via `explorer-order.json`.
+- **Media Center** – Unified image/audio/video viewer with custom controls, WebAudio visualizer, and lazy-loaded thumbnails.
+- **Notepad** – Lightweight text editor with real-time save tracking, font scaling, and synced global theming.  
+- **Mentor AI** – Local AI tutor powered by `node-llama-cpp`; supports offline learning, child-safe chat rules, clear-conversation button, and theme-matched UI.
+- **Account System** – Multi-user login with isolated directories and configurable quotas (**50 MB each**).  
+- **Settings** – User profiles, theme & wallpaper management, and base for future system preferences.  
+- **Filesystem API** – Secure preload bridge (`fsAPI`) for sandboxed read/write/delete/rename operations.  
+- **System Features** – Live tray clock + calendar, theme propagation to apps, and desktop notifications on file changes.
 
 ---
 
-## 🖼️ Screenshots
+## 🖼️ Screen Shots
+
 <img src="https://i.postimg.cc/bvqybbhg/1.png" alt="Desktop4-Kids-OS"></a>
 
 <img src="https://i.postimg.cc/7LqH77kB/2.png" alt="Desktop4-Kids-OS"></a>
@@ -93,9 +95,39 @@ cd Desktop4Kids-OS
 # 2) Install dependencies
 npm install
 
-# 3) Run in development
+```
+**2.1 Get a local LLM model (GGUF)**
+
+Place your model file here (1B–3B runs well on CPU):
+```bash
+Desktop4Kids-OS/models/llama-3.2-1b-instruct-q4_k_m.gguf
+```
+> You can rename any compatible GGUF to this filename, or edit `MODEL_FILENAME` inside `apps/ai-worker/ai-runtime.js`.
+
+**2.2 Stage the llama backend (one-time)**
+
+Download a prebuilt llama backend (fastest):
+```bash
+npx --no node-llama-cpp source download
+```
+
+Or build locally (optional, adds GPU support):
+
+```bash
+# auto-selects CPU/CUDA/Metal/Vulkan depending on hardware
+npx --no node-llama-cpp source build --gpu auto --nodeTarget v22.20.0
+```
+
+> `--nodeTarget v22.20.0` matches Electron 38.4.0’s embedded Node version.
+
+**3 Run Development**
+```bash
 npm start
 ```
+Launch the Mentor app from the desktop environment.
+You should see the greeting:
+
+> “Welcome back! Are you ready to learn?”
 
 ### 🧪 Optional: Package an App Build
 
@@ -103,7 +135,17 @@ npm start
 npm run build
 ```
 
-> Uses `electron-builder`. Configure targets in `package.json`.
+> Uses `electron-builder`. Models are loaded from `resources/models/…` when packaged. Configure targets in `package.json`.
+
+---
+
+## ✅ Prereqs
+
+| Platform        | Requirements                                                                  |
+| --------------- | ------------------------------------------------------------------------------|
+| **Windows**     | Node 22+, Git. (For local builds: VS 2022 Build Tools (C++), CMake, Python 3) |
+| **macOS**       | Xcode Command Line Tools (Metal backend supported)                            |
+| **Linux**       | `build-essential`, `cmake`, Python 3, and CUDA/Vulkan if using GPU            |
 
 ---
 
@@ -119,10 +161,11 @@ npm run build
 ## 🗺️ Roadmap
 
 - ~~🎨 Theming in Settings for deeper personalization~~ **Completed**
-- 🖼️ Media app for images (**.png, .jpg, .gif**) and videos (**.mp4, .mov, .avi**)
+- ~~🖼️ Media app for images (**.png, .jpg, .gif**) and videos (**.mp4, .mov, .avi**)~~
 - 🎮 Game Center with educational & fun activities
 - 👪 Parental Controls + Safe Mode for parent accounts
 - ✨ UI polish, micro‑animations, and accessibility improvements
+- ~~🤖 Mentor Ai Assistant for teaching and assisting with understanding math, science, english, art concepts.~~
 
 > Have ideas? File a feature request! 🙌
 

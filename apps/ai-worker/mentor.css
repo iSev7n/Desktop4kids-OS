@@ -1,0 +1,204 @@
+/* =========================================
+   Mentor — panel UI (matches global style)
+   - Uses global CSS variables with fallbacks
+   - Window chrome, header bar, chat, composer
+   - Buttons align with global .btn semantics
+   - Themed confirm dialog (.mc) for "Clear"
+========================================= */
+
+/* Prefer globals; fall back if missing */
+:root {
+  --surface:        var(--card, #101114);
+  --surface-2:      var(--panel, #14161a);
+  --text:           var(--text-1, #e6e7ea);
+  --muted:          var(--text-2, #9aa0a6);
+  --radius:         var(--radius, 12px);
+  --gap:            8px;
+  --shadow-1:       var(--shadow-1, 0 6px 24px rgba(0,0,0,.28));
+  --border:         var(--border-color, color-mix(in oklab, var(--surface-2), #ffffff 10%));
+
+  --brand:          var(--accent, var(--accent-color, #6366f1));
+  --brand-ink:      var(--on-accent, #fff);
+
+  --danger:         var(--danger-500, #ef4444);
+  --danger-ink:     var(--on-danger, #fff);
+
+  --btn-bg:         var(--button-bg, var(--surface-2));
+  --btn-ink:        var(--button-fg, var(--text));
+  --btn-hover:      var(--button-bg-hover, color-mix(in oklab, var(--btn-bg), #ffffff 6%));
+  --btn-border:     var(--button-border, color-mix(in oklab, var(--btn-bg), #ffffff 12%));
+
+  --window-radius:  var(--window-radius, 12px);
+  --window-shadow:  var(--window-shadow, 0 6px 20px rgba(0,0,0,.4));
+  --window-header:  var(--window-header, var(--accent-bg, #181a20));
+  --window-header-text: var(--window-header-text, var(--text));
+}
+
+/* Root canvas */
+html, body {
+  height: 100%;
+  background: var(--surface);
+  color: var(--text);
+}
+
+/* Window chrome */
+.mentor {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  height: 100dvh;
+  border-radius: var(--window-radius);
+  box-shadow: var(--window-shadow);
+  overflow: hidden;
+}
+
+/* Title/controls bar */
+.bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--gap);
+  padding: 10px;
+  background: var(--window-header);
+  color: var(--window-header-text);
+  border: 0; /* no thin line; relies on shadow */
+}
+.bar .left,
+.bar .right { display: flex; align-items: center; gap: var(--gap); }
+
+/* Selects */
+.field {
+  appearance: none;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 6px 10px;
+  border-radius: var(--radius);
+}
+
+/* Mode chips */
+.chip {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--btn-border);
+  padding: 6px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+.chip:hover { background: color-mix(in oklab, var(--brand), transparent 88%); }
+.chip.active { background: var(--brand); color: var(--brand-ink); border-color: transparent; }
+
+/* Buttons (align with global .btn semantics) */
+.btn {
+  appearance: none;
+  border: 1px solid var(--btn-border);
+  background: var(--btn-bg);
+  color: var(--btn-ink);
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease, border-color .15s ease, transform .02s ease;
+}
+.btn:hover { background: var(--btn-hover); }
+.btn:active { transform: translateY(1px); }
+.btn--primary { background: var(--brand); color: var(--brand-ink); border-color: transparent; }
+.btn--danger  { background: var(--danger); color: var(--danger-ink); border-color: transparent; }
+.btn--ghost   { background: transparent; border-color: var(--btn-border); }
+
+/* Chat area */
+.chat {
+  padding: 12px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--surface);
+}
+
+.msg {
+  padding: 10px 12px;
+  border-radius: calc(var(--radius) + 2px);
+  max-width: 80ch;
+  line-height: 1.4;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+}
+.msg.user {
+  align-self: flex-end;
+  background: color-mix(in oklab, var(--brand), transparent 80%);
+  border-color: color-mix(in oklab, var(--brand), #000 85%);
+}
+.msg.bot  { align-self: flex-start; }
+.msg.cursor::after {
+  content: '▍';
+  display: inline-block;
+  margin-left: 2px;
+  animation: blink 1s steps(1,end) infinite;
+  opacity: .9;
+}
+@keyframes blink { 50% { opacity: .2; } }
+
+.small { font-size: .85em; color: var(--muted); margin-top: 4px; }
+
+/* Composer */
+.composer-wrap {
+  border-top: 1px solid var(--border);
+  background: var(--surface-2);
+}
+.composer {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--gap);
+  padding: 10px;
+}
+.input {
+  resize: none;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  padding: 10px;
+  border-radius: var(--radius);
+  min-height: 44px;
+}
+.actions { display: flex; gap: var(--gap); align-items: flex-start; }
+
+/* Local themed confirm dialog (.mc) — used only if no global confirm is available */
+.mc { border: 0; padding: 0; background: transparent; }
+.mc::backdrop {
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+}
+.mc__card {
+  width: 340px;
+  background: var(--surface-2);
+  color: var(--text);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-1);
+  padding: 18px 16px;
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  animation: scaleIn .15s ease;
+}
+@keyframes scaleIn { from { transform: scale(.96); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.mc__title   { font-weight: 600; font-size: 1.1rem; }
+.mc__message { color: var(--muted); line-height: 1.4; }
+.mc__actions { display: flex; justify-content: flex-end; gap: 8px; }
+
+/* Optional window close button (if present in HTML) */
+.winbtn {
+  appearance: none;
+  border: 0;
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 28px;
+  text-align: center;
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease, transform .02s ease;
+}
+.winbtn:hover  { background: color-mix(in oklab, var(--danger), transparent 80%); color: var(--danger-ink, #fff); }
+.winbtn:active { transform: translateY(1px); }

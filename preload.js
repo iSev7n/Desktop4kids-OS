@@ -30,3 +30,37 @@ contextBridge.exposeInMainWorld('accountsBridge', {
   readProfiles:   () => ipcRenderer.invoke('acct:profiles:get').then(s => JSON.parse(s || '[]')),
   writeProfiles:  (list) => ipcRenderer.invoke('acct:profiles:set', JSON.stringify(list ?? [])),
 });
+
+// --- AI Mentor bridge (renderer <-> main) ---
+function askMentor(payload = {}, onToken) {
+  return new Promise((resolve, reject) => {
+    const id = `m-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
+    // Stream chunks to the renderer callback
+    const onChunk = (_evt, piece) => {
+      try { if (typeof onToken === 'function') onToken(String(piece || '')); }
+      catch (_) {}
+    };
+
+    // Finalize and resolve with full text
+    const onDone = (_evt, res) => {
+      // cleanup listeners
+      ipcRenderer.removeAllListeners(`mentor:chunk:${id}`);
+      ipcRenderer.removeAllListeners(`mentor:done:${id}`);
+
+      if (res && res.ok) {
+        resolve(String(res.text || ''));
+      } else {
+        reject(new Error(res?.error || 'Mentor failed'));
+      }
+    };
+
+    ipcRenderer.on(  `mentor:chunk:${id}`, onChunk);
+    ipcRenderer.once(`mentor:done:${id}`,  onDone);
+
+    // fire request
+    ipcRenderer.send('mentor:ask', { id, payload });
+  });
+}
+
+contextBridge.exposeInMainWorld('ai', { askMentor });

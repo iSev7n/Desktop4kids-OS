@@ -8,12 +8,13 @@
   "scripts": {
     "start": "electron .",
     "dev": "electronmon .",
-    "dist": "electron-builder -w"
+    "dist": "electron-builder -w",
+    "setup:mentor": "npx --no node-llama-cpp source download || npx --no node-llama-cpp source build --gpu auto --nodeTarget v22.20.0"
   },
   "devDependencies": {
-    "electron": "^31.7.7",
+    "electron": "^38.3.0",
     "electron-builder": "^24.13.3",
-    "electron-reload": "^2.0.0",
+    "electron-reload": "^2.0.0-alpha.1",
     "electronmon": "^2.0.2"
   },
   "build": {
@@ -23,5 +24,8 @@
       "target": "nsis",
       "icon": "assets/favicon.ico"
     }
+  },
+  "dependencies": {
+    "node-llama-cpp": "^3.12.0"
   }
 }

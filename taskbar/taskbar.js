@@ -49,6 +49,98 @@
 
   window.addEventListener('resize', fitSafeArea);
 
+  (function initMentorTaskbar() {
+  const btn = document.getElementById('tb-mentor');
+  if (!btn) return; // button not present
+
+  let pop = null;
+  let open = false;
+
+  function ensurePopover() {
+    if (pop) return pop;
+
+    pop = document.createElement('div');
+    pop.className = 'mentor-popover hidden';
+
+    // Load the Mentor app in an iframe (uses your existing app)
+    const iframe = document.createElement('iframe');
+    // sandbox keeps it safe but allows scripts/same-origin so Mentor can run
+   iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms');
+    // you can pass defaults via query params (e.g., subject/level/mode)
+    iframe.src = 'apps/ai-worker/mentor.html?mode=coach';
+    pop.appendChild(iframe);
+
+    document.body.appendChild(pop);
+    return pop;
+  }
+
+  function getTheme() {
+    try {
+      return document.documentElement.getAttribute('data-theme') || 'dark';
+    } catch { return 'dark'; }
+  }
+
+  function syncThemeIntoIframe() {
+    const iframe = pop?.querySelector('iframe');
+    if (!iframe?.contentWindow) return;
+    iframe.contentWindow.postMessage({ type: 'theme', theme: getTheme() }, '*');
+  }
+
+  function positionPopover() {
+    const rect = btn.getBoundingClientRect();
+    const gutter = 8;
+    const w = 420, h = 540;
+    const x = Math.max(gutter, Math.min(window.innerWidth - w - gutter, rect.right - w));
+    const y = Math.max(gutter, rect.top - h - gutter); // above the taskbar
+
+    pop.style.left = x + 'px';
+    pop.style.top  = y + 'px';
+  }
+
+  function show() {
+    ensurePopover();
+    pop.classList.remove('hidden');
+    open = true;
+    positionPopover();
+    syncThemeIntoIframe();
+    window.addEventListener('resize', positionPopover);
+    window.addEventListener('keydown', onKey);
+    setTimeout(() => document.addEventListener('mousedown', onDocClick), 0);
+  }
+
+  function hide() {
+    if (!pop) return;
+    pop.classList.add('hidden');
+    open = false;
+    window.removeEventListener('resize', positionPopover);
+    window.removeEventListener('keydown', onKey);
+    document.removeEventListener('mousedown', onDocClick);
+  }
+
+  function toggle() {
+    open ? hide() : show();
+  }
+
+  function onKey(e) {
+    if (e.key === 'Escape') hide();
+  }
+
+  function onDocClick(e) {
+    if (!open) return;
+    const inside = pop.contains(e.target) || btn.contains(e.target);
+    if (!inside) hide();
+  }
+
+  // Theme changes from your host can be broadcast further
+  window.addEventListener('message', (e) => {
+    const d = e?.data || {};
+    if (d.type === 'theme') syncThemeIntoIframe();
+  });
+
+  btn.addEventListener('click', toggle);
+})();
+
+
   // ---------- Core actions ----------
   function activate(wid) {
     for (const [k, v] of windows) v.btn.classList.toggle('active', k === wid);

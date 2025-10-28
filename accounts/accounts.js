@@ -250,62 +250,97 @@
     return t.content.firstElementChild.cloneNode(true);
   }
 
-  function showModalFromTemplate(tplId, setup){
-    return new Promise(async (resolve)=>{
-      await ensureTemplatesLoaded();
-      const dlg  = cloneTemplate(tplId);
-      const wrap = document.createElement('div');
-      wrap.className = 'dlg-wrap';
-      wrap.appendChild(dlg);
-      document.body.appendChild(wrap);
+function showModalFromTemplate(tplId, setup){
+  return new Promise(async (resolve)=>{
+    await ensureTemplatesLoaded();
+    const dlg  = cloneTemplate(tplId);
+    const wrap = document.createElement('div');
+    wrap.className = 'dlg-wrap';
+    wrap.appendChild(dlg);
+    document.body.appendChild(wrap);
 
-      const btnOK     = dlg.querySelector('[data-k="ok"]');
-      const btnCancel = dlg.querySelector('[data-k="cancel"]');
+    // === Animate IN ===
+    dlg.classList.add('anim-pop-in');
+    dlg.addEventListener('animationend', () => {
+      dlg.classList.remove('anim-pop-in');
+    }, { once:true });
 
-      const api = { wrap, dlg, ok:btnOK, cancel:btnCancel, resolve, close: (val)=> close(val) };
-      setup?.(api);
+    const btnOK     = dlg.querySelector('[data-k="ok"]');
+    const btnCancel = dlg.querySelector('[data-k="cancel"]');
 
-      function onKey(e){
-        if (e.key === 'Escape') return close(null);
-        if (e.key === 'Enter' && btnOK && !btnOK.disabled) btnOK.click();
-        if (e.key === 'Tab'){
-          const els = [...dlg.querySelectorAll('input,select,button')].filter(el=>!el.disabled);
-          if (!els.length) return;
-          const first = els[0], last = els[els.length-1];
-          if (e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); }
-          else if (!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
-        }
+    const api = { wrap, dlg, ok:btnOK, cancel:btnCancel, resolve, close: (val)=> close(val) };
+    setup?.(api);
+
+    function onKey(e){
+      if (e.key === 'Escape') return close(null);
+      if (e.key === 'Enter' && btnOK && !btnOK.disabled) btnOK.click();
+      if (e.key === 'Tab'){
+        const els = [...dlg.querySelectorAll('input,select,button')].filter(el=>!el.disabled);
+        if (!els.length) return;
+        const first = els[0], last = els[els.length-1];
+        if (e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
       }
-      function cleanup(){ document.removeEventListener('keydown', onKey, true); }
-      function close(val){ cleanup(); wrap.remove(); resolve(val); }
+    }
+    function cleanup(){ document.removeEventListener('keydown', onKey, true); }
+    function hardRemove(val){ cleanup(); wrap.remove(); resolve(val); }
 
-      btnCancel?.addEventListener('click', ()=> close(null));
-      document.addEventListener('keydown', onKey, true);
-      setTimeout(()=> dlg.querySelector('input,select,button')?.focus(), 0);
-    });
-  }
+    function close(val){
+      // === Animate OUT ===
+      dlg.classList.remove('anim-pop-in');
+      dlg.classList.add('anim-pop-out');
+      dlg.addEventListener('animationend', ()=>{
+        dlg.classList.remove('anim-pop-out');
+        hardRemove(val);
+      }, { once:true });
+    }
 
-  function showAlert(message, title = 'Notice'){
-    return new Promise((resolve)=>{
-      const wrap = document.createElement('div');
-      wrap.className = 'dlg-wrap';
-      wrap.innerHTML = `
-        <div class="dlg" role="dialog" aria-modal="true">
-          <div class="dlg-title">${title}</div>
-          <div class="dlg-body" style="padding-top:6px">${message}</div>
-          <div class="dlg-actions">
-            <button data-k="ok">OK</button>
-          </div>
-        </div>`;
-      document.body.appendChild(wrap);
-      const btn = wrap.querySelector('[data-k="ok"]');
-      const close = ()=>{ document.removeEventListener('keydown', onKey, true); wrap.remove(); resolve(); };
-      const onKey = (e)=>{ if (e.key==='Escape' || e.key==='Enter') close(); };
-      btn.addEventListener('click', close);
-      document.addEventListener('keydown', onKey, true);
-      setTimeout(()=> btn.focus(), 0);
-    });
-  }
+    btnCancel?.addEventListener('click', ()=> close(null));
+    document.addEventListener('keydown', onKey, true);
+    setTimeout(()=> dlg.querySelector('input,select,button')?.focus(), 0);
+  });
+}
+
+function showAlert(message, title = 'Notice'){
+  return new Promise((resolve)=>{
+    const wrap = document.createElement('div');
+    wrap.className = 'dlg-wrap';
+    wrap.innerHTML = `
+      <div class="dlg" role="dialog" aria-modal="true">
+        <div class="dlg-title">${title}</div>
+        <div class="dlg-body" style="padding-top:6px">${message}</div>
+        <div class="dlg-actions">
+          <button data-k="ok">OK</button>
+        </div>
+      </div>`;
+    document.body.appendChild(wrap);
+
+    const dlg = wrap.querySelector('.dlg');
+    const btn = wrap.querySelector('[data-k="ok"]');
+
+    // IN
+    dlg.classList.add('anim-pop-in');
+    dlg.addEventListener('animationend', ()=> dlg.classList.remove('anim-pop-in'), { once:true });
+
+    const cleanup = ()=> document.removeEventListener('keydown', onKey, true);
+    const hardRemove = ()=>{ cleanup(); wrap.remove(); resolve(); };
+
+    function close(){
+      // OUT
+      dlg.classList.remove('anim-pop-in');
+      dlg.classList.add('anim-pop-out');
+      dlg.addEventListener('animationend', ()=>{
+        dlg.classList.remove('anim-pop-out');
+        hardRemove();
+      }, { once:true });
+    }
+    const onKey = (e)=>{ if (e.key==='Escape' || e.key==='Enter') close(); };
+
+    btn.addEventListener('click', close);
+    document.addEventListener('keydown', onKey, true);
+    setTimeout(()=> btn.focus(), 0);
+  });
+}
 
   /* ---------------------------------------------------------------------
    * 4) Modal flows (Login / Register / Account)
@@ -372,15 +407,17 @@
          <div class="mi" data-k="register">Register</div>`;
   }
 
-  function positionMenu(chip, menu){
-    const r = chip.getBoundingClientRect();
-    const wasHidden = menu.classList.contains('hidden');
-    if (wasHidden){ menu.style.visibility='hidden'; menu.classList.remove('hidden'); }
-    const w = menu.offsetWidth;
-    menu.style.top  = Math.round(r.bottom + 8) + 'px';
-    menu.style.left = Math.round(r.right - w) + 'px';
-    if (wasHidden){ menu.classList.add('hidden'); menu.style.visibility=''; }
-  }
+function positionMenu(chip, menu){
+  const r = chip.getBoundingClientRect();
+
+  // Anchor to the chip's right edge (no need to know the menu width)
+  const top    = Math.round(r.bottom + 8);
+  const right  = Math.round(window.innerWidth - r.right);
+  menu.style.top   = top + 'px';
+  menu.style.right = Math.max(8, right) + 'px'; // keep 8px gutter
+  menu.style.left  = 'auto';
+}
+
 
   // --- Helper: set the #userChip avatar image based on current profile
   async function setChipAvatar(){
@@ -424,20 +461,40 @@
     await setChipAvatar();
 
     const toggleMenu = (show)=>{
-      if (show) {
-        renderUserMenuHTML(menu);
-        positionMenu(chip, menu);
-        menu.classList.remove('hidden');
-        chip.setAttribute('aria-expanded','true');
-      } else {
-        menu.classList.add('hidden');
-        chip.setAttribute('aria-expanded','false');
-      }
-    };
+  if (show) {
+    renderUserMenuHTML(menu);
+    positionMenu(chip, menu);
 
-    chip.addEventListener('click', ()=> toggleMenu(true));
-    document.addEventListener('mousedown', (e)=>{ if (!menu.contains(e.target) && !chip.contains(e.target)) toggleMenu(false); });
-    window.addEventListener('resize', ()=>{ if (!menu.classList.contains('hidden')) positionMenu(chip, menu); });
+    // show + animate IN
+    menu.classList.remove('hidden', 'anim-pop-out');
+    menu.classList.add('anim-pop-in');
+    menu.setAttribute('aria-expanded','true');
+    chip.setAttribute('aria-expanded','true');
+    menu.addEventListener('animationend', ()=>{
+      menu.classList.remove('anim-pop-in');
+    }, { once:true });
+  } else {
+    // animate OUT then hide
+    if (menu.classList.contains('hidden')) return;
+    menu.classList.remove('anim-pop-in');
+    menu.classList.add('anim-pop-out');
+    menu.setAttribute('aria-expanded','false');
+    chip.setAttribute('aria-expanded','false');
+    menu.addEventListener('animationend', ()=>{
+      menu.classList.remove('anim-pop-out');
+      menu.classList.add('hidden');
+    }, { once:true });
+  }
+};
+
+chip.addEventListener('click', (e)=>{ e.stopPropagation(); toggleMenu(true); });
+document.addEventListener('mousedown', (e)=>{
+  if (!menu.contains(e.target) && !chip.contains(e.target)) toggleMenu(false);
+});
+window.addEventListener('resize', ()=>{
+  if (!menu.classList.contains('hidden')) positionMenu(chip, menu);
+});
+document.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') toggleMenu(false); });
 
 // actions
 menu.addEventListener('click', async (e)=>{

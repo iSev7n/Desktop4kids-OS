@@ -14,6 +14,7 @@
    10) Dialogs
    11) Utilities
    12) Thumbnails
+   13) Motion/animation helpers
 ---------------------------------------------------------- */
 
 /* 1) Design tokens & base
@@ -295,4 +296,25 @@ input:focus, button:focus, textarea:focus, select:focus{
 .gitem.thumb img{
   width:100%; height:64px; object-fit:cover;
   border-radius:12px; box-shadow:inset 0 0 0 1px var(--line);
+}
+
+/* 13) Motion utilities (local to Explorer iframe) */
+:root{ --ui-anim: 200ms ease; }
+
+@keyframes ui-pop-in {
+  0%   { opacity: 0; transform: translateY(6px) scale(.98); }
+  100% { opacity: 1; transform: translateY(0)   scale(1);   }
+}
+@keyframes ui-pop-out {
+  0%   { opacity: 1; transform: translateY(0)   scale(1);   }
+  100% { opacity: 0; transform: translateY(6px) scale(.98); }
+}
+
+/* Utility classes */
+.anim-pop-in  { animation: ui-pop-in  var(--ui-anim) both; }
+.anim-pop-out { animation: ui-pop-out var(--ui-anim) both; }
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .anim-pop-in, .anim-pop-out { animation: none !important; opacity: 1 !important; transform: none !important; }
 }

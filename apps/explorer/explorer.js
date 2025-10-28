@@ -58,7 +58,11 @@ async function askString({ title = 'Name', placeholder = '', initial = '', selec
     const btnOk = wrap.querySelector('[data-k="ok"]');
     const btnCancel = wrap.querySelector('[data-k="cancel"]');
 
-    // Focus & optionally select only the filename stem
+    // Animate IN
+    dlg.classList.add('anim-pop-in');
+    dlg.addEventListener('animationend', () => dlg.classList.remove('anim-pop-in'), { once:true });
+
+    // Focus behavior
     setTimeout(() => {
       inp.focus({ preventScroll: true });
       if (selectStem) {
@@ -70,36 +74,32 @@ async function askString({ title = 'Name', placeholder = '', initial = '', selec
       }
     }, 0);
 
-    // Focus trap + keyboard
-    const focusables = () => [...dlg.querySelectorAll('input,button')];
+    function close(val){
+      document.removeEventListener('keydown', onKey, true);
+      // Animate OUT
+      dlg.classList.remove('anim-pop-in');
+      dlg.classList.add('anim-pop-out');
+      dlg.addEventListener('animationend', ()=>{
+        dlg.classList.remove('anim-pop-out');
+        wrap.remove();
+        resolve(val);
+      }, { once:true });
+    }
+
     function onKey(e) {
-      if (e.key === 'Enter') {
-        btnOk.click();
-      } else if (e.key === 'Escape') {
-        close(null);
-      } else if (e.key === 'Tab') {
-        const els = focusables();
-        const first = els[0],
-          last = els[els.length - 1];
-        if (e.shiftKey && document.activeElement === first) {
-          e.preventDefault();
-          last.focus();
-        } else if (!e.shiftKey && document.activeElement === last) {
-          e.preventDefault();
-          first.focus();
-        }
+      if (e.key === 'Enter') btnOk.click();
+      else if (e.key === 'Escape') close(null);
+      else if (e.key === 'Tab') {
+        const els = [...dlg.querySelectorAll('input,button')];
+        const first = els[0], last = els[els.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
       }
     }
-    document.addEventListener('keydown', onKey);
+    document.addEventListener('keydown', onKey, true);
 
-    function close(val) {
-      document.removeEventListener('keydown', onKey);
-      wrap.remove();
-      resolve(val);
-    }
-
-    btnCancel.onclick = () => close(null);
-    btnOk.onclick = () => close(inp.value.trim());
+    btnOk.addEventListener('click', () => close(inp.value));
+    btnCancel.addEventListener('click', () => close(null));
   });
 }
 
@@ -108,7 +108,7 @@ async function askConfirm(msg = 'Are you sure?') {
     const el = document.createElement('div');
     el.className = 'dlg-wrap';
     el.innerHTML = `
-      <div class="dlg">
+      <div class="dlg" role="dialog" aria-modal="true">
         <div class="dlg-title">${msg}</div>
         <div class="dlg-actions">
           <button data-k="cancel">Cancel</button>
@@ -116,12 +116,42 @@ async function askConfirm(msg = 'Are you sure?') {
         </div>
       </div>`;
     document.body.appendChild(el);
-    const done = (val) => {
-      el.remove();
-      resolve(!!val);
-    };
-    el.querySelector('[data-k="cancel"]').onclick = () => done(false);
-    el.querySelector('[data-k="ok"]').onclick = () => done(true);
+
+    const dlg = el.querySelector('.dlg');
+    const btnOk = el.querySelector('[data-k="ok"]');
+    const btnCancel = el.querySelector('[data-k="cancel"]');
+
+    // IN
+    dlg.classList.add('anim-pop-in');
+    dlg.addEventListener('animationend', () => dlg.classList.remove('anim-pop-in'), { once: true });
+
+    function onKey(e) {
+      if (e.key === 'Escape') { e.preventDefault(); close(false); }
+      else if (e.key === 'Enter') { e.preventDefault(); close(true); }
+      else if (e.key === 'Tab') {
+        const els = [...dlg.querySelectorAll('button')];
+        const first = els[0], last = els[els.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    }
+
+    function close(val) {
+      document.removeEventListener('keydown', onKey, true);
+
+      // OUT
+      dlg.classList.add('anim-pop-out');
+      dlg.addEventListener('animationend', () => {
+        dlg.classList.remove('anim-pop-out');
+        el.remove();
+        resolve(!!val);
+      }, { once: true });
+    }
+
+    btnOk.addEventListener('click',   () => close(true));
+    btnCancel.addEventListener('click', () => close(false));
+    document.addEventListener('keydown', onKey, true);
+    setTimeout(() => btnOk.focus(), 0);
   });
 }
 
@@ -164,8 +194,12 @@ async function askName({ title = 'Name', initial = '', placeholder = '', validat
 /* ==========================================================
    3) Desktop notify (fs-change)
 ========================================================== */
-function notifyDesktop() {
-  window.top?.postMessage?.({ type: 'fs-change', rel: pathNow }, '*');
+function notifyDesktop(rel = pathNow) {
+  try {
+    window.top?.postMessage?.({ type: 'fs-change', rel }, '*');
+  } catch (err) {
+    console.warn('notifyDesktop failed:', err);
+  }
 }
 
 /* ==========================================================
@@ -699,14 +733,18 @@ function buildMenuHTML(items) {
     .join('');
 }
 function positionContextMenu(ev) {
-  ctxEl.classList.remove('hide');
+  // prepare visible for measurement
+  ctxEl.classList.remove('hide', 'anim-pop-out');
   ctxEl.style.left = ev.clientX + 'px';
-  ctxEl.style.top = ev.clientY + 'px';
-  const r = ctxEl.getBoundingClientRect();
-  const vw = window.innerWidth;
-  const vh = window.innerHeight;
-  if (r.right > vw) ctxEl.style.left = Math.max(8, vw - r.width - 8) + 'px';
-  if (r.bottom > vh) ctxEl.style.top = Math.max(8, vh - r.height - 8) + 'px';
+  ctxEl.style.top  = ev.clientY + 'px';
+  const r  = ctxEl.getBoundingClientRect();
+  const vw = window.innerWidth, vh = window.innerHeight;
+  if (r.right  > vw) ctxEl.style.left = Math.max(8, vw - r.width  - 8) + 'px';
+  if (r.bottom > vh) ctxEl.style.top  = Math.max(8, vh - r.height - 8) + 'px';
+
+  // animate IN
+  ctxEl.classList.add('anim-pop-in');
+  ctxEl.addEventListener('animationend', ()=> ctxEl.classList.remove('anim-pop-in'), { once:true });
 }
 
 /* Item menu */
@@ -774,14 +812,27 @@ document.addEventListener('keydown', (e) => {
 });
 
 /* Close menu on click elsewhere */
-document.addEventListener('click', () => ctxEl.classList.add('hide'));
+document.addEventListener('click', () => {
+  if (ctxEl.classList.contains('hide')) return;
+  ctxEl.classList.remove('anim-pop-in');
+  ctxEl.classList.add('anim-pop-out');
+  ctxEl.addEventListener('animationend', ()=>{
+    ctxEl.classList.remove('anim-pop-out');
+    ctxEl.classList.add('hide');
+  }, { once:true });
+});
 
 /* Single click handler for all ctx actions */
 ctxEl.addEventListener('click', async (e) => {
   const btn = e.target.closest('[data-k]');
   if (!btn) return;
   const k = btn.dataset.k;
+  ctxEl.classList.remove('anim-pop-in');
+ctxEl.classList.add('anim-pop-out');
+ctxEl.addEventListener('animationend', ()=>{
+  ctxEl.classList.remove('anim-pop-out');
   ctxEl.classList.add('hide');
+}, { once:true });
 
   try {
     if (k === 'newFolder') return await doNewFolder();
@@ -801,7 +852,7 @@ ctxEl.addEventListener('click', async (e) => {
 });
 
 /* ==========================================================
-   18) File ops (with desktop notify)
+   18) File operations (with desktop notify)
    - doNewFolder / doNewTextFile / doRename / doDelete
 ========================================================== */
 async function doNewFolder() {
@@ -905,13 +956,15 @@ async function doRename(it) {
 }
 
 async function doDelete(it) {
-  const ok = await askConfirm(`Delete "${it.name}"?`);
+  const ok = await askConfirm(`Move "${it.name}" to Trash?`);
   if (!ok) return;
-  await fs.delete(it.rel);
+
+  // SOFT DELETE → Trash
+  await window.top.Trash.move(it.rel);
 
   // remove from reading-order
   const db = await readOrderDB();
-  const k = keyFor(pathNow);
+  const k  = keyFor(pathNow);
   const list = db[k] || [];
   db[k] = list.filter((x) => x !== it.rel);
   await writeOrderDB(db);
@@ -924,6 +977,45 @@ async function doDelete(it) {
    19) Sidebar quick links
 ========================================================== */
 document.querySelectorAll('.sitem').forEach((b) => b.addEventListener('click', () => navTo(b.dataset.goto)));
+
+/* ==========================================================
+   19.5) Live Refresh & FS Sync
+   ----------------------------------------------------------
+   - Reacts to "fs-change" messages broadcast by renderer.js
+   - Refreshes current folder if relevant
+   - Debounces multiple rapid updates
+========================================================== */
+
+function isPathAffected(rel, folder) {
+  if (!rel || !folder) return false;
+  // Match same folder or any subpath within
+  return rel === folder || rel.startsWith(folder + '/');
+}
+
+let fsRefreshTimer = null;
+function scheduleFsRefresh() {
+  if (fsRefreshTimer) return;
+  fsRefreshTimer = setTimeout(() => {
+    fsRefreshTimer = null;
+    load(pathNow);
+  }, 100);
+}
+
+// Listen for messages from the host (renderer)
+window.addEventListener('message', (ev) => {
+  const msg = ev.data || {};
+  if (msg.type === 'fs-change') {
+    if (isPathAffected(msg.rel, pathNow)) {
+      scheduleFsRefresh();
+    }
+  }
+  if (msg.type === 'trash-changed') {
+    // Refresh if this folder is the Trash itself (for future explorer-in-trash view)
+    if (pathNow.startsWith('user/.Trash/files')) {
+      scheduleFsRefresh();
+    }
+  }
+});
 
 /* ==========================================================
    20) Boot

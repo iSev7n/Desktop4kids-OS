@@ -25,6 +25,8 @@
     { id: 'settings',  name: 'Settings',  icon: 'assets/icons/settings.svg',      cat: 'System' },
     { id: 'browser',   name: 'Browser',   icon: 'assets/icons/browser.svg',       cat: 'Apps'   },
     { id: 'mentor',    name: 'Mentor',    icon: 'assets/icons/assistant.svg',     cat: 'Apps'   },
+    { id: 'calculator',name: 'Calculator',icon: 'assets/icons/calculator.svg',    cat: 'Apps'   },
+    { id: 'paint',     name: 'Paint',     icon: 'assets/icons/paint.svg',         cat: 'Apps'   },
 
   ];
 
@@ -69,31 +71,55 @@
         break;
       case 'mentor':
       window.top.postMessage({ type: 'open-app', id: 'mentor' }, '*');
-      break;
+        break;
+      case 'calculator':
+        window.top.postMessage({ type: 'open-app', id: 'calculator' }, '*');
+        break;
+      case 'paint':
+        window.top.postMessage({ type: 'open-app', id: 'paint' }, '*');
+        break;
       default:
         window.top.postMessage({ type: 'open-app', id }, '*');
     }
   }
 
-  function show() {
-    if (!root) return;
-    root.classList.remove('hidden');
-    if (startSearch) startSearch.value = '';
-    renderPinned();
-    renderAllApps('');
-    // focus search for quick typing
-    setTimeout(() => startSearch?.focus(), 0);
-  }
+      function animateIn(el){
+      el.classList.remove('hidden', 'anim-pop-out');
+      el.classList.add('anim-pop-in');
+      el.addEventListener('animationend', () => {
+        el.classList.remove('anim-pop-in'); // clean
+      }, { once:true });
+    }
 
-  function hide() {
-    root?.classList.add('hidden');
-    powerFlyout?.classList.add('hidden');
-  }
+    function animateOut(el){
+      el.classList.remove('anim-pop-in');
+      el.classList.add('anim-pop-out');
+      el.addEventListener('animationend', () => {
+        el.classList.remove('anim-pop-out');
+        el.classList.add('hidden');
+      }, { once:true });
+    }
 
-  function toggle() {
-    if (!root) return;
-    root.classList.contains('hidden') ? show() : hide();
-  }
+    function show() {
+      if (!root) return;
+      if (startSearch) startSearch.value = '';
+      renderPinned();
+      renderAllApps('');
+      animateIn(root);
+      // focus search for quick typing
+      setTimeout(() => startSearch?.focus(), 0);
+    }
+
+    function hide() {
+      if (!root) return;
+      animateOut(root);
+      powerFlyout?.classList.add('hidden'); // let flyout snap shut with menu
+    }
+
+    function toggle() {
+      if (!root) return;
+      root.classList.contains('hidden') ? show() : hide();
+    }
 
   /* ========== 3) Rendering ============================================ */
   function renderPinned() {
@@ -127,6 +153,8 @@
       'videos',
       'music',
       'games',
+      'paint',
+      'calculator',
       'notepad',
       'browser',
     ];

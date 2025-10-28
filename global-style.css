@@ -16,7 +16,9 @@
   11) Explorer quick polish
   12) Notepad light-mode dropdown fix
   13) Utilities
+  14) Motion utilities (0.20s pop-in/out for all UI)
 ========================================================== */
+
 
 
 /* 0) Design tokens (base + themes)
@@ -370,7 +372,7 @@ footer#taskbar > button#startBtn.start-btn:focus-visible{
 .win iframe{ width:100%; height:calc(100% - 36px); border:0; display:block; background:#000; }
 
 
-/* 7) Global scrollbars
+/* 7) Global scrollbars / resizable windows
    ------------------------------------------------------ */
 *{
   scrollbar-width: thin;
@@ -380,6 +382,36 @@ footer#taskbar > button#startBtn.start-btn:focus-visible{
 *::-webkit-scrollbar-track{ background:var(--sb-track); border-radius:8px; }
 *::-webkit-scrollbar-thumb{ background:var(--sb-thumb); border:2px solid var(--sb-track); border-radius:8px; }
 *::-webkit-scrollbar-thumb:hover{ background:var(--sb-thumb-hover); }
+
+.win.resizable {
+  resize: none; /* disable native (we handle manually) */
+  overflow: hidden;
+  position: absolute;
+}
+
+.win-resizer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 16px;
+  height: 16px;
+  cursor: nwse-resize;
+  background: transparent;
+  z-index: 10;
+}
+
+.win-resizer::after {
+  content: '';
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid var(--line);
+  border-bottom: 2px solid var(--line);
+  opacity: 0.5;
+  pointer-events: none;
+}
 
 
 /* 8) Context menu (shared)
@@ -402,49 +434,90 @@ footer#taskbar > button#startBtn.start-btn:focus-visible{
 /* 9) System dialogs / alerts (unified)
    ------------------------------------------------------ */
 .dlg-wrap{
-  position:fixed; inset:0; background:var(--scrim);
-  display:flex; align-items:center; justify-content:center; z-index:999999;
+  position:fixed; inset:0; z-index:999999;
+  display:grid; place-items:center;
+  background: color-mix(in srgb, var(--bg) 42%, transparent); /* a bit darker, clearer */
+  backdrop-filter: blur(0.5px) saturate(115%);
+  -webkit-backdrop-filter: blur(0.5px) saturate(115%); /* Safari */
+  animation: fadeIn .2s ease;
 }
-.dlg{
-  width:320px; background:var(--alert-bg); border:1px solid var(--alert-border);
-  border-radius:16px; box-shadow:0 10px 36px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.03) inset;
-  color:var(--text);
-}
-.dlg-title{ font-weight:600; font-size:16px; letter-spacing:.2px; padding:14px 18px 8px; }
-.dlg-body{ padding:4px 18px 10px; display:grid; gap:12px; }
-.dlg-body label{ display:grid; gap:6px; font-size:12px; color:#cfd6e6; }
+@keyframes fadeIn{ from{opacity:0} to{opacity:1} }
 
+.dlg{
+  width:min(480px, calc(100vw - 44px));
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--panel) 92%, #fff 8%),
+    color-mix(in srgb, var(--panel) 98%, #000 2%));
+  border:1px solid color-mix(in srgb, var(--line) 70%, transparent);
+  border-radius:18px;
+  box-shadow:0 18px 60px rgba(0,0,0,.45);
+  color:var(--text);
+  padding:18px;
+}
+
+/* Headline + content */
+.dlg-title{ font-weight:700; font-size:16px; letter-spacing:.2px; margin:2px 2px 12px; }
+.dlg-body{ display:grid; gap:12px; margin:6px 0 2px; }
+
+/* Unified field styling (works for plain inputs OR .field blocks) */
+.field{ display:grid; gap:6px; }
+.field .label{ font-size:12px; color:var(--muted); }
+
+/* Inputs */
 .dlg-body input,
-.dlg-body select{
+.dlg-body select,
+.input{
   appearance:none; -webkit-appearance:none;
-  border-radius:12px; padding:10px 12px; font-size:14px;
-  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12);
-  color:#f4f7ff; outline:none;
-  transition:border-color .15s ease, box-shadow .15s ease, background .15s ease, transform .03s ease;
+  height:38px; padding:8px 12px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background: color-mix(in srgb, var(--bg) 86%, #000 14%);
+  color:var(--text);
+  outline:none;
+  transition: border .15s, box-shadow .15s, background .15s;
 }
-.dlg-body input::placeholder{ color:rgba(244,247,255,.45); }
-.dlg-body input:focus, .dlg-body select:focus{
-  border-color:#79a8ff; box-shadow:0 0 0 3px rgba(121,168,255,.25); background:rgb(43,60,90);
+.dlg-body input::placeholder{ color: color-mix(in srgb, var(--text) 45%, transparent); }
+.dlg-body input:focus,
+.dlg-body select:focus,
+.input:focus{
+  border-color: color-mix(in srgb, var(--accent) 60%, var(--line));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 28%, transparent);
 }
-.dlg-body input:active, .dlg-body select:active{ transform:scale(0.995); }
+
+/* Clean number inputs */
+.dlg-body input[type=number]{ --moz-appearance:textfield; }
+.dlg-body input[type=number]::-webkit-outer-spin-button,
+.dlg-body input[type=number]::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+
+/* Actions */
 .dlg-actions{
-  display:flex; gap:10px; justify-content:flex-end; padding:12px 18px 16px;
+  display:flex; justify-content:flex-end; gap:10px; margin-top:8px;
 }
 .dlg-actions button{
   border:0; border-radius:12px; padding:10px 14px; font-weight:600; cursor:pointer;
   color:#0b1422;
   background:linear-gradient(180deg, color-mix(in srgb, var(--accent) 65%, white 0%), var(--accent));
-  box-shadow:0 6px 20px color-mix(in srgb, var(--accent) 35%, transparent), 0 0 0 1px rgba(255,255,255,.10) inset;
-  transition:filter .15s ease, transform .03s ease, box-shadow .15s ease;
+  box-shadow:0 6px 20px color-mix(in srgb, var(--accent) 35%, transparent), 0 0 0 1px rgba(255,255,255,.08) inset;
+  transition: filter .15s, transform .03s, box-shadow .15s;
 }
 .dlg-actions button:hover{ filter:brightness(1.04); }
 .dlg-actions button:active{ transform:translateY(1px); }
+
 .dlg-actions .secondary{
   color:var(--text);
-  background: color-mix(in srgb, var(--menu-bg) 85%, white 0%);
-  box-shadow:0 0 0 1px var(--alert-border) inset;
+  background: color-mix(in srgb, var(--card) 92%, #000 8%);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--line) 70%, transparent) inset;
 }
 
+/* subtle message line for askName validation */
+.dlg-msg{ min-height:14px; font-size:12px; color:color-mix(in srgb, var(--accent) 70%, var(--text)); }
+
+/* destructive OK styling when .danger is present */
+.dlg-actions .danger{
+  color:#fff;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--danger) 78%, #fff 0%), var(--danger));
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--danger) 45%, transparent), 0 0 0 1px rgba(255,255,255,.08) inset;
+}
 
 /* 10) Start Menu v2 harmonization
    ------------------------------------------------------ */
@@ -516,4 +589,32 @@ footer#taskbar > button#startBtn.start-btn:focus-visible{
 :focus{ outline:none; }
 input:focus, button:focus, textarea:focus, select:focus{
   box-shadow:0 0 0 2px var(--accent); border-color:var(--accent);
+}
+
+/* 14) Motion utilities (0.20s pop-in/out for all UI)
+   ------------------------------------------------------ */
+:root{
+  --ui-anim: 200ms ease;     /* match your requested .20s ease */
+}
+
+@keyframes ui-pop-in {
+  0%   { opacity: 0; transform: translateY(6px) scale(.98); }
+  100% { opacity: 1; transform: translateY(0)   scale(1);   }
+}
+@keyframes ui-pop-out {
+  0%   { opacity: 1; transform: translateY(0)   scale(1);   }
+  100% { opacity: 0; transform: translateY(6px) scale(.98); }
+}
+
+/* Utility classes you can add/remove from any element */
+.anim-pop-in  { animation: ui-pop-in  var(--ui-anim) both; }
+.anim-pop-out { animation: ui-pop-out var(--ui-anim) both; }
+
+/* Respect OS "Reduce Motion" */
+@media (prefers-reduced-motion: reduce){
+  .anim-pop-in, .anim-pop-out {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }

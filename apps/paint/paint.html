@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en" data-app="paint">
+<head>
+  <meta charset="utf-8" />
+  <title>Paint</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="../../global-style.css" />
+  <link rel="stylesheet" href="paint.css" />
+</head>
+<body>
+  <div class="paint-root">
+    <!-- Top bar: tools + settings (everything up top) -->
+    <header class="topbar" role="toolbar" aria-label="Paint actions">
+      <div class="row">
+        <div class="group">
+          <button id="newDoc" class="btn secondary" title="New">New</button>
+          <button id="resizeDoc" class="btn secondary" title="Resize canvas…">Resize…</button>
+          <button id="undo" class="btn" title="Undo (Ctrl+Z)">↶</button>
+          <button id="redo" class="btn" title="Redo (Ctrl+Shift+Z)">↷</button>
+        </div>
+
+        <div class="group">
+          <button id="toolBrush"  class="btn tool active" title="Brush (B)">🖌️</button>
+          <button id="toolEraser" class="btn tool"        title="Eraser (E)">🧽</button>
+          <button id="toolLine"   class="btn tool"        title="Line (L)">／</button>
+          <button id="toolRect"   class="btn tool"        title="Rectangle (R)">▭</button>
+          <button id="toolFill"   class="btn tool"        title="Bucket (F)">🪣</button>
+          <button id="toolPicker" class="btn tool"        title="Eyedropper (I)">🎯</button>
+        </div>
+
+        <div class="group stretch">
+          <label class="swatch">
+            <input id="color" type="color" value="#2dd4bf" />
+          </label>
+          <input id="hex" class="hex" value="#2dd4bf" aria-label="Hex" />
+
+          <label class="range">
+            <span>Size</span>
+            <input id="size" type="range" min="1" max="80" value="14" />
+            <span id="sizeVal" class="mono">14</span>
+          </label>
+
+          <label class="range">
+            <span>Opacity</span>
+            <input id="alpha" type="range" min="0" max="1" step="0.01" value="1" />
+            <span id="alphaVal" class="mono">1.00</span>
+          </label>
+        </div>
+
+        <div class="group">
+          <button id="zOut" class="btn" title="Zoom Out (Ctrl -)">−</button>
+          <button id="zReset" class="btn" title="Reset Zoom (100%)">100%</button>
+          <button id="zIn" class="btn" title="Zoom In (Ctrl +)">+</button>
+          <select id="format" title="File format">
+            <option value="png">.png</option>
+            <option value="jpeg">.jpg</option>
+            <option value="webp">.webp</option>
+          </select>
+          <button id="save" class="btn primary" title="Save">Save</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Stage: no scroll at 100%, scroll only when zoom > 1 -->
+    <main class="stage" aria-label="Canvas stage">
+      <div id="viewport" class="viewport">
+        <canvas id="canvas" aria-label="Paint canvas"></canvas>
+      </div>
+      <div id="sizePreview"></div>
+      <div class="hint-chip" aria-hidden="true">
+        <span class="kbd">Space</span> drag to pan • <span class="kbd">I</span> to pick color
+      </div>
+    </main>
+  </div>
+
+  <script src="paint.js"></script>
+</body>
+</html>

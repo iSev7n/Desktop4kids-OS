@@ -19,7 +19,7 @@
 - [🖼️ Screen Shots](#-screen-shots)
 - [🧠 Technical Overview](#-technical-overview)
 - [🛠️ Installation](#-installation)
-- [✅ Prereqs](#-prereqs)
+- [✅ System Requirements](#-system-requirements)
 - [⚡ Quick Start](#-quick-start)
 - [🗺️ Roadmap](#-roadmap)
 - [🤝 Contributing](#-contributing)
@@ -30,13 +30,13 @@
 
 ## ✨ About
 
-**Desktop4Kids OS** is an Electron-based desktop simulation designed to give children a safe and engaging computer experience. It mimics a familiar OS with a desktop, icons, windows, and apps — but runs entirely in a **sandboxed, local environment**.
+**Desktop4Kids OS** is an Electron-based desktop simulation designed to give children a safe, fun, and educational computer experience. It mimics a real operating system with a beautiful desktop, interactive icons, resizable windows, and kid-friendly apps — all running in a **fully sandboxed, offline-first environment**.
 
 **Why parents & educators love it**
 
-- 🛡️ **Safe by design** – everything stays local, no hidden network surprises.
-- 🎯 **Focused** – curated apps and a simple UI that keeps kids on task.
-- 🧩 **Extensible** – a solid foundation that you can build apps on.
+- **Safe by design** – 100% local, no internet required, no data collection.  
+- **Focused & child-centric** – Curated apps with intuitive UI and built-in learning tools.  
+- **Extensible & open** – Built for developers and educators to add custom apps and content.
 
 ---
 
@@ -44,30 +44,31 @@
 
 This release **v1.2.1** focuses on the **core desktop foundation** — stability, safety, and a strong base for future apps.
 
+---
+
 ## ✅ Currently Functional
 
-- **Desktop Environment** – Full simulated desktop with wallpapers, draggable icons, grid snapping, context menus, and boot animations.
-- **Window Manager** – Handles multi-app windows, focus, z-index stacking, resizing, and taskbar integration.  
-- **File Explorer** – Dual-view (Grid/List) with drag-reorder icons, per-folder memory, context menus, and persistent layout via `explorer-order.json`.
-- **Media Center** – Unified image/audio/video viewer with custom controls, WebAudio visualizer, and lazy-loaded thumbnails.
-- **Notepad** – Lightweight text editor with real-time save tracking, font scaling, and synced global theming.  
-- **Mentor AI** – Local AI tutor powered by `node-llama-cpp`; supports offline learning, child-safe chat rules, clear-conversation button, and theme-matched UI.
-- **Account System** – Multi-user login with isolated directories and configurable quotas (**50 MB each**).  
-- **Settings** – User profiles, theme & wallpaper management, and base for future system preferences.  
-- **Filesystem API** – Secure preload bridge (`fsAPI`) for sandboxed read/write/delete/rename operations.  
-- **System Features** – Live tray clock + calendar, theme propagation to apps, and desktop notifications on file changes.
+| **Features**          | **Description**                                                                                     |
+|-----------------------|-----------------------------------------------------------------------------------------------------|
+| **Desktop Environment** | Full simulated desktop with wallpapers, draggable icons, grid snapping, context menus, and boot animations. |
+| **Window Manager**      | Handles multi-app windows, focus, z-index stacking, resizing, and taskbar integration.               |
+| **File Explorer**       | Dual-view (Grid/List) with drag-reorder icons, per-folder memory, context menus, and persistent layout via `explorer-order.json`. |
+| **Media Center**        | Unified image/audio/video viewer with custom controls, WebAudio visualizer, and lazy-loaded thumbnails. |
+| **Notepad**             | Lightweight text editor with real-time save tracking, font scaling, and synced global theming.       |
+| **Mentor AI**           | Local AI tutor powered by `node-llama-cpp`; supports offline learning, child-safe chat rules, clear-conversation button, theme-matched UI, **and a persistent popup docked to the taskbar** for always-available assistance. |
+| **Calculator**          | Fully functional calculator app with basic and scientific modes, history tracking, and responsive layout. |
+| **Paint**               | Feature-rich drawing app supporting freehand doodling, shapes, color picker, layers, and export as **.png** or **.jpg** — saved directly to the **Photos** folder for instant viewing. |
+| **Trash System**        | Deleted files and folders are moved to a recoverable **Trash** bin with restore and permanent delete options. |
+| **Account System**      | Multi-user login with isolated directories and configurable quotas (**50 MB each**).                 |
+| **Settings**            | User profiles, theme & wallpaper management, and base for future system preferences.                 |
+| **Filesystem API**      | Secure preload bridge (`fsAPI`) for sandboxed read/write/delete/rename operations.                   |
+| **System Features**     | Live tray clock + calendar, theme propagation to apps, **revamped UI interface across all components**, **enhanced system alert popups and messages** with consistent styling and animations, and desktop notifications. |es|
 
 ---
 
 ## 🖼️ Screen Shots
 
 <img src="https://i.postimg.cc/bvqybbhg/1.png" alt="Desktop4-Kids-OS"></a>
-
-<img src="https://i.postimg.cc/7LqH77kB/2.png" alt="Desktop4-Kids-OS"></a>
-
-<img src="https://i.postimg.cc/fbMzXXN2/3.png" alt="Desktop4-Kids-OS"></a>
-
-<img src="https://i.postimg.cc/Lsm9ffpQ/4.png" alt="Desktop4-Kids-OS"></a>
 
 ---
 
@@ -149,23 +150,53 @@ npm run build
 
 ---
 
-## ⚡ Quick Start
+## ⚡ Quick Start – Try It in 30 Seconds!
 
-- Log in as **Guest** to explore the desktop.
-- Open **File Explorer** to try icon drag-ordering & view modes.
-- Launch **Notepad**, type anything — notice save status.
-- Right‑click desktop for **context menu** options.
+1. **Log in as `Guest`** → instantly land on the desktop!  
+2. **Drag any icon** → watch it snap into place with smooth animations.  
+3. **Double-click `File Explorer`** → switch between **Grid** and **List** views.  
+4. **Open `Notepad`** → type “Hello!” → see **“Saved”** appear in real time.  
+5. **Right-click the desktop** → create a **New Folder** or change wallpaper.  
+6. **Click the Mentor AI icon** (📌 on taskbar) → ask: *“What is 5 + 3?”* → get an instant answer!  
+7. **Open `Paint`** → doodle a star → **Save** → find it in **Photos**!  
+
+> **No setup. No internet. Just fun, safe learning.**  
+> Ready to build? See **Installation** above.
 
 ---
 
 ## 🗺️ Roadmap
 
-- ~~🎨 Theming in Settings for deeper personalization~~ **Completed**
-- ~~🖼️ Media app for images (**.png, .jpg, .gif**) and videos (**.mp4, .mov, .avi**)~~
-- 🎮 Game Center with educational & fun activities
-- 👪 Parental Controls + Safe Mode for parent accounts
-- ✨ UI polish, micro‑animations, and accessibility improvements
-- ~~🤖 Mentor Ai Assistant for teaching and assisting with understanding math, science, english, art concepts.~~
+### ✅ **Completed**
+- ~~🎨 Theming in Settings for deeper personalization~~  
+- ~~🖼️ Media Center for images (**.png, .jpg, .gif**) videos (**.mp4, .mov, .avi**) and music (**.mp3**, **.wav**)~~  
+- ~~🤖 Mentor AI Assistant – offline tutor for math, science, English, and art concepts~~  
+- ~~🗑️ Trash System with file/folder recovery~~  
+- ~~🧮 Calculator with basic & scientific modes + history~~  
+- ~~🎨 Paint App – doodle, draw, save as .png/.jpg to Photos~~  
+- ~~✨ Revamped UI + enhanced system alerts & animations~~  
+
+---
+
+### 🚧 **In Progress / Next Up**
+
+- 🎮 **Game Center** – Collection of educational mini-games (math puzzles, word games, logic challenges)  
+- 👪 **Parental Controls** – App time limits, usage reports, content filtering, and **Safe Mode** for parent accounts  
+- 🎨 **Advanced Theming** – Custom accent colors, dark/light/auto modes, per-user themes  
+- ♿ **Accessibility Suite** – Screen reader support, high-contrast mode, keyboard navigation, voice commands  
+- 🌍 **Multilingual Support** – UI localization (English, Spanish, French, etc.) + Mentor AI language switching  
+
+---
+
+### 🔮 **Future Vision**
+
+- 📚 **Learning Hub** – Built-in lessons, progress tracking, and achievement badges  
+- 🧑‍🏫 **Teacher Dashboard** – Multi-child management, assign activities, monitor progress  
+- 🖥️ **App Store (Local)** – Safely install community-made educational apps  
+- ☁️ **Optional Cloud Sync** – Secure, parent-controlled backup of drawings, notes, and progress  
+- 🧠 **AI-Powered Adaptive Learning** – Mentor AI adjusts difficulty based on child’s performance  
+- 🎤 **Voice Mode for Mentor AI** – Speak and listen (privacy-first, fully offline)  
+- 🖨️ **Print Support** – Export drawings, notes, or activity sheets to printer  
 
 > Have ideas? File a feature request! 🙌
 
@@ -185,11 +216,83 @@ Contributions are welcome! To get started:
 
 ## ❓ FAQ
 
-**Is it safe for kids?**  Yes — apps run in a sandboxed Electron environment with context isolation and a tightly-scoped preload.
+### **General**
+**Q: What is Desktop4Kids OS?**  
+> A kid-safe, offline-first desktop environment built with **Electron**. It looks and feels like a real OS — with apps, windows, and a file system — but runs **100% locally** with no internet required.
 
-**Does it work offline?**  Yep. Everything is local-first.
+**Q: Is it safe for children?**  
+> Yes! No network access, no data collection, no ads. All files and AI processing stay on your device.
 
-**What OSes are supported?**  Windows, macOS, and Linux (dev tested on all three).
+**Q: Can I use it without internet?**  
+> **Absolutely.** Everything — including the **Mentor AI** — works fully offline after initial setup.
+
+---
+
+### **Installation & Setup**
+
+**Q: Do I need to install anything special?**  
+> Just **Node.js 22+** and **Git**. For the AI, download a small `.gguf` model (1–3B works great on CPU).
+
+**Q: Why do I need a local AI model?**  
+> The **Mentor AI** runs **on your machine** using `node-llama-cpp`. This keeps it fast, private, and fully offline.
+
+**Q: Can I use my own AI model?**  
+> Yes! any compatible `.gguf` file and place it in `/models/`, be sure to edit `MODEL_FILENAME` in `ai-runtime.js`.
+
+**Q: Will it run on low-end laptops?**  
+> Yes! A **1B–3B model** runs smoothly on **4GB RAM + modern CPU**. GPU acceleration is optional.
+
+---
+
+### **Features & Apps**
+
+**Q: Where do saved files go?**  
+> All user files are stored in virtual directories under `/users/<username>/` — safe, isolated, and easy to reset.
+
+**Q: Can kids delete files permanently?**  
+> No — deleted items go to the **Trash** and can be restored. Parents can empty it from Settings.
+
+**Q: Can I add my own apps or games?**  
+> Yes! The system is **modular**.
+
+**Q: Is the Paint app full-featured?**  
+> It supports **freehand drawing, shapes, colors, undo/redo**, and exports as **.png** or **.jpg** directly to the **Photos** folder.
+
+---
+
+### **Parental Controls & Safety**
+
+**Q: Can parents limit screen time?**  
+> Coming soon in **v1.3** — app time limits, usage reports, and **Extra Safe Mode**.
+
+**Q: Is the Mentor AI child-appropriate?**  
+> Yes. It uses **strict prompt filtering** and **child-safe response rules** — no mature content, ever.
+
+**Q: Can I disable the AI?**  
+> Yes — just remove the model file. (Also coming soon to **Extra Safe Mode** feature that toggles on and off Mentor AI.)
+
+---
+
+### **Troubleshooting**
+
+**Q: Mentor AI is slow or not responding**  
+> - Use a **smaller model** (1B preferred)  
+> - Close other apps  
+> - Try the **prebuilt backend**: `npx node-llama-cpp source download`
+
+**Q: App windows are frozen**  
+> Press **Ctrl + Shift + R** to hard reload, or restart with `npm start`.
+
+**Q: I lost my files!**  
+> Check the **Trash** folder. Files stay there until manually emptied.
+
+**Q: How do I package it for distribution?**  
+> Run `npm run build` — creates installers for Windows, macOS, and Linux.
+
+---
+
+**Still stuck?** Open an issue on GitHub — we’re here to help!  
+[github.com/yourusername/Desktop4Kids-OS/issues](https://github.com/yourusername/Desktop4Kids-OS/issues)
 
 ---
 
@@ -199,4 +302,4 @@ This project is licensed under the **GNU General Public License v3.0**. You are 
 
 ---
 
-Made with 💙 - by Thomas Davis. 
+Made by Thomas Davis.

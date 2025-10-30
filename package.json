@@ -13,6 +13,7 @@
     "setup:mentor": "npx --no node-llama-cpp source download || npx --no node-llama-cpp source build --gpu auto --nodeTarget v22.20.0"
   },
   "devDependencies": {
+    "cross-env": "^10.1.0",
     "electron": "^38.3.0",
     "electron-builder": "^24.13.3",
     "electron-reload": "^2.0.0-alpha.1",
@@ -43,7 +44,9 @@
       {
         "from": "models",
         "to": "models",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
       }
     ],
     "asarUnpack": [

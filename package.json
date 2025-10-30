@@ -8,6 +8,7 @@
   "scripts": {
     "start": "electron .",
     "dev": "electronmon .",
+    "build": "npm run dist",
     "dist": "electron-builder -w",
     "setup:mentor": "npx --no node-llama-cpp source download || npx --no node-llama-cpp source build --gpu auto --nodeTarget v22.20.0"
   },
@@ -19,11 +20,52 @@
   },
   "build": {
     "appId": "com.desktop4kids.desktop",
-    "productName": "Desktop",
+    "productName": "Desktop4Kids",
+    "files": [
+      "index.html",
+      "main.js",
+      "renderer.js",
+      "assets/**/*",
+      "apps/**/*",
+      "global-style.css",
+      "taskbar.css",
+      "taskbar.js",
+      "startmenu.css",
+      "startmenu.js",
+      "settings.*",
+      "explorer.*",
+      "mediacenter.*",
+      "accounts.*",
+      "mentor.*",
+      "ai-worker.*"
+    ],
+    "extraResources": [
+      {
+        "from": "models",
+        "to": "models",
+        "filter": ["**/*"]
+      }
+    ],
+    "asarUnpack": [
+      "models/**"
+    ],
     "win": {
       "target": "nsis",
       "icon": "assets/favicon.ico"
-    }
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": false
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "iSev7n",
+        "repo": "Desktop4kids-OS"
+      }
+    ]
   },
   "dependencies": {
     "node-llama-cpp": "^3.12.0"

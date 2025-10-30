@@ -4,7 +4,7 @@
 &#x20;   &#x20;
 
 <p align="center">
-  <img src="https://i.postimg.cc/nLpxTQf0/banner-logo-title.png" alt="Desktop4Kids Banner" width="700">
+  <img src='https://i.postimg.cc/5tp2L72x/banner-logo-title.png' border='0' alt='banner'></a>
 </p>
 
 **A safe, playful, and sandboxed desktop experience for kids — built with Electron.**
@@ -68,7 +68,10 @@ This release **v1.2.1** focuses on the **core desktop foundation** — stability
 
 ## 🖼️ Screen Shots
 
-<img src="https://i.postimg.cc/bvqybbhg/1.png" alt="Desktop4-Kids-OS"></a>
+<img src="https://iili.io/KPC0Wgt.md.png" alt="1.png" border="0"></a> <img src="https://iili.io/KPC0Esp.md.png" alt="2.png" border="0"></a>
+<img src="https://iili.io/KPC0uqB.md.png" alt="3.png" border="0"></a> <img src="https://iili.io/KPC0Rg1.md.png" alt="4.png" border="0"></a>
+<img src="https://iili.io/KPC07dF.md.png" alt="5.png" border="0"></a> <img src="https://iili.io/KPC0A0P.md.png" alt="6.png" border="0"></a>
+
 
 ---
 

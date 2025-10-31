@@ -23,18 +23,16 @@
     "appId": "com.desktop4kids.desktop",
     "productName": "Desktop4Kids",
     "files": [
-      "index.html",
-      "main.js",
-      "renderer.js",
-      "assets/**/*",
-      "apps/**/*",
-      "global-style.css",
-      "accounts.*",
-      "taskbar.*",
-      "startmenu.*",
-      "models/**/*",
+      "**/*",
+      "!dist/**",
+      "!build/**",
+      "!**/.git/**",
+      "!**/.github/**",
+      "!**/.vscode/**",
       "!**/*.map",
-      "!**/node_modules/**/{test,__tests__,example,examples}/**"
+      "!**/node_modules/**/{test,__tests__,example,examples}/**",
+      "!**/models/**",
+      "!assets/models/**"
     ],
     "extraResources": [
       {

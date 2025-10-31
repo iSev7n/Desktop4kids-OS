@@ -1,5 +1,5 @@
 # Desktop4Kids OS
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg?style=for-the-badge)](LICENSE) ![Version](https://img.shields.io/badge/Version-v1.2.1-green.svg?style=for-the-badge)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg?style=for-the-badge)](LICENSE) ![Version](https://img.shields.io/badge/Version-v1.3.0-green.svg?style=for-the-badge)
 
 &#x20;   &#x20;
 
@@ -42,7 +42,7 @@
 
 ## 🚦 Current Status
 
-This release **v1.2.1** focuses on the **core desktop foundation** — stability, safety, and a strong base for future apps.
+This release **v1.3.0** focuses on the **core desktop foundation** — stability, safety, and a strong base for future apps.
 
 ---
 

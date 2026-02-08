@@ -5,10 +5,10 @@
 </p>
 
 <h2 align="center">
-  <a href="https://github.com/iSev7n/Desktop4kids-OS/actions/workflows/ci.yml"> <img src="https://img.shields.io/github/actions/workflow/status/iSev7n/Desktop4kids-OS/ci.yml?label=BUILD&style=for-the-badge" /> </a>
   <a href="LICENSE" style="text-decoration: none; border: 0;"> <img src="https://img.shields.io/badge/LICENSE-GPL%203.0-blue?style=for-the-badge" /> </a>
   <img src="https://img.shields.io/github/package-json/v/iSev7n/Desktop4Kids-OS?style=for-the-badge" />
   <a href="https://github.com/iSev7n/Desktop4kids-OS/stargazers" style="text-decoration: none; border: 0;"> <img src="https://img.shields.io/github/stars/iSev7n/Desktop4Kids-OS?style=for-the-badge" /> </a>
+  <a href="https://github.com/iSev7n/Desktop4kids-OS/actions/workflows/ci.yml"> <img src="https://img.shields.io/github/actions/workflow/status/iSev7n/Desktop4kids-OS/ci.yml?label=BUILD&style=for-the-badge" /> </a>
   <a href="https://github.com/iSev7n/Desktop4kids-OS/issues" style="text-decoration: none;border: 0;"> <img src="https://img.shields.io/badge/ISSUES-OPEN-brightgreen?style=for-the-badge" /> </a>
   <img src="https://img.shields.io/badge/OFFLINE--FIRST-success?style=for-the-badge" />
   <img src="https://img.shields.io/badge/AI-LOCAL%20QWEN-blueviolet?style=for-the-badge" />

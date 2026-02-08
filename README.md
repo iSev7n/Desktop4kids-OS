@@ -1,20 +1,18 @@
 # Desktop4Kids OS
 
 <p align="center">
-  <img src='https://i.postimg.cc/5tp2L72x/banner-logo-title.png' alt='banner'/>
+  <img src="https://i.postimg.cc/5tp2L72x/banner-logo-title.png" alt="Desktop4Kids OS banner" />
 </p>
 
-<p align="center">
-  <img src="https://img.shields.io/github/license/iSev7n/Desktop4Kids-OS?style=for-the-badge" />
+<h2 align="center">
+  <a href="https://github.com/iSev7n/Desktop4kids-OS/actions/workflows/ci.yml"> <img src="https://img.shields.io/github/actions/workflow/status/iSev7n/Desktop4kids-OS/ci.yml?label=BUILD&style=for-the-badge" /> </a>
+  <a href="LICENSE" style="text-decoration: none; border: 0;"> <img src="https://img.shields.io/badge/LICENSE-GPL%203.0-blue?style=for-the-badge" /> </a>
   <img src="https://img.shields.io/github/package-json/v/iSev7n/Desktop4Kids-OS?style=for-the-badge" />
-  <img src="https://img.shields.io/github/stars/iSev7n/Desktop4Kids-OS?style=for-the-badge" />
-  <img src="https://img.shields.io/github/issues/iSev7n/Desktop4Kids-OS?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Offline--First-success?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/AI-Local%20Qwen-blueviolet?style=for-the-badge" />
-  
-</p>
-
----
+  <a href="https://github.com/iSev7n/Desktop4kids-OS/stargazers" style="text-decoration: none; border: 0;"> <img src="https://img.shields.io/github/stars/iSev7n/Desktop4Kids-OS?style=for-the-badge" /> </a>
+  <a href="https://github.com/iSev7n/Desktop4kids-OS/issues" style="text-decoration: none;border: 0;"> <img src="https://img.shields.io/badge/ISSUES-OPEN-brightgreen?style=for-the-badge" /> </a>
+  <img src="https://img.shields.io/badge/OFFLINE--FIRST-success?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/AI-LOCAL%20QWEN-blueviolet?style=for-the-badge" />
+</h2>
 
 <details>
 <summary><strong>📌 Table of Contents (Click to Expand)</strong></summary>

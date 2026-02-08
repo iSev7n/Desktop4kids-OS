@@ -1,155 +1,196 @@
 # Desktop4Kids OS
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg?style=for-the-badge)](LICENSE) ![Version](https://img.shields.io/badge/Version-v1.3.0-green.svg?style=for-the-badge)
-
-&#x20;   &#x20;
 
 <p align="center">
-  <img src='https://i.postimg.cc/5tp2L72x/banner-logo-title.png' border='0' alt='banner'></a>
+  <img src='https://i.postimg.cc/5tp2L72x/banner-logo-title.png' alt='banner'/>
 </p>
 
-**A safe, playful, and sandboxed desktop experience for kids — built with Electron.**
+<p align="center">
+  <img src="https://img.shields.io/github/license/iSev7n/Desktop4Kids-OS?style=for-the-badge" />
+  <img src="https://img.shields.io/github/package-json/v/iSev7n/Desktop4Kids-OS?style=for-the-badge" />
+  <img src="https://img.shields.io/github/stars/iSev7n/Desktop4Kids-OS?style=for-the-badge" />
+  <img src="https://img.shields.io/github/issues/iSev7n/Desktop4Kids-OS?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Offline--First-success?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/AI-Local%20Qwen-blueviolet?style=for-the-badge" />
+  
+</p>
 
 ---
 
-## 📌 Table of Contents
+<details>
+<summary><strong>📌 Table of Contents (Click to Expand)</strong></summary>
 
-- [✨ About](#-about)
-- [🚦 Current Status](#-current-status)
-- [✅ Currently Functional](#-currently-functional)
-- [🖼️ Screen Shots](#-screen-shots)
-- [🧠 Technical Overview](#-technical-overview)
-- [🛠️ Installation](#-installation)
-- [✅ System Requirements](#-system-requirements)
-- [⚡ Quick Start](#-quick-start)
-- [🗺️ Roadmap](#-roadmap)
-- [🤝 Contributing](#-contributing)
-- [❓ FAQ](#-faq)
-- [📜 License](#-license)
+- [About](#about)
+- [Current Status](#current-status)
+- [Key Features](#key-features)
+- [Screenshots](#screenshots)
+- [Technical Overview](#technical-overview)
+- [Installation](#installation)
+  - [Windows Setup](#windows-setup)
+  - [Linux Setup](#linux-setup)
+  - [AI Model Configuration](#ai-model-configuration)
+- [Quick Start](#quick-start--try-it-in-30-seconds)
+- [System Requirements](#system-requirements)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
+- [FAQ](#faq-quick)
+- [License](#license)
 
----
-
-## ✨ About
-
-**Desktop4Kids OS** is an Electron-based desktop simulation designed to give children a safe, fun, and educational computer experience. It mimics a real operating system with a beautiful desktop, interactive icons, resizable windows, and kid-friendly apps — all running in a **fully sandboxed, offline-first environment**.
-
-**Why parents & educators love it**
-
-- **Safe by design** – 100% local, no internet required, no data collection.  
-- **Focused & child-centric** – Curated apps with intuitive UI and built-in learning tools.  
-- **Extensible & open** – Built for developers and educators to add custom apps and content.
+</details>
 
 ---
 
-## 🚦 Current Status
+## 🔰 About
 
-This release **v1.3.0** focuses on the **core desktop foundation** — stability, safety, and a strong base for future apps.
+**Desktop4Kids OS** is a **safe, offline-first desktop environment for children**, built with Electron.
 
----
+It simulates a real operating system experience complete with:
+- A windowed desktop
+- Child-friendly applications
+- A sandboxed file system
+- A fully local AI learning assistant
 
-## ✅ Currently Functional
-
-| **Features**          | **Description**                                                                                     |
-|-----------------------|-----------------------------------------------------------------------------------------------------|
-| **Desktop Environment** | Full simulated desktop with wallpapers, draggable icons, grid snapping, context menus, and boot animations. |
-| **Window Manager**      | Handles multi-app windows, focus, z-index stacking, resizing, and taskbar integration.               |
-| **File Explorer**       | Dual-view (Grid/List) with drag-reorder icons, per-folder memory, context menus, and persistent layout via `explorer-order.json`. |
-| **Media Center**        | Unified image/audio/video viewer with custom controls, WebAudio visualizer, and lazy-loaded thumbnails. |
-| **Notepad**             | Lightweight text editor with real-time save tracking, font scaling, and synced global theming.       |
-| **Mentor AI**           | Local AI tutor powered by `node-llama-cpp`; supports offline learning, child-safe chat rules, clear-conversation button, theme-matched UI, **and a persistent popup docked to the taskbar** for always-available assistance. |
-| **Calculator**          | Fully functional calculator app with basic and scientific modes, history tracking, and responsive layout. |
-| **Paint**               | Feature-rich drawing app supporting freehand doodling, shapes, color picker, layers, and export as **.png** or **.jpg** — saved directly to the **Photos** folder for instant viewing. |
-| **Trash System**        | Deleted files and folders are moved to a recoverable **Trash** bin with restore and permanent delete options. |
-| **Account System**      | Multi-user login with isolated directories and configurable quotas (**50 MB each**).                 |
-| **Settings**            | User profiles, theme & wallpaper management, and base for future system preferences.                 |
-| **Filesystem API**      | Secure preload bridge (`fsAPI`) for sandboxed read/write/delete/rename operations.                   |
-| **System Features**     | Live tray clock + calendar, theme propagation to apps, **revamped UI interface across all components**, **enhanced system alert popups and messages** with consistent styling and animations, and desktop notifications. |es|
+No internet. No tracking. No cloud dependency.
 
 ---
 
-## 🖼️ Screen Shots
+## 📈  Current Status
 
-<img src="https://iili.io/KPC0Wgt.md.png" alt="1.png" border="0"></a> <img src="https://iili.io/KPC0Esp.md.png" alt="2.png" border="0"></a>
-<img src="https://iili.io/KPC0uqB.md.png" alt="3.png" border="0"></a> <img src="https://iili.io/KPC0Rg1.md.png" alt="4.png" border="0"></a>
-<img src="https://iili.io/KPC07dF.md.png" alt="5.png" border="0"></a> <img src="https://iili.io/KPC0A0P.md.png" alt="6.png" border="0"></a>
+This release **v1.3.0** focuses on the **core desktop foundation** stability, safety, and a strong base for future apps.
 
+---
+
+## 🚀 Key Features
+
+### 🔧 Core System Components
+| **System Component** | **Version** | **Key Capabilities** |
+|---------------------|-------------|----------------------|
+| **Desktop Environment** | 1.0 | Wallpapers, draggable icons, grid snapping, context menus, boot animations |
+| **Window Manager** | 1.0 | Multi-window handling, focus control, z-index stacking, resizing, taskbar integration |
+| **File Explorer** | 1.0 | Grid/List views, drag-reorder icons, per-folder layout memory, context menus |
+| **Virtual Filesystem Layer** | 1.0 | Secure preload bridge, sandboxed read/write/rename/delete |
+| **User Account Manager** | 1.0 | Multi-user profiles, isolated directories, storage quotas |
+| **Trash System** | 1.0 | Recoverable deletes, restore support, permanent delete |
+| **System Services** | 1.0 | Tray clock & calendar, global theming, alerts, notifications |
+
+### 🧩 Built-In Applications
+| **Application** | **Version** | **Key Capabilities** |
+|----------------|-------------|----------------------|
+| **Media Center** | 1.0 | Image/audio/video playback, custom controls, WebAudio visualizer |
+| **Notepad** | 1.0 | Real-time saving, font scaling, theme synchronization |
+| **Calculator** | 1.0 | Basic & scientific modes, calculation history |
+| **Paint** | 1.0 | Drawing tools, shapes, layers, PNG/JPG export |
+| **Mentor AI** | 1.0 | Fully offline AI tutor, child-safe responses, taskbar dock |
+| **Settings** | 1.0 | User profiles, theme management, wallpaper selection |
+
+
+
+---
+
+## 🖼️ Screenshots
+
+<p align="center">
+  <img src="https://iili.io/KPC0Wgt.md.png" width="45%" />
+  <img src="https://iili.io/KPC0Esp.md.png" width="45%" />
+</p>
+
+<p align="center">
+  <img src="https://iili.io/KPC0uqB.md.png" width="45%" />
+  <img src="https://iili.io/KPC0Rg1.md.png" width="45%" />
+</p>
+
+<p align="center">
+  <img src="https://iili.io/KPC07dF.md.png" width="45%" />
+  <img src="https://iili.io/KPC0A0P.md.png" width="45%" />
+</p>
 
 ---
 
 ## 🧠 Technical Overview
 
-| Component       | Description                                                        |
-| --------------- | ------------------------------------------------------------------ |
-| **Framework**   | Electron 31                                                        |
-| **Language**    | JavaScript (Node + Renderer bridge via `preload.js`)               |
-| **Storage**     | Virtual user directories under `/users/<username>`                 |
-| **Security**    | Context isolation (`contextBridge` + `ipcRenderer.invoke`) enabled |
-| **Build Tools** | `electron-builder` (packaging), `electronmon` (dev hot‑reload)     |
+| Component       | Description                                                                  |
+| --------------- | ---------------------------------------------------------------------------- |
+| **Framework**   | Electron 31 (modern sandboxed configuration)                                 |
+| **Language**    | JavaScript (Node.js backend + isolated renderer via `preload.js`)             |
+| **Storage**     | Virtual user directories under `/users/<username>`                           |
+| **Security**    | Context isolation, disabled `remote`, IPC via `contextBridge` only           |
+| **Build Tools** | `electron-builder` (packaging), `electronmon` (dev hot-reload)               |
 
-> Tip: Keep your **preload** surface tight and validate every IPC input.
+> Tip: Keep your **preload** surface minimal and validate every IPC payload.
 
 ---
 
 ## 🛠️ Installation
 
+### Windows Setup
+
 ```bash
-# 1) Clone the repo
 git clone https://github.com/yourusername/Desktop4Kids-OS.git
 cd Desktop4Kids-OS
-
-# 2) Install dependencies
 npm install
-
 ```
-**2.1 Get a local LLM model (GGUF)**
 
-Place your model file here (1B–3B runs well on CPU):
+Create/Verify a models directory:
 ```bash
-Desktop4Kids-OS/models/llama-3.2-1b-instruct-q4_k_m.gguf
-```
-> You can rename any compatible GGUF to this filename, or edit `MODEL_FILENAME` inside `apps/ai-worker/ai-runtime.js`.
-
-**2.2 Stage the llama backend (one-time)**
-
-Download a prebuilt llama backend (fastest):
-```bash
-npx --no node-llama-cpp source download
+Desktop4Kids-OS/models/
 ```
 
-Or build locally (optional, adds GPU support):
-
-```bash
-# auto-selects CPU/CUDA/Metal/Vulkan depending on hardware
-npx --no node-llama-cpp source build --gpu auto --nodeTarget v22.20.0
+Download and place:
+```
+Qwen2.5-3B-Instruct-Q5_K_M.gguf
 ```
 
-> `--nodeTarget v22.20.0` matches Electron 38.4.0’s embedded Node version.
+Verify configuration:
+```js
+const MODEL_FILENAME = 'Qwen2.5-3B-Instruct-Q5_K_M.gguf';
+```
 
-**3 Run Development**
+Run:
 ```bash
 npm start
 ```
-Launch the Mentor app from the desktop environment.
-You should see the greeting:
-
-> “Welcome back! Are you ready to learn?”
-
-### 🧪 Optional: Package an App Build
-
-```bash
-npm run build
-```
-
-> Uses `electron-builder`. Models are loaded from `resources/models/…` when packaged. Configure targets in `package.json`.
 
 ---
 
-## ✅ Prereqs
+### Linux Setup
 
-| Platform        | Requirements                                                                  |
-| --------------- | ------------------------------------------------------------------------------|
-| **Windows**     | Node 22+, Git. (For local builds: VS 2022 Build Tools (C++), CMake, Python 3) |
-| **macOS**       | Xcode Command Line Tools (Metal backend supported)                            |
-| **Linux**       | `build-essential`, `cmake`, Python 3, and CUDA/Vulkan if using GPU            |
+```bash
+sudo apt update
+
+sudo apt install -y build-essential cmake python3 git
+
+git clone https://github.com/yourusername/Desktop4Kids-OS.git
+
+cd Desktop4Kids-OS
+
+npm install
+
+npm start
+```
+
+---
+## ❗ **Important**
+
+### AI Model Configuration
+
+Any compatible GGUF model can be used.
+
+Steps:
+1. Place model in `models/`
+2. Update `MODEL_FILENAME` in `ai-runtime.js`
+3. Restart application
+
+No internet is used after setup.
+
+---
+
+## 🧾 System Requirements
+
+| Platform    | Requirements                                                                 |
+|------------|-------------------------------------------------------------------------------|
+| **Windows** | Node.js 22+, Git. (For local builds: VS 2022 Build Tools (C++), CMake, Python) |
+| **macOS**  | Node.js 22+, Xcode Command Line Tools (Metal backend supported)                |
+| **Linux**  | Node.js 22+, `build-essential`, `cmake`, Python 3 (CUDA/Vulkan optional)      |
+
 
 ---
 
@@ -191,15 +232,11 @@ npm run build
 
 ---
 
-### 🔮 **Future Vision**
+### **Future Vision**
 
-- 📚 **Learning Hub** – Built-in lessons, progress tracking, and achievement badges  
-- 🧑‍🏫 **Teacher Dashboard** – Multi-child management, assign activities, monitor progress  
+- 📚 **Learning Hub** – Built-in lessons, progress tracking, and achievement badges
 - 🖥️ **App Store (Local)** – Safely install community-made educational apps  
-- ☁️ **Optional Cloud Sync** – Secure, parent-controlled backup of drawings, notes, and progress  
-- 🧠 **AI-Powered Adaptive Learning** – Mentor AI adjusts difficulty based on child’s performance  
-- 🎤 **Voice Mode for Mentor AI** – Speak and listen (privacy-first, fully offline)  
-- 🖨️ **Print Support** – Export drawings, notes, or activity sheets to printer  
+- 🎤 **Voice Mode for Mentor AI** – Speak and listen (privacy-first, fully offline)
 
 > Have ideas? File a feature request! 🙌
 
@@ -207,90 +244,27 @@ npm run build
 
 ## 🤝 Contributing
 
-Contributions are welcome! To get started:
+Contributions are welcome.
 
-1. Fork the repo & create a feature branch.
-2. Follow the existing code style (preload-sandboxed IPC, no direct FS in renderer).
-3. Open a PR with a clear description and screenshots for UI changes.
-
-**Good first issues:** tests for `fsAPI`, settings menu stubs, and wallpaper presets.
-
----
-
-## ❓ FAQ
-
-### **General**
-**Q: What is Desktop4Kids OS?**  
-> A kid-safe, offline-first desktop environment built with **Electron**. It looks and feels like a real OS — with apps, windows, and a file system — but runs **100% locally** with no internet required.
-
-**Q: Is it safe for children?**  
-> Yes! No network access, no data collection, no ads. All files and AI processing stay on your device.
-
-**Q: Can I use it without internet?**  
-> **Absolutely.** Everything — including the **Mentor AI** — works fully offline after initial setup.
+Please:
+- Respect the security model
+- Avoid expanding IPC surface unnecessarily
+- Document architectural changes clearly
 
 ---
 
-### **Installation & Setup**
+## ❓ FAQ (Quick)
 
-**Q: Do I need to install anything special?**  
-> Just **Node.js 22+** and **Git**. For the AI, download a small `.gguf` model (1–3B works great on CPU).
+**Q: Is Desktop4Kids safe for children?**  
+> A: Yes. It runs fully offline with no ads, tracking, or network access.
 
-**Q: Why do I need a local AI model?**  
-> The **Mentor AI** runs **on your machine** using `node-llama-cpp`. This keeps it fast, private, and fully offline.
+**Q: Does it require internet?**  
+> A: No. Everything, including Mentor AI, runs locally after setup.
 
 **Q: Can I use my own AI model?**  
-> Yes! any compatible `.gguf` file and place it in `/models/`, be sure to edit `MODEL_FILENAME` in `ai-runtime.js`.
+> A: Yes. Any compatible `.gguf` model can be placed in `/models/`.
 
-**Q: Will it run on low-end laptops?**  
-> Yes! A **1B–3B model** runs smoothly on **4GB RAM + modern CPU**. GPU acceleration is optional.
-
----
-
-### **Features & Apps**
-
-**Q: Where do saved files go?**  
-> All user files are stored in virtual directories under `/users/<username>/` — safe, isolated, and easy to reset.
-
-**Q: Can kids delete files permanently?**  
-> No — deleted items go to the **Trash** and can be restored. Parents can empty it from Settings.
-
-**Q: Can I add my own apps or games?**  
-> Yes! The system is **modular**.
-
-**Q: Is the Paint app full-featured?**  
-> It supports **freehand drawing, shapes, colors, undo/redo**, and exports as **.png** or **.jpg** directly to the **Photos** folder.
-
----
-
-### **Parental Controls & Safety**
-
-**Q: Can parents limit screen time?**  
-> Coming soon in **v1.3** — app time limits, usage reports, and **Extra Safe Mode**.
-
-**Q: Is the Mentor AI child-appropriate?**  
-> Yes. It uses **strict prompt filtering** and **child-safe response rules** — no mature content, ever.
-
-**Q: Can I disable the AI?**  
-> Yes — just remove the model file. (Also coming soon to **Extra Safe Mode** feature that toggles on and off Mentor AI.)
-
----
-
-### **Troubleshooting**
-
-**Q: Mentor AI is slow or not responding**  
-> - Use a **smaller model** (1B preferred)  
-> - Close other apps  
-> - Try the **prebuilt backend**: `npx node-llama-cpp source download`
-
-**Q: App windows are frozen**  
-> Press **Ctrl + Shift + R** to hard reload, or restart with `npm start`.
-
-**Q: I lost my files!**  
-> Check the **Trash** folder. Files stay there until manually emptied.
-
-**Q: How do I package it for distribution?**  
-> Run `npm run build` — creates installers for Windows, macOS, and Linux.
+👉 **See the full FAQ:** [docs/FAQ.md](docs/FAQ.md)
 
 ---
 
@@ -301,8 +275,17 @@ Contributions are welcome! To get started:
 
 ## 📜 License
 
-This project is licensed under the **GNU General Public License v3.0**. You are free to use, modify, and distribute under the same terms. See [LICENSE](LICENSE) for details.
+GNU General Public License v3.0. See [LICENSE](LICENSE) for details.
 
 ---
 
-Made by Thomas Davis.
+<h2 align="center">
+   Made with :blue_heart: by Thomas Davis.<br><br>
+  <a href="https://www.sololearn.com/en/profile/35861735"> <img src="https://img.shields.io/badge/SoloLearn-Profile-blue?style=for-the-badge&logo=sololearn&logoColor=white" /> </a>
+  <a href="https://isev7n.github.io/Dark-Portfolio/index.html"> <img src="https://img.shields.io/badge/Portfolio-View-6b5cff?style=for-the-badge&logo=About.me&logoColor=white" /> </a>
+  <a href="https://ubuntu.com/"> <img src="https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white" /> </a>
+  <a href="https://code.visualstudio.com/"> <img src="https://img.shields.io/badge/VSCode-0078D4?style=for-the-badge&logo=visualstudiocode&logoColor=white" /> </a>
+  <a href="https://developer.mozilla.org/en-US/docs/Web/HTML"> <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" /> </a>
+  <a href="https://developer.mozilla.org/en-US/docs/Web/CSS"> <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" /> </a>
+  <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript"> <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" /> </a>
+</h2>

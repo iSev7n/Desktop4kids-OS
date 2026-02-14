@@ -1,223 +1,311 @@
 <!doctype html>
 <!-- ==========================================================
-     Component: Settings App (settings.html)
-     Purpose: App settings UI (nav + panes + modal)
-     ----------------------------------------------------------
-     Sections
-     1) Shell & layout
-     2) Left Nav
-     3) Pane Area (Account, Storage, Personalize, Updates, About)
-     4) Avatar Picker Modal
-     5) Scripts & a11y utilities
+  Component: Settings App (settings.html)
+  Purpose: App settings UI (nav + panes + modal)
+
+  Sections
+    1) Document Head
+    2) App Shell
+      2.1) Left Nav
+      2.2) Pane Area (Account, Storage, Personalize, Updates, About)
+    3) Avatar Picker Modal (Dialog)
+    4) Scripts
+
+  Notes
+    - Move the .visually-hidden style into settings.css or global-style.css.
 ========================================================== -->
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Settings</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="settings.css" />
-  <link rel="stylesheet" href="../../global-style.css">
-</head>
-<body>
-  <!-- 1) Shell & layout -->
-  <div id="settingsApp" class="settings-app">
-    <!-- 2) Left Nav -->
-    <aside class="nav" role="navigation" aria-label="Settings sections">
-      <div class="nav-title">Settings</div>
-      <button class="nav-btn" type="button" data-pane="account" aria-controls="pane-account">Account</button>
-      <button class="nav-btn" type="button" data-pane="storage" aria-controls="pane-storage">Storage</button>
-      <button class="nav-btn" type="button" data-pane="personalize" aria-controls="pane-personalize">Personalize</button>
-      <button class="nav-btn" type="button" data-pane="updates" aria-controls="pane-updates">Updates</button>
-      <button class="nav-btn" type="button" data-pane="about" aria-controls="pane-about">About</button>
-    </aside>
+  <head>
+    <!-- 1) Document Head -->
+    <meta charset="utf-8" />
+    <title>Settings</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- 3) Pane Area -->
-    <main class="pane-area" id="main" tabindex="-1">
-      <h1 class="visually-hidden">Settings</h1>
+    <link rel="stylesheet" href="settings.css" />
+    <link rel="stylesheet" href="../../global-style.css" />
+  </head>
 
-<!-- ===== Account ===== -->
-<section class="pane" id="pane-account" aria-label="Account">
-  <h2>Account</h2>
+  <body>
+    <!-- 2) App Shell -->
+    <div id="settingsApp" class="settings-app">
+      <!-- 2.1) Left Nav -->
+      <aside class="nav" role="navigation" aria-label="Settings sections">
+        <div class="nav-title">Settings</div>
 
-  <div class="card row account-card">
-    <div class="avatar-wrap">
-      <img id="avatarPreview" src="../../assets/ui/default-avatar.svg" alt="Current avatar" />
-
-      <button id="btnChooseAvatar" class="avatar-edit" type="button" aria-label="Change avatar" title="Change avatar">
-        ✎
-      </button>
-
-      <!-- hidden fallback input used by settings.js -->
-      <input id="avatarFile" type="file" accept="image/*" hidden />
-    </div>
-
-    <div class="fields">
-      <div class="field">
-        <label for="acctUser">Username</label>
-        <input id="acctUser" type="text" maxlength="32" placeholder="username" autocomplete="username" />
-      </div>
-
-      <div class="field">
-        <label for="acctPin">PIN</label>
-        <input id="acctPin" type="password" inputmode="numeric" maxlength="4" placeholder="4 digits" autocomplete="new-password" />
-      </div>
-    </div>
-
-    <div class="actions account-actions">
-      <button id="btnSaveAccount" class="btn" type="button">Save Changes</button>
-      <button id="btnDeleteAccount" class="btn danger" type="button">Delete Account</button>
-    </div>
-
-    <div class="hint account-hint">
-      Changing your username will rename your user folder and update your session.
-    </div>
-  </div>
-</section>
-
-
-      <!-- ===== Storage ===== -->
-      <section class="pane" id="pane-storage" aria-label="Storage">
-        <h2>Storage</h2>
-        <div class="card">
-          <div class="progress" aria-label="Storage usage">
-            <div id="storeBar" class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
-          </div>
-          <div class="kvs">
-            <div><span class="k">Used:</span> <span id="storeUsed">—</span></div>
-            <div><span class="k">Free:</span> <span id="storeFree">—</span></div>
-            <div><span class="k">Quota:</span> <span id="storeQuota">—</span></div>
-          </div>
-          <div class="store-breakdown">
-          <div class="store-breakdown-title">Breakdown</div>
-          <div id="storeCats" class="store-cats" aria-label="Storage breakdown"></div>
-        </div>
-          <div class="split">
-            <button id="btnRefreshStorage" class="btn sm" type="button">Recalculate</button>
-            <button id="btnOpenUserFolder" class="btn sm secondary" type="button">Open user folder</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- ===== Personalize ===== -->
-      <section class="pane" id="pane-personalize" aria-label="Personalize">
-        <h2>Personalize</h2>
-
-        <div class="card">
-        <h3 style="margin-top:0">Theme</h3>
-        <div id="themeGrid" class="theme-grid">
-          <button class="theme-btn" type="button" data-theme="dark"   aria-pressed="false">
-            <div class="swatch" style="background:linear-gradient(135deg,#0f1115,#121a28)"></div>
-            <div>Dark</div>
-          </button>
-          <button class="theme-btn" type="button" data-theme="light"  aria-pressed="false">
-            <div class="swatch" style="background:linear-gradient(135deg,#ffffff,#eef3fb)"></div>
-            <div>Light</div>
-          </button>
-          <button class="theme-btn" type="button" data-theme="rose"   aria-pressed="false">
-            <div class="swatch" style="background:linear-gradient(135deg,#2a1822,#ff69b4)"></div>
-            <div>Rose</div>
-          </button>
-          <button class="theme-btn" type="button" data-theme="twilight" aria-pressed="false">
-            <div class="swatch" style="background:linear-gradient(135deg,#181630,#8c7bff)"></div>
-            <div>Twilight</div>
-          </button>
-          <button class="theme-btn" type="button" data-theme="ocean" aria-pressed="false">
-        <div class="swatch" style="background:linear-gradient(135deg,#0b1c24,#00bcd4)"></div>
-          <div>Ocean</div>
+        <button class="nav-btn" type="button" data-pane="account" aria-controls="pane-account">
+          Account
         </button>
-
-        <button class="theme-btn" type="button" data-theme="forest" aria-pressed="false">
-          <div class="swatch" style="background:linear-gradient(135deg,#0f1c14,#4caf50)"></div>
-          <div>Forest</div>
+        <button class="nav-btn" type="button" data-pane="storage" aria-controls="pane-storage">
+          Storage
         </button>
-
-        <button class="theme-btn" type="button" data-theme="sunset" aria-pressed="false">
-          <div class="swatch" style="background:linear-gradient(135deg,#2a160f,#ff9800)"></div>
-          <div>Sunset</div>
+        <button class="nav-btn" type="button" data-pane="personalize" aria-controls="pane-personalize">
+          Personalize
         </button>
-
-        <button class="theme-btn" type="button" data-theme="midnight" aria-pressed="false">
-          <div class="swatch" style="background:linear-gradient(135deg,#0a1226,#3f6bff)"></div>
-          <div>Midnight</div>
+        <button class="nav-btn" type="button" data-pane="updates" aria-controls="pane-updates">
+          Updates
         </button>
-        </div>
-        <div class="split" style="margin-top:12px">
-          <button id="btnResetTheme" class="btn sm secondary" type="button">Reset to system default</button>
-        </div>
-      </div>
+        <button class="nav-btn" type="button" data-pane="about" aria-controls="pane-about">
+          About
+        </button>
+      </aside>
 
-        <div class="card">
-          <h3 style="margin-top:0">Wallpaper</h3>
+      <!-- 2.2) Pane Area -->
+      <main class="pane-area" id="main" tabindex="-1">
+        <h1 class="visually-hidden">Settings</h1>
 
-          <!-- preset grid gets filled by JS -->
-          <div id="wallList" class="wall-grid" aria-label="Wallpaper presets"></div>
+        <!-- =========================
+             Account
+        ========================== -->
+        <section class="pane" id="pane-account" aria-label="Account">
+          <h2>Account</h2>
 
-          <div class="split" style="margin-top:12px">
-            <button id="btnResetWallpaper" class="btn sm secondary" type="button">Reset to default</button>
-          </div>
+          <div class="card row account-card">
+            <div class="avatar-wrap">
+              <img
+                id="avatarPreview"
+                src="../../assets/ui/default-avatar.svg"
+                alt="Current avatar"
+              />
 
-          <div id="wallpaperStatus" class="muted" style="margin-top:8px;" aria-live="polite"></div>
-        </div>
-      </section>
+              <button
+                id="btnChooseAvatar"
+                class="avatar-edit"
+                type="button"
+                aria-label="Change avatar"
+                title="Change avatar"
+              >
+                ✎
+              </button>
 
-      <!-- ===== Updates ===== -->
-      <section class="pane" id="pane-updates" aria-label="Updates">
-        <h2>Updates</h2>
-        <div class="card">
-          <p>Automatic updates are not implemented yet.</p>
-          <button id="btnCheckUpdates" class="btn sm" type="button">Check for updates</button>
-          <div id="updMsg" class="muted" style="margin-top:8px;" aria-live="polite"></div>
-        </div>
-      </section>
+              <!-- Hidden fallback input used by settings.js -->
+              <input id="avatarFile" type="file" accept="image/*" hidden />
+            </div>
 
-      <!-- ===== About ===== -->
-      <section class="pane" id="pane-about" aria-label="About">
-        <h2>About</h2>
+            <div class="fields">
+              <div class="field">
+                <label for="acctUser">Username</label>
+                <input
+                  id="acctUser"
+                  type="text"
+                  maxlength="32"
+                  placeholder="username"
+                  autocomplete="username"
+                />
+              </div>
 
-        <div class="card about-card">
-          <div class="about-hero">
-            <div class="about-left">
-              <div class="about-logo-ring" aria-hidden="true">
-                <img class="about-logo" src="../../assets/logo.png" alt="Desktop4Kids logo">
+              <div class="field">
+                <label for="acctPin">PIN</label>
+                <input
+                  id="acctPin"
+                  type="password"
+                  inputmode="numeric"
+                  maxlength="4"
+                  placeholder="4 digits"
+                  autocomplete="new-password"
+                />
               </div>
             </div>
 
-            <div class="about-right">
-              <div class="about-title">Desktop4Kids OS</div>
+            <div class="actions account-actions">
+              <button id="btnSaveAccount" class="btn" type="button">
+                Save Changes
+              </button>
+              <button id="btnDeleteAccount" class="btn danger" type="button">
+                Delete Account
+              </button>
+            </div>
 
-              <div class="about-meta">
-                <div>Version: <span id="aboutVersion">1.4.0</span></div>
-                <div>License: Open GPL v3.0</div>
+            <div class="hint account-hint">
+              Changing your username will rename your user folder and update your session.
+            </div>
+          </div>
+        </section>
+
+        <!-- =========================
+             Storage
+        ========================== -->
+        <section class="pane" id="pane-storage" aria-label="Storage">
+          <h2>Storage</h2>
+
+          <div class="card">
+            <div class="progress" aria-label="Storage usage">
+              <div
+                id="storeBar"
+                class="bar"
+                role="progressbar"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow="0"
+              ></div>
+            </div>
+
+            <div class="kvs">
+              <div><span class="k">Used:</span> <span id="storeUsed">—</span></div>
+              <div><span class="k">Free:</span> <span id="storeFree">—</span></div>
+              <div><span class="k">Quota:</span> <span id="storeQuota">—</span></div>
+            </div>
+
+            <div class="store-breakdown">
+              <div class="store-breakdown-title">Breakdown</div>
+              <div id="storeCats" class="store-cats" aria-label="Storage breakdown"></div>
+            </div>
+
+            <div class="split">
+              <button id="btnRefreshStorage" class="btn sm" type="button">Recalculate</button>
+              <button id="btnOpenUserFolder" class="btn sm secondary" type="button">
+                Open user folder
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- =========================
+             Personalize
+        ========================== -->
+        <section class="pane" id="pane-personalize" aria-label="Personalize">
+          <h2>Personalize</h2>
+
+          <!-- Theme -->
+          <div class="card">
+            <h3 style="margin-top: 0">Theme</h3>
+
+            <div id="themeGrid" class="theme-grid">
+              <button class="theme-btn" type="button" data-theme="dark" aria-pressed="false">
+                <div class="swatch" style="background: linear-gradient(135deg, #0f1115, #121a28)"></div>
+                <div>Dark</div>
+              </button>
+
+              <button class="theme-btn" type="button" data-theme="light" aria-pressed="false">
+                <div class="swatch" style="background: linear-gradient(135deg, #ffffff, #eef3fb)"></div>
+                <div>Light</div>
+              </button>
+
+              <button class="theme-btn" type="button" data-theme="rose" aria-pressed="false">
+                <div class="swatch" style="background: linear-gradient(135deg, #2a1822, #ff69b4)"></div>
+                <div>Rose</div>
+              </button>
+
+              <button class="theme-btn" type="button" data-theme="twilight" aria-pressed="false">
+                <div class="swatch" style="background: linear-gradient(135deg, #181630, #8c7bff)"></div>
+                <div>Twilight</div>
+              </button>
+
+              <button class="theme-btn" type="button" data-theme="ocean" aria-pressed="false">
+                <div class="swatch" style="background: linear-gradient(135deg, #0b1c24, #00bcd4)"></div>
+                <div>Ocean</div>
+              </button>
+
+              <button class="theme-btn" type="button" data-theme="forest" aria-pressed="false">
+                <div class="swatch" style="background: linear-gradient(135deg, #0f1c14, #4caf50)"></div>
+                <div>Forest</div>
+              </button>
+
+              <button class="theme-btn" type="button" data-theme="sunset" aria-pressed="false">
+                <div class="swatch" style="background: linear-gradient(135deg, #2a160f, #ff9800)"></div>
+                <div>Sunset</div>
+              </button>
+
+              <button class="theme-btn" type="button" data-theme="midnight" aria-pressed="false">
+                <div class="swatch" style="background: linear-gradient(135deg, #0a1226, #3f6bff)"></div>
+                <div>Midnight</div>
+              </button>
+            </div>
+
+            <div class="split" style="margin-top: 12px">
+              <button id="btnResetTheme" class="btn sm secondary" type="button">
+                Reset to system default
+              </button>
+            </div>
+          </div>
+
+          <!-- Wallpaper -->
+          <div class="card">
+            <h3 style="margin-top: 0">Wallpaper</h3>
+
+            <!-- Preset grid gets filled by JS -->
+            <div id="wallList" class="wall-grid" aria-label="Wallpaper presets"></div>
+
+            <div class="split" style="margin-top: 12px">
+              <button id="btnResetWallpaper" class="btn sm secondary" type="button">
+                Reset to default
+              </button>
+            </div>
+
+            <div id="wallpaperStatus" class="muted" style="margin-top: 8px" aria-live="polite"></div>
+          </div>
+        </section>
+
+        <!-- =========================
+             Updates
+        ========================== -->
+        <section class="pane" id="pane-updates" aria-label="Updates">
+          <h2>Updates</h2>
+
+          <div class="card">
+            <p>Automatic updates are not implemented yet.</p>
+
+            <button id="btnCheckUpdates" class="btn sm" type="button">Check for updates</button>
+
+            <div id="updMsg" class="muted" style="margin-top: 8px" aria-live="polite"></div>
+          </div>
+        </section>
+
+        <!-- =========================
+             About
+        ========================== -->
+        <section class="pane" id="pane-about" aria-label="About">
+          <h2>About</h2>
+
+          <div class="card about-card">
+            <div class="about-hero">
+              <div class="about-left">
+                <div class="about-logo-ring" aria-hidden="true">
+                  <img class="about-logo" src="../../assets/logo.png" alt="Desktop4Kids logo" />
+                </div>
               </div>
 
-              <div class="about-badges" aria-label="Tech stack">
-                <span class="tech-badge vscode">VSCode</span>
-                <span class="tech-badge html">HTML5</span>
-                <span class="tech-badge css">CSS3</span>
-                <span class="tech-badge js">JavaScript</span>
-              </div>
+              <div class="about-right">
+                <div class="about-title">Desktop4Kids OS</div>
 
-              <p class="about-desc muted">
-                Desktop4Kids is a kid-centered operating system inspired by Windows &amp; Linux.
-                It's a virtual desktop environment that mimics a real operating system, making it safe and friendly for kids.
-              </p>
+                <div class="about-meta">
+                  <div>Version: <span id="aboutVersion">1.4.0</span></div>
+                  <div>License: Open GPL v3.0</div>
+                </div>
 
-              <div class="about-footer muted">
-                Made with ♥ By Thomas Davis | 2026
+                <div class="about-badges" aria-label="Tech stack">
+                  <span class="tech-badge vscode">VSCode</span>
+                  <span class="tech-badge html">HTML5</span>
+                  <span class="tech-badge css">CSS3</span>
+                  <span class="tech-badge js">JavaScript</span>
+                </div>
+
+                <p class="about-desc muted">
+                  Desktop4Kids is a kid-centered operating system inspired by Windows &amp; Linux.
+                  It's a virtual desktop environment that mimics a real operating system, making it safe
+                  and friendly for kids.
+                </p>
+
+                <div class="about-footer muted">Made with ♥ By Thomas Davis | 2026</div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
-    </main>
-  </div>
+        </section>
+      </main>
+    </div>
 
-  <!-- 4) Avatar Picker Modal -->
-  <div id="avatarModal" class="dlg-wrap hidden" role="dialog" aria-modal="true" aria-labelledby="avatarDlgTitle">
-    <div class="dlg avatar-dlg" style="min-width:680px">
-      <div class="dlg-title" id="avatarDlgTitle">Choose an avatar</div>
+    <!-- 3) Avatar Picker Modal (Dialog) -->
+    <div
+      id="avatarModal"
+      class="dlg-wrap hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="avatarDlgTitle"
+    >
+      <div class="dlg avatar-dlg" style="min-width: 680px">
+        <div class="dlg-title" id="avatarDlgTitle">Choose an avatar</div>
 
         <div class="dlg-body avatar-editor">
+          <!-- Left: Preview + actions -->
           <div class="avatar-editor-left">
             <div class="avatar-preview-wrap">
               <img id="avatarEditorPreview" alt="Avatar preview" />
@@ -228,98 +316,134 @@
               <button id="btnAvatarSave" class="btn sm" type="button">Save</button>
             </div>
 
-            <div class="muted" style="margin-top:8px" id="avatarEditorHint" aria-live="polite"></div>
+            <div class="muted" style="margin-top: 8px" id="avatarEditorHint" aria-live="polite"></div>
           </div>
 
+          <!-- Right: Tabs + panels -->
           <div class="avatar-editor-right">
+            <!-- Tabs -->
+            <div class="av-tabs" id="avTabs" role="tablist" aria-label="Avatar options">
+              <button class="tab is-on" type="button" data-tab="face" role="tab" aria-selected="true">
+                Face
+              </button>
+              <button class="tab" type="button" data-tab="hair" role="tab" aria-selected="false">
+                Hair
+              </button>
+              <button class="tab" type="button" data-tab="outfit" role="tab" aria-selected="false">
+                Outfit
+              </button>
+              <button class="tab" type="button" data-tab="extras" role="tab" aria-selected="false">
+                Extras
+              </button>
+              <button class="tab" type="button" data-tab="bg" role="tab" aria-selected="false">
+                Background
+              </button>
+            </div>
 
-  <!-- Tabs -->
-  <div class="av-tabs" id="avTabs">
-    <button class="tab is-on" type="button" data-tab="face">Face</button>
-    <button class="tab" type="button" data-tab="hair">Hair</button>
-    <button class="tab" type="button" data-tab="outfit">Outfit</button>
-    <button class="tab" type="button" data-tab="extras">Extras</button>
-    <button class="tab" type="button" data-tab="bg">Background</button>
-  </div>
+            <!-- Panels -->
+            <div class="av-panel">
+              <!-- Face -->
+              <div class="av-pane" data-pane="face" role="tabpanel">
+                <div class="field" style="margin: 0 0 10px 0">
+                  <label style="margin-bottom: 6px">Skin</label>
+                  <div class="chip-row" id="chipSkin"></div>
+                </div>
 
-  <!-- Panels -->
-    <div class="av-panel">
+                <div class="muted" style="margin: 0 0 8px 0">Eyes</div>
+                <div class="tile-grid" id="gridEyes"></div>
 
-    <div class="av-pane" data-pane="face">
-      <div class="field" style="margin:0 0 10px 0">
-        <label style="margin-bottom:6px">Skin</label>
-        <div class="chip-row" id="chipSkin"></div>
-      </div>
+                <div class="muted" style="margin: 12px 0 8px 0">Mouth</div>
+                <div class="tile-grid" id="gridMouth"></div>
+              </div>
 
-      <div class="muted" style="margin:0 0 8px 0">Eyes</div>
-      <div class="tile-grid" id="gridEyes"></div>
+              <!-- Hair -->
+              <div class="av-pane hidden" data-pane="hair" role="tabpanel">
+                <div class="field" style="margin: 0 0 10px 0">
+                  <label style="margin-bottom: 6px">Hair Color</label>
+                  <div class="chip-row" id="chipHairColor"></div>
+                </div>
 
-      <div class="muted" style="margin:12px 0 8px 0">Mouth</div>
-      <div class="tile-grid" id="gridMouth"></div>
-    </div>
+                <div class="muted" style="margin: 0 0 8px 0">Hair</div>
+                <div class="tile-grid" id="gridHair"></div>
+              </div>
 
-    <div class="av-pane hidden" data-pane="hair">
-      <div class="field" style="margin:0 0 10px 0">
-        <label style="margin-bottom:6px">Hair Color</label>
-        <div class="chip-row" id="chipHairColor"></div>
-      </div>
+              <!-- Outfit -->
+              <div class="av-pane hidden" data-pane="outfit" role="tabpanel">
+                <div class="field" style="margin: 0 0 10px 0">
+                  <label style="margin-bottom: 6px">Outfit Color</label>
+                  <div class="chip-row" id="chipOutfitColor"></div>
+                </div>
 
-      <div class="muted" style="margin:0 0 8px 0">Hair</div>
-      <div class="tile-grid" id="gridHair"></div>
-    </div>
+                <div class="muted" style="margin: 0 0 8px 0">Outfit</div>
+                <div class="tile-grid" id="gridOutfit"></div>
+              </div>
 
-    <div class="av-pane hidden" data-pane="outfit">
-      <div class="field" style="margin:0 0 10px 0">
-        <label style="margin-bottom:6px">Outfit Color</label>
-        <div class="chip-row" id="chipOutfitColor"></div>
-      </div>
+              <!-- Extras -->
+              <div class="av-pane hidden" data-pane="extras" role="tabpanel">
+                <div class="muted" style="margin: 0 0 8px 0">Accessory</div>
+                <div class="tile-grid" id="gridAccessory"></div>
+              </div>
 
-      <div class="muted" style="margin:0 0 8px 0">Outfit</div>
-      <div class="tile-grid" id="gridOutfit"></div>
-    </div>
+              <!-- Background -->
+              <div class="av-pane hidden" data-pane="bg" role="tabpanel">
+                <div class="muted" style="margin: 0 0 8px 0">Background</div>
+                <div class="tile-grid" id="gridBg"></div>
+              </div>
+            </div>
 
-    <div class="av-pane hidden" data-pane="extras">
-      <div class="muted" style="margin:0 0 8px 0">Accessory</div>
-      <div class="tile-grid" id="gridAccessory"></div>
-    </div>
-
-    <div class="av-pane hidden" data-pane="bg">
-      <div class="muted" style="margin:0 0 8px 0">Background</div>
-      <div class="tile-grid" id="gridBg"></div>
-    </div>
-
-  </div>
-
-  <!-- Keep your existing selects but hide them (source of truth) -->
-  <div class="avatar-form hidden" aria-hidden="true">
-    <div class="field"><label for="avSkin">Skin</label><select id="avSkin"></select></div>
-    <div class="field"><label for="avHair">Hair</label><select id="avHair"></select></div>
-    <div class="field"><label for="avHairColor">Hair Color</label><select id="avHairColor"></select></div>
-    <div class="field"><label for="avEyes">Eyes</label><select id="avEyes"></select></div>
-    <div class="field"><label for="avMouth">Mouth</label><select id="avMouth"></select></div>
-    <div class="field"><label for="avOutfit">Outfit</label><select id="avOutfit"></select></div>
-    <div class="field"><label for="avOutfitColor">Outfit Color</label><select id="avOutfitColor"></select></div>
-    <div class="field"><label for="avBg">Background</label><select id="avBg"></select></div>
-    <div class="field"><label for="avAccessory">Accessory</label><select id="avAccessory"></select></div>
-  </div>
-
-</div>
-
+            <!-- Source-of-truth selects (hidden) -->
+            <div class="avatar-form hidden" aria-hidden="true">
+              <div class="field"><label for="avSkin">Skin</label><select id="avSkin"></select></div>
+              <div class="field"><label for="avHair">Hair</label><select id="avHair"></select></div>
+              <div class="field"><label for="avHairColor">Hair Color</label><select id="avHairColor"></select></div>
+              <div class="field"><label for="avEyes">Eyes</label><select id="avEyes"></select></div>
+              <div class="field"><label for="avMouth">Mouth</label><select id="avMouth"></select></div>
+              <div class="field"><label for="avOutfit">Outfit</label><select id="avOutfit"></select></div>
+              <div class="field">
+                <label for="avOutfitColor">Outfit Color</label><select id="avOutfitColor"></select>
+              </div>
+              <div class="field"><label for="avBg">Background</label><select id="avBg"></select></div>
+              <div class="field"><label for="avAccessory">Accessory</label><select id="avAccessory"></select></div>
+            </div>
+          </div>
         </div>
 
-      <div class="dlg-actions">
-        <button class="btn sm secondary" data-k="close" type="button">Close</button>
+        <div class="dlg-actions">
+          <button id="btnAvatarClose" class="btn sm secondary" data-k="close" type="button">
+            Close
+          </button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- 5) Scripts & a11y utilities -->
-  <script src="avatar.js" defer></script>
-  <script src="settings.js" defer></script>
+    <!-- 4) Scripts -->
+    <script src="avatar/avatar.core.js" defer></script>
+    <script src="avatar/avatar.options.js" defer></script>
+    <script src="avatar/avatar.utils.js" defer></script>
 
-  <!-- optional: add once in your global CSS -->
-  <style>
-    .visually-hidden{position:absolute!important;clip:rect(1px,1px,1px,1px);padding:0;border:0;height:1px;width:1px;overflow:hidden;white-space:nowrap}
-  </style>
-</body>
+    <script src="avatar/avatar.parts.eyeStyles.js" defer></script>
+    <script src="avatar/avatar.parts.mouthStyles.js" defer></script>
+    <script src="avatar/avatar.parts.outfitStyles.js" defer></script>
+    <script src="avatar/avatar.parts.accessoryStyles.js" defer></script>
+
+    <script src="avatar/avatar.renderer.js" defer></script>
+    <script src="avatar/avatar.editor.js" defer></script>
+    <script src="avatar/avatar.api.js" defer></script>
+
+    <script src="settings.js" defer></script>
+
+    <style>
+      .visually-hidden {
+        position: absolute !important;
+        clip: rect(1px, 1px, 1px, 1px);
+        padding: 0;
+        border: 0;
+        height: 1px;
+        width: 1px;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+    </style>
+
+  </body>
 </html>

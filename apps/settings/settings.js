@@ -1,12 +1,12 @@
 /* ==========================================================
-   Settings App (organized)
+   Settings App (settings.js)
    ----------------------------------------------------------
    Sections
-   0) Theme sync (with parent)
-   1) Bridges, constants, helpers
+   0) Theme sync (with parent shell)
+   1) Bridges, constants, DOM helpers, utilities
    2) Nav
    3) Account (username, pin, avatar, delete)
-   4) Storage (usage bar, open folder)
+   4) Storage (usage bar, breakdown, open folder)
    5) Personalize (theme + wallpaper)
    6) Updates (placeholder)
    7) About (version)
@@ -14,16 +14,18 @@
 ========================================================== */
 
 
-/* ---------- 0) Theme sync (with parent) ---------- */
-/** Ensure this runs before any UI paints to avoid FOUC. */
-(function initThemeSync(){
+/* ----------------------------------------------------------
+   0) Theme sync (with parent shell)
+---------------------------------------------------------- */
+(function initThemeSync() {
+  // Mirror the shell theme into this iframe/app
   try {
     const parentTheme =
       window.top?.document?.documentElement?.getAttribute('data-theme') || 'dark';
     document.documentElement.setAttribute('data-theme', parentTheme);
   } catch {}
 
-  // Live updates from the desktop shell (renderer posts {type:'theme'})
+  // Live updates from the desktop shell (renderer posts { type:'theme', theme:'...' })
   window.addEventListener('message', (e) => {
     if (e?.data?.type === 'theme' && e.data.theme) {
       document.documentElement.setAttribute('data-theme', e.data.theme);
@@ -32,16 +34,22 @@
 })();
 
 
-/* ---------- 1) Bridges, constants, helpers ---------- */
+/* ----------------------------------------------------------
+   1) Bridges, constants, DOM helpers, utilities
+---------------------------------------------------------- */
 
 /** sandboxed FS bridge (provided by renderer) */
 const fs = window.top?.fsAPI;
-/** profiles bridge: readProfiles, writeProfiles, renameUserRoot, deleteUserRoot, setCurrentUser */
+
+/** profiles bridge:
+ *  readProfiles, writeProfiles, renameUserRoot, deleteUserRoot, setCurrentUser
+ */
 const bridge = window.top?.accountsBridge || {};
 
 const QUOTA_BYTES = 50 * 1024 * 1024; // keep in sync with accounts.js
+const SETTINGS_PATH = 'user/Config/settings.json';
 
-const $  = (s) => document.querySelector(s);
+const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
 
 /** system alert shim (uses desktop-level alert if available) */
@@ -52,109 +60,164 @@ function showAlert(msg, title = 'Notice') {
 
 /** current user id from localStorage (renderer keeps this updated) */
 function getCurrentUser() {
-  try { return JSON.parse(localStorage.getItem('currentUser') || '"Guest"'); }
-  catch { return 'Guest'; }
+  try {
+    return JSON.parse(localStorage.getItem('currentUser') || '"Guest"');
+  } catch {
+    return 'Guest';
+  }
 }
 
 /** Format bytes into human-readable units */
 function fmtBytes(n) {
+  if (!Number.isFinite(n) || n < 0) n = 0;
   if (n < 1024) return `${n} B`;
-  const u = ['KB', 'MB', 'GB'];
+
+  const units = ['KB', 'MB', 'GB'];
   let i = -1;
-  do { n /= 1024; i++; } while (n >= 1024 && i < u.length - 1);
-  return `${n.toFixed(2)} ${u[i]}`;
+
+  do {
+    n /= 1024;
+    i++;
+  } while (n >= 1024 && i < units.length - 1);
+
+  return `${n.toFixed(2)} ${units[i]}`;
 }
 
 /** Ensure a folder exists; ignore errors */
 async function ensureFolder(rel) {
-  try { await fs?.createFolder?.(rel); } catch {}
+  try {
+    await fs?.createFolder?.(rel);
+  } catch {}
+}
+
+/** Upsert a profile object back into the profiles array */
+function upsertProfile(profiles, profile) {
+  const idx = profiles.findIndex((p) => p.id === profile.id);
+  if (idx >= 0) profiles[idx] = profile;
+  else profiles.push(profile);
+  return profiles;
+}
+
+/** Read settings JSON from the standard location */
+async function readSettings() {
+  try {
+    const raw = await fs?.readText?.(SETTINGS_PATH);
+    return JSON.parse(raw || '{}');
+  } catch {
+    return {};
+  }
+}
+
+/** Write settings JSON to the standard location */
+async function writeSettings(obj) {
+  await ensureFolder('user/Config');
+  await fs?.writeText?.(SETTINGS_PATH, JSON.stringify(obj, null, 2));
 }
 
 
-/* ---------- 2) Nav ---------- */
+/* ----------------------------------------------------------
+   2) Nav
+---------------------------------------------------------- */
 function navInit() {
   const panes = {
-    account:     $('#pane-account'),
-    storage:     $('#pane-storage'),
+    account: $('#pane-account'),
+    storage: $('#pane-storage'),
     personalize: $('#pane-personalize'),
-    updates:     $('#pane-updates'),
-    about:       $('#pane-about'),
+    updates: $('#pane-updates'),
+    about: $('#pane-about'),
   };
+
   const btns = $$('.nav-btn');
 
   function showPane(id) {
-    Object.values(panes).forEach(p => p?.classList.remove('active'));
-    btns.forEach(b => b.classList.remove('active'));
+    Object.values(panes).forEach((p) => p?.classList.remove('active'));
+    btns.forEach((b) => b.classList.remove('active'));
+
     panes[id]?.classList.add('active');
-    btns.find(b => b.dataset.pane === id)?.classList.add('active');
+    btns.find((b) => b.dataset.pane === id)?.classList.add('active');
   }
 
-  btns.forEach(b => b.addEventListener('click', () => showPane(b.dataset.pane)));
+  btns.forEach((b) => b.addEventListener('click', () => showPane(b.dataset.pane)));
   showPane('account'); // default
 }
 
 
 /* ==========================================================
    3) Account
-   - Username + PIN
-   - Avatar (gallery modal + fallback file input)
-   - Delete account
 ========================================================== */
 async function accountInit() {
-  const unameEl        = $('#acctUser');
-  const pinEl          = $('#acctPin');
-  const avatarImg      = $('#avatarPreview');
-  const btnChoose      = $('#btnChooseAvatar');
-  const btnAvatarReset = $('#btnAvatarReset');
-  const btnSave        = $('#btnSaveAccount');
-  const btnDelete      = $('#btnDeleteAccount');
-  const avatarFile     = $('#avatarFile'); // hidden fallback <input type="file">
+  const unameEl = $('#acctUser');
+  const pinEl = $('#acctPin');
+  const avatarImg = $('#avatarPreview');
 
-  if (!unameEl || !pinEl || !avatarImg) return; // pane not present
+  const btnChoose = $('#btnChooseAvatar');
+  const btnAvatarReset = $('#btnAvatarReset'); // (Your HTML currently does not include this)
+  const btnSave = $('#btnSaveAccount');
+  const btnDelete = $('#btnDeleteAccount');
+
+  const avatarFile = $('#avatarFile'); // hidden fallback <input type="file">
+
+  if (!unameEl || !pinEl || !avatarImg) return;
 
   // Load profiles
   let profiles = await (bridge.readProfiles?.().catch(() => []) || []);
   const meId = getCurrentUser();
-  let me = profiles.find(p => p.id === meId)
-        || { id: meId, role: 'parent', pin: '', avatar: null, avatarDataUrl: null };
+
+  let me =
+    profiles.find((p) => p.id === meId) ||
+    { id: meId, role: 'parent', pin: '', avatar: null, avatarDataUrl: null };
 
   // Seed UI
   unameEl.value = me.id;
-  pinEl.value   = me.pin || '';
+  pinEl.value = me.pin || '';
 
   await ensureFolder('user/Config/Avatars'); // legacy compatibility
   const DEFAULT_AVATAR = '../../assets/ui/default-avatar.svg';
 
   function renderAvatar() {
+    // Preferred: store as data url (self-contained)
     if (me.avatarDataUrl && /^data:image\//.test(me.avatarDataUrl)) {
       avatarImg.src = me.avatarDataUrl;
       return;
     }
+
+    // Legacy: store base64 in a file path
     if (me.avatar) {
       fs?.readText?.(me.avatar)
-        .then(b64 => { avatarImg.src = `data:image/png;base64,${b64}`; })
-        .catch(() => { avatarImg.src = DEFAULT_AVATAR; });
+        .then((b64) => {
+          avatarImg.src = `data:image/png;base64,${b64}`;
+        })
+        .catch(() => {
+          avatarImg.src = DEFAULT_AVATAR;
+        });
       return;
     }
+
     avatarImg.src = DEFAULT_AVATAR;
   }
+
   renderAvatar();
 
-  // In-app avatar gallery (if provided by settings/avatars.js)
+  // In-app avatar gallery (provided by avatar.js as window.Avatars.initAvatarModal)
   let avatarPicker = null;
+
   if (window.Avatars?.initAvatarModal) {
     avatarPicker = window.Avatars.initAvatarModal({
       onPick: async (dataUrl) => {
         me.avatarDataUrl = dataUrl; // new format (self-contained)
         me.avatar = null;           // clear legacy pointer
+
         avatarImg.src = dataUrl;
+
+        profiles = upsertProfile(profiles, me);
         await bridge.writeProfiles?.(profiles).catch(() => {});
+
         try {
           const chipImg = window.top?.document?.querySelector('#userChip .avatar');
           if (chipImg) chipImg.src = dataUrl;
           window.top?.Accounts?.refreshUserChip?.();
         } catch {}
-      }
+      },
     });
   }
 
@@ -163,49 +226,66 @@ async function accountInit() {
     else avatarFile?.click();
   }
 
-  btnChoose?.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); openAvatarPicker(); });
-  avatarImg?.addEventListener('click', openAvatarPicker);
-  avatarImg?.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openAvatarPicker(); }
+  btnChoose?.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    openAvatarPicker();
   });
 
-  // Fallback: <input type="file"> → store base64 (legacy)
+  avatarImg?.addEventListener('click', openAvatarPicker);
+  avatarImg?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      openAvatarPicker();
+    }
+  });
+
+  // Fallback: <input type="file"> → store base64 in a file (legacy)
   avatarFile?.addEventListener('change', async () => {
     const file = avatarFile.files?.[0];
     if (!file) return;
 
     const bytes = new Uint8Array(await file.arrayBuffer());
-    let b64 = '';
+
+    // Convert to base64 safely (chunked)
+    let bin = '';
     const CHUNK = 0x8000;
     for (let i = 0; i < bytes.length; i += CHUNK) {
-      // eslint-disable-next-line prefer-spread
-      b64 += String.fromCharCode.apply(null, bytes.subarray(i, i + CHUNK));
+      bin += String.fromCharCode.apply(null, bytes.subarray(i, i + CHUNK));
     }
-    const base64 = btoa(b64);
+    const base64 = btoa(bin);
 
     const rel = `user/Config/Avatars/${meId}.png`;
     await fs?.writeText?.(rel, base64);
 
     me.avatar = rel;
     me.avatarDataUrl = null;
+
+    profiles = upsertProfile(profiles, me);
     await bridge.writeProfiles?.(profiles).catch(() => {});
 
     const dataUrl = `data:image/png;base64,${base64}`;
     avatarImg.src = dataUrl;
+
     try {
       const chipImg = window.top?.document?.querySelector('#userChip .avatar');
       if (chipImg) chipImg.src = dataUrl;
       window.top?.Accounts?.refreshUserChip?.();
     } catch {}
+
     showAlert('Avatar updated.');
   });
 
-  // Reset avatar
+  // Reset avatar (only works if you add a button with id="btnAvatarReset")
   btnAvatarReset?.addEventListener('click', async () => {
     me.avatarDataUrl = null;
     me.avatar = null;
+
     renderAvatar();
+
+    profiles = upsertProfile(profiles, me);
     await bridge.writeProfiles?.(profiles).catch(() => {});
+
     try {
       const chipImg = window.top?.document?.querySelector('#userChip .avatar');
       if (chipImg) chipImg.src = DEFAULT_AVATAR;
@@ -215,18 +295,25 @@ async function accountInit() {
 
   // Save username / PIN
   btnSave?.addEventListener('click', async () => {
-    const newId  = (unameEl.value || '').trim();
-    const newPin = (pinEl.value  || '').trim();
+    const newId = (unameEl.value || '').trim();
+    const newPin = (pinEl.value || '').trim();
 
-    if (!/^[\w-]{1,32}$/.test(newId))
-      return showAlert('Username can use letters, numbers, underscore, dash (1–32 chars).', 'Invalid username');
-    if (newPin && !/^\d{4}$/.test(newPin))
+    if (!/^[\w-]{1,32}$/.test(newId)) {
+      return showAlert(
+        'Username can use letters, numbers, underscore, dash (1–32 chars).',
+        'Invalid username'
+      );
+    }
+
+    if (newPin && !/^\d{4}$/.test(newPin)) {
       return showAlert('PIN must be exactly 4 digits.', 'Invalid PIN');
+    }
 
     // Username change?
     if (newId !== me.id) {
-      if (profiles.some(p => p.id === newId))
+      if (profiles.some((p) => p.id === newId)) {
         return showAlert('That username is already taken.', 'Username in use');
+      }
 
       // 1) rename users/<old> → users/<new>
       await bridge.renameUserRoot?.(me.id, newId).catch(() => {});
@@ -254,10 +341,13 @@ async function accountInit() {
     me.pin = newPin || '';
 
     // Persist + refresh shell bits
+    profiles = upsertProfile(profiles, me);
     await bridge.writeProfiles?.(profiles).catch(() => {});
+
     try {
       const chip = document.querySelector('#userChip .uname');
       if (chip) chip.textContent = me.id;
+
       window.top?.applyWallpaper?.();
       window.top?.loadDesktopIcons?.();
       window.top?.Accounts?.refreshUserChip?.();
@@ -268,22 +358,28 @@ async function accountInit() {
 
   // Delete account
   btnDelete?.addEventListener('click', async () => {
-    const ok = confirm(`Delete account “${me.id}”? This removes their files and cannot be undone.`);
+    const ok = confirm(
+      `Delete account “${me.id}”? This removes their files and cannot be undone.`
+    );
     if (!ok) return;
 
-    profiles = profiles.filter(p => p.id !== me.id);
+    profiles = profiles.filter((p) => p.id !== me.id);
     await bridge.writeProfiles?.(profiles).catch(() => {});
     await bridge.deleteUserRoot?.(me.id).catch(() => {});
 
-    const self = (getCurrentUser() === me.id);
+    const self = getCurrentUser() === me.id;
+
     if (self) {
       localStorage.setItem('currentUser', JSON.stringify('Guest'));
       await bridge.setCurrentUser?.('Guest').catch(() => {});
+
       const chip = document.querySelector('#userChip .uname');
       if (chip) chip.textContent = 'Guest';
+
       window.top?.applyWallpaper?.();
       window.top?.loadDesktopIcons?.();
       window.top?.Accounts?.refreshUserChip?.();
+
       showAlert('Account deleted. You are now signed out.', 'Deleted');
     } else {
       showAlert('Account deleted.', 'Deleted');
@@ -292,13 +388,15 @@ async function accountInit() {
 }
 
 
-/* ---------- 4) Storage ---------- */
+/* ----------------------------------------------------------
+   4) Storage
+---------------------------------------------------------- */
 function storageInit() {
-  const usedEl  = $('#storeUsed');
-  const freeEl  = $('#storeFree');
+  const usedEl = $('#storeUsed');
+  const freeEl = $('#storeFree');
   const quotaEl = $('#storeQuota');
-  const bar     = $('#storeBar');
-  const btnRe   = $('#btnRefreshStorage');
+  const bar = $('#storeBar');
+  const btnRe = $('#btnRefreshStorage');
   const btnOpen = $('#btnOpenUserFolder');
 
   if (!usedEl || !freeEl || !quotaEl || !bar) return;
@@ -308,94 +406,101 @@ function storageInit() {
   async function folderBytes(rel) {
     let sum = 0;
     const q = [rel];
+
     while (q.length) {
       const p = q.pop();
       let rows = [];
-      try { rows = await fs?.list?.(p); } catch { continue; }
+
+      try {
+        rows = await fs?.list?.(p);
+      } catch {
+        continue;
+      }
+
       for (const it of rows) {
         if (it.type === 'dir') q.push(it.rel);
-        else sum += (it.size || 0);
+        else sum += it.size || 0;
       }
     }
+
     return sum;
   }
 
- async function refresh() {
-  const used = await folderBytes('user').catch(() => 0);
-  const free = Math.max(0, QUOTA_BYTES - used);
+  async function refresh() {
+    const used = await folderBytes('user').catch(() => 0);
+    const free = Math.max(0, QUOTA_BYTES - used);
 
-  usedEl.textContent = fmtBytes(used);
-  freeEl.textContent = fmtBytes(free);
+    usedEl.textContent = fmtBytes(used);
+    freeEl.textContent = fmtBytes(free);
 
-  const pct = Math.min(100, Math.round((used / QUOTA_BYTES) * 100));
-  bar.style.width = pct + '%';
+    const pct = QUOTA_BYTES > 0 ? Math.min(100, Math.round((used / QUOTA_BYTES) * 100)) : 0;
+    bar.style.width = pct + '%';
+    bar.setAttribute('aria-valuenow', String(pct));
 
-  // ===== Breakdown =====
-  const catsEl = document.querySelector('#storeCats');
-  if (!catsEl) return;
+    // ===== Breakdown (optional) =====
+    const catsEl = $('#storeCats');
+    if (!catsEl) return; // skip breakdown but keep main refresh working
 
-  // Adjust these to match your actual virtual FS folders
-  const CATS = [
-    { name: 'Images',   rel: 'user/Pictures' },
-    { name: 'Videos',   rel: 'user/Videos' },
-    { name: 'Documents',rel: 'user/Documents' },
-    { name: 'Downloads',rel: 'user/Downloads' },
-    { name: 'Apps',     rel: 'user/Apps' },       // change if your apps live elsewhere
-    { name: 'App Data', rel: 'user/AppData' },    // change if needed
-  ];
+    // Adjust these to match your actual virtual FS folders
+    const CATS = [
+      { name: 'Images', rel: 'user/Pictures' },
+      { name: 'Videos', rel: 'user/Videos' },
+      { name: 'Documents', rel: 'user/Documents' },
+      { name: 'Downloads', rel: 'user/Downloads' },
+      { name: 'Apps', rel: 'user/Apps' },
+      { name: 'App Data', rel: 'user/AppData' },
+    ];
 
-  // compute each folder size (missing folders will be 0)
-  const results = await Promise.all(CATS.map(async (c) => {
-    const bytes = await folderBytes(c.rel).catch(() => 0);
-    return { ...c, bytes };
-  }));
+    const results = await Promise.all(
+      CATS.map(async (c) => {
+        const bytes = await folderBytes(c.rel).catch(() => 0);
+        return { ...c, bytes };
+      })
+    );
 
-  const listedSum = results.reduce((a, r) => a + (r.bytes || 0), 0);
-  const otherBytes = Math.max(0, used - listedSum);
+    const listedSum = results.reduce((a, r) => a + (r.bytes || 0), 0);
+    const otherBytes = Math.max(0, used - listedSum);
 
-  const finalRows = [
-    ...results,
-    { name: 'Other', rel: '', bytes: otherBytes }
-  ].filter(r => r.bytes > 0); // hide empty rows (optional)
+    const finalRows = [...results, { name: 'Other', rel: '', bytes: otherBytes }]
+      .filter((r) => r.bytes > 0); // hide empty rows (optional)
 
-  catsEl.innerHTML = finalRows.map(r => {
-    const p = used > 0 ? Math.min(100, Math.round((r.bytes / used) * 100)) : 0;
-    return `
-      <div class="store-cat">
-        <div class="name">${r.name}</div>
-        <div class="size">${fmtBytes(r.bytes)}</div>
-        <div class="mini" aria-hidden="true"><i style="width:${p}%"></i></div>
-      </div>
-    `;
-  }).join('');
-}
+    catsEl.innerHTML = finalRows
+      .map((r) => {
+        const p = used > 0 ? Math.min(100, Math.round((r.bytes / used) * 100)) : 0;
+        return `
+          <div class="store-cat">
+            <div class="name">${r.name}</div>
+            <div class="size">${fmtBytes(r.bytes)}</div>
+            <div class="mini" aria-hidden="true"><i style="width:${p}%"></i></div>
+          </div>
+        `;
+      })
+      .join('');
+  }
 
   btnRe?.addEventListener('click', refresh);
-  btnOpen?.addEventListener('click', () =>
-    window.top?.postMessage?.({ type: 'open-explorer', pathRel: 'user' }, '*')
-  );
+
+  btnOpen?.addEventListener('click', () => {
+    window.top?.postMessage?.({ type: 'open-explorer', pathRel: 'user' }, '*');
+  });
+
   refresh();
 }
 
 
-/* ---------- 5) Personalize (Theme + Wallpaper) ---------- */
+/* ----------------------------------------------------------
+   5) Personalize (Theme + Wallpaper)
+---------------------------------------------------------- */
 function personalizeInit() {
-  const pane           = $('#pane-personalize');
+  const pane = $('#pane-personalize');
+  if (!pane) return;
 
   // ===== Theme picker =====
-  const themeGrid      = $('#themeGrid');
-  const btnThemeReset  = $('#btnResetTheme');
+  const themeGrid = $('#themeGrid');
+  const btnThemeReset = $('#btnResetTheme');
 
-  async function readSettings(){
-    try { return JSON.parse(await fs?.readText?.('user/Config/settings.json') || '{}'); }
-    catch { return {}; }
-  }
-  async function writeSettings(obj){
-    await ensureFolder('user/Config');
-    await fs?.writeText?.('user/Config/settings.json', JSON.stringify(obj, null, 2));
-  }
-  function markActive(theme){
-    [...(themeGrid?.querySelectorAll('.theme-btn')||[])].forEach(b=>{
+  function markActive(theme) {
+    [...(themeGrid?.querySelectorAll('.theme-btn') || [])].forEach((b) => {
       const on = b.getAttribute('data-theme') === theme;
       b.classList.toggle('active', on);
       b.setAttribute('aria-pressed', String(on));
@@ -410,10 +515,13 @@ function personalizeInit() {
   themeGrid?.addEventListener('click', async (e) => {
     const btn = e.target.closest('.theme-btn');
     if (!btn) return;
+
     const theme = btn.getAttribute('data-theme');
     const s = await readSettings();
+
     s.theme = theme;
     await writeSettings(s);
+
     await window.top?.applyTheme?.(); // renderer updates <html data-theme>
     markActive(theme);
   });
@@ -421,15 +529,16 @@ function personalizeInit() {
   btnThemeReset?.addEventListener('click', async () => {
     const s = await readSettings();
     delete s.theme;
+
     await writeSettings(s);
     await window.top?.applyTheme?.();
+
+    // Default highlight (matches your existing behavior)
     markActive('dark');
   });
 
-  if (!pane) return;
-
   // ===== Wallpaper =====
-  const grid     = $('#wallList');
+  const grid = $('#wallList');
   const btnReset = $('#btnResetWallpaper');
   const statusEl = $('#wallpaperStatus');
 
@@ -452,14 +561,17 @@ function personalizeInit() {
   ];
 
   const assetThumbUrl = (rel) => (rel.startsWith('assets/') ? `../../${rel}` : rel);
-  const setStatus = (msg) => { if (statusEl) statusEl.textContent = msg || ''; };
+
+  const setStatus = (msg) => {
+    if (statusEl) statusEl.textContent = msg || '';
+  };
 
   async function saveWallpaperRel(rel) {
     try {
-      let settings = {};
-      try { settings = JSON.parse(await fs?.readText?.('~/Config/settings.json')); } catch {}
+      const settings = await readSettings();
       settings.wallpaper = rel; // keep raw 'assets/...'
-      await fs?.writeText?.('~/Config/settings.json', JSON.stringify(settings, null, 2));
+      await writeSettings(settings);
+
       await window.top?.applyWallpaper?.();
       setStatus('Wallpaper applied.');
     } catch (err) {
@@ -469,8 +581,9 @@ function personalizeInit() {
 
   function renderPresets() {
     if (!grid) return;
+
     grid.innerHTML = '';
-    PRESETS.forEach(rel => {
+    PRESETS.forEach((rel) => {
       const btn = document.createElement('button');
       btn.className = 'wall-tile';
       btn.innerHTML = `<img src="${assetThumbUrl(rel)}" alt="">`;
@@ -488,7 +601,9 @@ function personalizeInit() {
 }
 
 
-/* ---------- 6) Updates (placeholder) ---------- */
+/* ----------------------------------------------------------
+   6) Updates (placeholder)
+---------------------------------------------------------- */
 function updatesInit() {
   const btn = $('#btnCheckUpdates');
   const msg = $('#updMsg');
@@ -500,16 +615,22 @@ function updatesInit() {
 }
 
 
-/* ---------- 7) About ---------- */
+/* ----------------------------------------------------------
+   7) About
+---------------------------------------------------------- */
 function aboutInit() {
-  const verEl   = $('#aboutVersion');
-  const userEl  = $('#aboutUser');
+  const verEl = $('#aboutVersion');
+
+  // Your HTML currently has <span id="aboutVersion">1.4.0</span>
+  // Keep JS consistent with the HTML (choose one source of truth).
+  // If you want HTML to be truth, remove this line entirely.
+  if (verEl) verEl.textContent = '1.4.0';
+
+  // These do not exist in your current HTML (safe to keep, does nothing)
+  const userEl = $('#aboutUser');
   const themeEl = $('#aboutTheme');
 
-  // Match your current version (update when you bump releases)
-  if (verEl) verEl.textContent = 'v1.3.0';
-
-  const user = getCurrentUser?.() || 'Guest';
+  const user = getCurrentUser() || 'Guest';
   if (userEl) userEl.textContent = user;
 
   const theme =
@@ -521,12 +642,14 @@ function aboutInit() {
 }
 
 
-/* ---------- 8) Boot ---------- */
+/* ----------------------------------------------------------
+   8) Boot
+---------------------------------------------------------- */
 document.addEventListener('DOMContentLoaded', () => {
-  try { navInit(); }           catch (e) { console.error(e); }
-  try { accountInit(); }       catch (e) { console.error(e); }
-  try { storageInit(); }       catch (e) { console.error(e); }
-  try { personalizeInit(); }   catch (e) { console.error(e); }
-  try { updatesInit(); }       catch (e) { console.error(e); }
-  try { aboutInit(); }         catch (e) { console.error(e); }
+  try { navInit(); } catch (e) { console.error(e); }
+  try { accountInit(); } catch (e) { console.error(e); }
+  try { storageInit(); } catch (e) { console.error(e); }
+  try { personalizeInit(); } catch (e) { console.error(e); }
+  try { updatesInit(); } catch (e) { console.error(e); }
+  try { aboutInit(); } catch (e) { console.error(e); }
 });

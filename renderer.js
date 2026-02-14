@@ -111,11 +111,52 @@ async function askConfirm(message='Are you sure?', title='Confirm') {
   });
 }
 
+// showAlert (title + message, .dlg-body)
+async function showAlert(message = 'OK', title = 'Notice') {
+  return new Promise((resolve) => {
+    const el = document.createElement('div');
+    el.className = 'dlg-wrap';
+    el.innerHTML = `
+      <div class="dlg" role="dialog" aria-modal="true">
+        <div class="dlg-title">${title}</div>
+        <div class="dlg-body"><div>${message}</div></div>
+        <div class="dlg-actions">
+          <button data-k="ok">OK</button>
+        </div>
+      </div>`;
+    document.body.appendChild(el);
+
+    const ok = el.querySelector('[data-k="ok"]');
+    const dlg = el.querySelector('.dlg');
+
+    const close = () => {
+      document.removeEventListener('keydown', onKey, true);
+      el.remove();
+      resolve(true);
+    };
+
+    const onKey = (e) => {
+      if (e.key === 'Escape' || e.key === 'Enter') return close();
+      if (e.key === 'Tab') {
+        const f = [...dlg.querySelectorAll('button')];
+        const first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    };
+
+    el.addEventListener('mousedown', (e) => { if (e.target === el) e.preventDefault(); }, true);
+    ok.onclick = close;
+    document.addEventListener('keydown', onKey, true);
+    setTimeout(() => ok.focus(), 0);
+  });
+}
+
 // Export to top (apps should always call window.top.*)
 window.askName = askName;
 window.askString = askName;
 window.askConfirm = askConfirm;
-window.showAlert = window.showAlert; // keep your existing alert
+window.showAlert = window.showAlert;
 
 
 /* ==========================================================

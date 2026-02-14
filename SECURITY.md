@@ -8,6 +8,7 @@ Security fixes are provided for the most recent release.
 
 | Version | Supported |
 |--------:|:---------|
+| v1.4.x  | ✅ Yes |
 | v1.3.x  | ✅ Yes |
 | < v1.3  | ❌ No |
 

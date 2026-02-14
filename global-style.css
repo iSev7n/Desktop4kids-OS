@@ -84,8 +84,12 @@
   --mono-icon-filter: none;
 }
 :root[data-theme="dark"],
-:root[data-theme="pink"],
-:root[data-theme="purple"] {
+:root[data-theme="rose"],
+:root[data-theme="twilight"],
+:root[data-theme="ocean"],
+:root[data-theme="forest"],
+:root[data-theme="sunset"],
+:root[data-theme="midnight"] {
   --mono-icon-filter: invert(1) brightness(1.05);
 }
 
@@ -136,8 +140,8 @@
   --alert-bg:#ffffff; --alert-border:#dfe6f1;
 }
 
-/* Pink */
-:root[data-theme="pink"]{
+/* Rose */
+:root[data-theme="rose"]{
   --bg:#2a141a; --panel:#381721; --card:#4d1c2a; --glass:rgba(77,28,42,.7);
   --line:#613648; --text:#fbe4ec; --muted:#d9b6c0; --accent:#ff5e8a;
   --task:#2c0f19f2; --tray-bg:#2a1420; --tray-line:rgba(255,255,255,.08);
@@ -151,8 +155,8 @@
   --alert-bg:rgba(39,22,33,.92); --alert-border:#4b2a3a;
 }
 
-/* Purple */
-:root[data-theme="purple"]{
+/* Twilight*/
+:root[data-theme="twilight"]{
   --bg:#141829; --panel:#1b2133; --card:#242c44; --glass:rgba(36,44,68,.7);
   --line:#3b4660; --text:#eaefff; --muted:#b5bfd4; --accent:#8c7bff;
   --task:#131a2ef2; --tray-bg:#161c2c; --tray-line:rgba(255,255,255,.08);
@@ -165,6 +169,124 @@
   --scrim:rgba(6,8,18,.55);
   --alert-bg:rgba(24,22,48,.92); --alert-border:#31316a;
 }
+
+/* Ocean */
+:root[data-theme="ocean"]{
+  --bg:#0b1c24;
+  --panel:#0f2732;
+  --card:#163543;
+  --glass:rgba(22,53,67,.75);
+  --line:#224a5d;
+  --text:#e4f6ff;
+  --muted:#9ed6e6;
+  --accent:#00bcd4;
+  --danger:#de4040;
+
+  --task:#0c2029f2;
+  --tray-bg:#0f2732;
+  --tray-line:rgba(255,255,255,.08);
+
+  --titlebar-bg:#0e2230; --titlebar-fg:#b7e7f3; --titlebar-border:#1c3f52;
+  --titlebar-btn-bg:#133040; --titlebar-btn-fg:#e4f6ff;
+
+  --menu-bg:rgba(15,39,50,.95); --menu-border:#224a5d; --menu-hover:rgba(255,255,255,.06);
+
+  --start-bg:#0f2732; --start-fg:#e4f6ff; --start-ring: color-mix(in srgb, var(--accent) 45%, transparent);
+
+  --sb-track:#08161d; --sb-thumb:#163543; --sb-thumb-hover:#1f4658;
+
+  --scrim:rgba(0,0,0,.55);
+  --alert-bg:rgba(15,39,50,.92); --alert-border:#224a5d;
+}
+
+/* Forest */
+:root[data-theme="forest"]{
+  --bg:#0f1c14;
+  --panel:#15281c;
+  --card:#1d3426;
+  --glass:rgba(29,52,38,.75);
+  --line:#2d4a39;
+  --text:#eaf8ef;
+  --muted:#a4d4b5;
+  --accent:#4caf50;
+  --danger:#de4040;
+
+  --task:#12241af2;
+  --tray-bg:#162d20;
+  --tray-line:rgba(255,255,255,.08);
+
+  --titlebar-bg:#132319; --titlebar-fg:#c7ecd6; --titlebar-border:#234032;
+  --titlebar-btn-bg:#1a3124; --titlebar-btn-fg:#eaf8ef;
+
+  --menu-bg:rgba(21,40,28,.95); --menu-border:#2d4a39; --menu-hover:rgba(255,255,255,.06);
+
+  --start-bg:#15281c; --start-fg:#eaf8ef; --start-ring: color-mix(in srgb, var(--accent) 40%, transparent);
+
+  --sb-track:#0a140e; --sb-thumb:#1d3426; --sb-thumb-hover:#254332;
+
+  --scrim:rgba(0,0,0,.55);
+  --alert-bg:rgba(21,40,28,.92); --alert-border:#2d4a39;
+}
+
+/* Sunset */
+:root[data-theme="sunset"]{
+  --bg:#2a160f;
+  --panel:#3b1f14;
+  --card:#512c1b;
+  --glass:rgba(81,44,27,.75);
+  --line:#6a3c27;
+  --text:#fff3e6;
+  --muted:#ffcc99;
+  --accent:#ff9800;
+  --danger:#de4040;
+
+  --task:#341b12f2;
+  --tray-bg:#3b1f14;
+  --tray-line:rgba(255,255,255,.08);
+
+  --titlebar-bg:#321a11; --titlebar-fg:#ffe0c2; --titlebar-border:#5a331f;
+  --titlebar-btn-bg:#442516; --titlebar-btn-fg:#fff3e6;
+
+  --menu-bg:rgba(59,31,20,.95); --menu-border:#6a3c27; --menu-hover:rgba(255,255,255,.06);
+
+  --start-bg:#3b1f14; --start-fg:#fff3e6; --start-ring: color-mix(in srgb, var(--accent) 35%, transparent);
+
+  --sb-track:#1c0f0a; --sb-thumb:#512c1b; --sb-thumb-hover:#633724;
+
+  --scrim:rgba(0,0,0,.55);
+  --alert-bg:rgba(59,31,20,.92); --alert-border:#6a3c27;
+}
+
+/* Midnight */
+:root[data-theme="midnight"]{
+  --bg:#0a1226;
+  --panel:#101a3d;
+  --card:#16255a;
+  --glass:rgba(22,37,90,.75);
+  --line:#243a82;
+  --text:#e8f0ff;
+  --muted:#9fb0f5;
+  --accent:#3f6bff; /* bluer */
+  --danger:#de4040;
+
+  --task:#0c1638f2;
+  --tray-bg:#0f1c42;
+  --tray-line:rgba(255,255,255,.08);
+
+  --titlebar-bg:#0f1738; --titlebar-fg:#cdd8ff; --titlebar-border:#1d2c6b;
+  --titlebar-btn-bg:#152257; --titlebar-btn-fg:#e8f0ff;
+
+  --menu-bg:rgba(16,26,61,.95); --menu-border:#243a82; --menu-hover:rgba(255,255,255,.06);
+
+  --start-bg:#101a3d; --start-fg:#e8f0ff; --start-ring: color-mix(in srgb, var(--accent) 45%, transparent);
+
+  --sb-track:#060d1d; --sb-thumb:#16255a; --sb-thumb-hover:#20337a;
+
+  --scrim:rgba(0,0,0,.55);
+  --alert-bg:rgba(16,26,61,.92); --alert-border:#243a82;
+}
+
+
 
 
 /* 1) Base reset

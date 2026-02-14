@@ -1,6 +1,6 @@
 {
   "name": "desktop4kids-os",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "repository": "https://github.com/iSev7n/Desktop4kids-OS",
   "main": "main.js",
   "private": true,

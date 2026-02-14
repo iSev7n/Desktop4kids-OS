@@ -45,15 +45,38 @@
   --fg:#0f141e; --muted:#516074;
   --accent:#2f6fff; --danger:#cc2d2d; --btnb:#eef3fb;
 }
-:root[data-theme="pink"]{
+:root[data-theme="rose"]{
   --bg:#20141c; --card:#271621; --line:#3a2230;
   --fg:#ffeaf4; --muted:#f0b7cd;
   --accent:#ff69b4; --danger:#ff6b81; --btnb:#331b26;
 }
-:root[data-theme="purple"]{
+:root[data-theme="twilight"]{
   --bg:#141222; --card:#181630; --line:#2a2a55;
   --fg:#eceaff; --muted:#b8b3ff;
   --accent:#8c7bff; --danger:#f16161; --btnb:#20204a;
+}
+:root[data-theme="ocean"]{
+  --bg:#0b1c24; --card:#163543; --line:#224a5d;
+  --fg:#e4f6ff; --muted:#9ed6e6;
+  --accent:#00bcd4; --danger:#f16161; --btnb:#1a3b47;
+}
+
+:root[data-theme="forest"]{
+  --bg:#0f1c14; --card:#1d3426; --line:#2d4a39;
+  --fg:#eaf8ef; --muted:#a4d4b5;
+  --accent:#4caf50; --danger:#f16161; --btnb:#1f3c2b;
+}
+
+:root[data-theme="sunset"]{
+  --bg:#2a160f; --card:#512c1b; --line:#6a3c27;
+  --fg:#fff3e6; --muted:#ffcc99;
+  --accent:#ff9800; --danger:#f16161; --btnb:#5c311f;
+}
+
+:root[data-theme="midnight"]{
+  --bg:#0a0f1f; --card:#18204a; --line:#27306a;
+  --fg:#e8ecff; --muted:#9da6e6;
+  --accent:#5c6bc0; --danger:#f16161; --btnb:#1b2555;
 }
 
 
@@ -161,7 +184,7 @@ h1{
 .field input,
 .field select{
   height:34px;
-  border:1px solid var(--btnb);
+  border:2px solid var(--btnb);
   background:var(--bg);
   color:var(--fg);
   border-radius:8px;
@@ -185,7 +208,7 @@ h1{
 .btn{
   background:var(--card);
   color:var(--fg);
-  border:1px solid var(--btnb);
+  border:1px solid var(--accent);
   border-radius:8px;
   height:34px;
   padding:0 12px;
@@ -198,14 +221,14 @@ h1{
 .btn.secondary{ background:var(--bg); }
 .btn.sm{ height:28px; padding:0 10px; }
 .btn.danger{
-  background:#3b1717;
-  border-color:#602b2b;
+  background:#fa4747;
+  border-color:#c7c7c7;
 }
 .btn.danger:hover{ border-color:#7a3a3a; }
 
 
 /* ==========================================================
-   6) Key/Value + progress bars
+   6) Key/Value + progress bars + storage breakdown
    ---------------------------------------------------------- */
 .kvs{
   display:grid;
@@ -227,6 +250,83 @@ h1{
   width:0%;
   background:linear-gradient(90deg,var(--accent),#7ab6ff);
 }
+
+/* Storage: spacing + breakdown */
+#pane-storage .card{
+  padding:16px;
+}
+
+#pane-storage button{
+  margin-top:18px;
+}
+
+#pane-storage .progress{
+  margin-bottom:12px;
+}
+
+#pane-storage .kvs{
+  margin-top:10px;
+  margin-bottom:14px;
+}
+
+.store-breakdown{
+  margin-top:10px;
+  padding-top:12px;
+  border-top:1px solid var(--line);
+}
+
+.store-breakdown-title{
+  font-weight:800;
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:10px;
+  letter-spacing:.2px;
+}
+
+.store-cats{
+  display:grid;
+  gap:10px;
+}
+
+.store-cat{
+  display:grid;
+  grid-template-columns: 1fr auto;
+  gap:8px 12px;
+  align-items:center;
+  padding:10px 10px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background: color-mix(in srgb, var(--card) 86%, transparent);
+}
+
+.store-cat .name{
+  font-weight:800;
+  font-size:13px;
+}
+
+.store-cat .size{
+  font-weight:800;
+  font-size:12px;
+  color:var(--muted);
+}
+
+.store-cat .mini{
+  grid-column: 1 / -1;
+  height:10px;
+  border-radius:999px;
+  background: color-mix(in srgb, var(--bg) 70%, #000 30%);
+  border:1px solid var(--line);
+  overflow:hidden;
+}
+
+.store-cat .mini > i{
+  display:block;
+  height:100%;
+  width:0%;
+  background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 55%, #fff 45%));
+}
+
+
 
 
 /* ==========================================================
@@ -251,6 +351,116 @@ h1{
   gap:8px;
 }
 
+/* =========================
+   Avatar Editor (SAFE MODE)
+   Won't break existing select styling
+   ========================= */
+
+#avatarModal .dlg{
+  width: min(900px, 92vw);
+}
+
+/* Let the modal scroll normally (do NOT overflow:hidden) */
+#avatarModal .dlg-body{
+  max-height: min(70vh, 520px);
+  overflow: auto;
+}
+
+/* 2-column layout */
+.avatar-editor{
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 16px;
+  padding: 14px;
+  align-items: start;
+}
+
+/* Left column stays visible while scrolling */
+.avatar-editor-left{
+  position: sticky;
+  top: 14px; /* match padding so it looks natural */
+  align-self: start;
+  width: 260px;
+}
+
+/* Preview */
+.avatar-preview-wrap{
+  width: 260px;
+  height: 260px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+#avatarEditorPreview{
+  width: 220px;
+  height: 220px;
+}
+
+/* Buttons under preview */
+.avatar-editor-actions{
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+/* Right column */
+.avatar-editor-right{
+  min-width: 0; /* important for grid overflow */
+}
+
+/* Options grid */
+.avatar-form{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.avatar-form .field{
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* IMPORTANT:
+   Do NOT style select here.
+   Your system theme likely already styles it and we don't want to break it.
+*/
+
+/* Mobile: stack */
+@media (max-width: 760px){
+  .avatar-editor{
+    grid-template-columns: 1fr;
+  }
+
+  .avatar-editor-left{
+    position: static;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .avatar-preview-wrap{
+    width: 220px;
+    height: 220px;
+  }
+
+  #avatarEditorPreview{
+    width: 190px;
+    height: 190px;
+  }
+
+  .avatar-form{
+    grid-template-columns: 1fr;
+  }
+}
+
 
 /* ==========================================================
    8) Personalize (theme + wallpaper grid)
@@ -258,26 +468,60 @@ h1{
 /* --- Theme picker --- */
 .theme-grid{
   display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
+  grid-template-columns:repeat(auto-fit, minmax(90px, 1fr));
+  gap:5px 5px; /* row gap | column gap */
+  justify-items:center;
+  align-items:start;
 }
 .theme-btn{
-  border:1px solid var(--line);
-  border-radius:10px;
-  padding:10px;
-  background:var(--card);
+  background:transparent;
+  border:none;
+  padding:8px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
   cursor:pointer;
-  transition:border-color var(--ease), background var(--ease);
+  transition:transform .15s ease;
 }
+
+.theme-btn:hover{
+  transform:translateY(-4px);
+}
+
 .theme-btn .swatch{
-  height:40px;
-  border-radius:8px;
-  border:1px solid var(--line);
-  margin-bottom:8px;
+  width:58px;
+  height:58px;
+  border-radius:50%;
+  border:3px solid var(--line);
+  box-shadow:0 6px 18px rgba(0,0,0,.35);
+  transition:
+    border-color .2s ease,
+    box-shadow .2s ease,
+    transform .2s ease;
 }
-.theme-btn.active{
-  outline:2px solid var(--accent);
-  outline-offset:2px;
+
+.theme-btn.active .swatch{
+  border-color:var(--accent);
+  box-shadow:0 0 0 4px color-mix(in srgb, var(--accent) 40%, transparent),
+             0 8px 24px rgba(0,0,0,.4);
+  transform:scale(1.05);
+}
+
+.theme-btn div:last-child{
+  font-size:13px;
+  color:var(--muted);
+}
+
+.theme-btn.active div:last-child{
+  color:var(--text);
+  font-weight:600;
+}
+
+#pane-personalize .theme-btn:focus,
+#pane-personalize .theme-btn:focus-visible{
+  box-shadow:none !important;
+  outline:none !important;
 }
 
 /* --- Wallpaper grid --- */
@@ -389,6 +633,64 @@ h1{
   height:auto;
   border-radius:12px;
 }
+/* Account avatar: overlay pencil button */
+#pane-account .avatar-wrap{
+  position: relative;
+}
+
+/* small circular icon button */
+#pane-account .avatar-edit{
+  position: absolute;
+  top: 4px;
+  right: -12px;
+
+  width: 44px;           /* bigger circle */
+  height: 44px;
+  border-radius: 999px;
+
+  display: grid;
+  place-items: center;
+
+  font-size: 18px;       /* bigger pencil */
+  font-weight: 700;
+
+  background: var(--card);
+  border: 1px solid var(--line);
+  color: var(--fg);
+
+  box-shadow: 0 6px 18px rgba(0,0,0,.35);
+
+  cursor: pointer;
+  transition: transform var(--ease),
+              border-color var(--ease),
+              box-shadow var(--ease);
+}
+
+#pane-account .avatar-edit:hover{
+  transform: translateY(-1px) scale(1.05);
+  border-color: var(--accent);
+  box-shadow: 0 10px 22px rgba(0,0,0,.45);
+}
+
+
+#pane-account .avatar-edit:focus-visible{
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* make sure it sits above the avatar image */
+#pane-account .avatar-wrap img{
+  position: relative;
+  z-index: 0;
+}
+#pane-account .avatar-edit{
+  z-index: 1;
+}
+
+/* Optional: keep Reset centered under avatar */
+#pane-account #btnAvatarReset{
+  margin-top: 6px;
+}
 
 
 /* ==========================================================
@@ -429,3 +731,392 @@ h1{
   height:1px; width:1px;
   overflow:hidden; white-space:nowrap;
 }
+
+/* ==========================================================
+  11) About Hero Card
+   ---------------------------------------------------------- */
+.about-card{
+  padding:18px;
+}
+
+.about-hero{
+  display:flex;
+  gap:22px;
+  align-items:flex-start;
+}
+
+.about-left{
+  flex:0 0 auto;
+}
+
+.about-logo{
+  width:96px;
+  height:96px;
+  border-radius:999px;
+  display:block;
+  object-fit:cover;
+}
+
+.about-right{
+  flex:1 1 auto;
+  min-width: 0;
+}
+
+.about-title{
+  font-size:22px;
+  font-weight:800;
+  color:var(--text);
+  margin-top:2px;
+}
+
+.about-meta{
+  margin-top:8px;
+  display:flex;
+  gap:24px;
+  flex-wrap:wrap;
+  color:var(--text);
+  opacity:.92;
+}
+
+.about-badges{
+  margin-top:12px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.tech-badge{
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.6px;
+  padding:6px 10px;
+  border-radius:6px;
+  border:1px solid rgba(255,255,255,.08);
+  user-select:none;
+  opacity: 0.95;
+}
+
+.tech-badge.vscode{
+  background:#0078d4;
+  color:#fff;
+}
+
+.tech-badge.html{
+  background:#e34f26;
+  color:#fff;
+}
+
+.tech-badge.css{
+  background:#1572b6;
+  color:#fff;
+}
+
+.tech-badge.js{
+  background:#f7df1e;
+  color:#111;
+  border-color: rgba(0,0,0,.18);
+}
+
+.about-desc{
+  margin-top:14px;
+  max-width: 560px;
+  line-height:1.5;
+}
+
+.about-footer{
+  border-top:1px solid var(--line);
+  padding-top: 10px;
+  margin-top:26px;
+  text-align:right;
+  opacity:.85;
+  font-size: 10px;
+}
+
+/* Responsive */
+@media (max-width: 760px){
+  .about-hero{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .about-footer{
+    text-align:left;
+  }
+}
+
+/* ==========================================================
+   Avatar Editor Upgrade (Tabs + Tiles + Chips)
+   Paste below your current Avatar Editor SAFE MODE
+========================================================== */
+
+/* Right side structure */
+.avatar-editor-right{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+/* Tabs row */
+.av-tabs{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  padding:6px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background: color-mix(in srgb, var(--card) 70%, transparent);
+}
+
+.av-tabs .tab{
+  border:1px solid var(--line);
+  background: var(--card);
+  color: var(--fg);
+  padding:7px 10px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:700;
+  font-size:13px;
+  transition: border-color var(--ease), background var(--ease), transform var(--ease);
+}
+
+.av-tabs .tab:hover{
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--line));
+  transform: translateY(-1px);
+}
+
+.av-tabs .tab.is-on{
+  background: color-mix(in srgb, var(--accent) 18%, var(--card));
+  border-color: color-mix(in srgb, var(--accent) 65%, var(--line));
+  outline: 2px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  outline-offset: 1px;
+}
+
+/* Quick rows (skin + colors) */
+.av-quick{
+  display:grid;
+  gap:10px;
+  padding:10px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background: color-mix(in srgb, var(--card) 70%, transparent);
+}
+
+.chip-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.chip{
+  border:1px solid var(--line);
+  background: var(--bg);
+  color: var(--fg);
+  height:30px;
+  padding:0 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  transition: border-color var(--ease), background var(--ease), transform var(--ease);
+}
+
+.chip:hover{
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--line));
+  transform: translateY(-1px);
+}
+
+.chip.is-on{
+  background: color-mix(in srgb, var(--accent) 14%, var(--bg));
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(90,160,255,.20);
+}
+
+/* If you want a tiny color dot inside chips */
+.chip .dot{
+  width:12px;
+  height:12px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.15);
+  background: currentColor;
+  opacity:.9;
+}
+
+/* Panel area */
+.av-panel{
+  border:1px solid var(--line);
+  border-radius:12px;
+  background: color-mix(in srgb, var(--card) 70%, transparent);
+  padding:10px;
+}
+
+/* Tile grid (hair/eyes/mouth/outfit/bg/accessory) */
+.tile-grid{
+  display:grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap:10px;
+}
+
+.tile{
+  border:1px solid var(--line);
+  border-radius:14px;
+  background: var(--card);
+  padding:10px;
+  cursor:pointer;
+  display:grid;
+  gap:8px;
+  justify-items:center;
+  transition: transform var(--ease), border-color var(--ease), outline var(--ease), box-shadow var(--ease);
+  min-height:86px;
+}
+
+.tile:hover{
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--line));
+  box-shadow: 0 10px 24px rgba(0,0,0,.25);
+}
+
+.tile.is-on{
+  outline:2px solid var(--accent);
+  outline-offset:2px;
+}
+
+.tile .thumb{
+  width:100%;
+  aspect-ratio: 1 / 1;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.04);
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+}
+
+.tile .label{
+  font-size:12px;
+  font-weight:800;
+  color: var(--fg);
+  opacity:.92;
+  text-align:center;
+  line-height:1.1;
+}
+
+/* Utility */
+.hidden{ display:none !important; }
+
+/* Responsive */
+@media (max-width: 760px){
+  .tile-grid{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .av-tabs{ position: sticky; top: 0; z-index: 2; }
+}
+
+@media (max-width: 420px){
+  .tile-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* =========================================
+   Account: Avatar left, fields right, actions centered below
+   ========================================= */
+
+#pane-account .account-card.row{
+  display:grid;
+  grid-template-columns: 190px 1fr;
+  gap: 16px;
+  align-items: center;
+}
+
+/* Avatar block */
+#pane-account .avatar-wrap{
+  position: relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap: 10px;
+}
+
+/* Slightly larger avatar */
+#pane-account .avatar-wrap img{
+  width: 140px;
+  height: 140px;
+  border-radius: 999px;
+}
+
+/* Pencil overlay button */
+#pane-account .avatar-edit{
+  position:absolute;
+  top: 6px;
+  right: 8px;
+
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+
+  display:grid;
+  place-items:center;
+
+  font-size: 18px;
+  font-weight: 700;
+
+  background: var(--accent);
+  border: 1px solid var(--line);
+  color: var(--fg);
+
+  box-shadow: 0 6px 18px rgba(0,0,0,.35);
+  cursor:pointer;
+  transition: transform var(--ease), border-color var(--ease), box-shadow var(--ease);
+}
+
+#pane-account .avatar-edit:hover{
+  transform: translateY(-1px) scale(1.05);
+  border-color: var(--accent);
+  box-shadow: 0 10px 22px rgba(0,0,0,.45);
+}
+
+#pane-account .avatar-edit:focus-visible{
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Fields area: keep inputs from becoming huge */
+#pane-account .fields{
+  width: min(460px, 100%);
+}
+
+#pane-account .field label{
+  font-size: 14px;
+}
+
+#pane-account .field input{
+  height: 40px;
+  font-size: 15px;
+  border-radius: 10px;
+}
+
+/* Bottom row actions centered under both columns */
+#pane-account .account-actions{
+  grid-column: 1 / -1;
+  justify-content: center;
+  margin-top: 6px;
+}
+
+/* Hint also centered under both columns */
+#pane-account .account-hint{
+  grid-column: 1 / -1;
+  text-align: center;
+  margin-top: 6px;
+}
+
+/* Responsive: stack on small screens */
+@media (max-width: 740px){
+  #pane-account .account-card.row{
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+
+  #pane-account .fields{
+    width: 100%;
+  }
+}
+

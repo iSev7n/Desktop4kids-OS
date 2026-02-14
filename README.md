@@ -53,7 +53,7 @@ No internet. No tracking. No cloud dependency.
 
 ## 📈  Current Status
 
-This release **v1.3.0** focuses on the **core desktop foundation** stability, safety, and a strong base for future apps.
+This release **v1.4.0** focuses on the **core desktop foundation** stability, safety, and a strong base for future apps.
 
 ---
 
@@ -65,20 +65,20 @@ This release **v1.3.0** focuses on the **core desktop foundation** stability, sa
 | **Desktop Environment** | 1.0 | Wallpapers, draggable icons, grid snapping, context menus, boot animations |
 | **Window Manager** | 1.0 | Multi-window handling, focus control, z-index stacking, resizing, taskbar integration |
 | **File Explorer** | 1.0 | Grid/List views, drag-reorder icons, per-folder layout memory, context menus |
-| **Virtual Filesystem Layer** | 1.0 | Secure preload bridge, sandboxed read/write/rename/delete |
-| **User Account Manager** | 1.0 | Multi-user profiles, isolated directories, storage quotas |
+| **Virtual Filesystem Layer** | 2.0 | Secure preload bridge, sandboxed read/write/rename/delete |
+| **User Account Manager** | 2.0 | Multi-user profiles, isolated directories, storage quotas |
 | **Trash System** | 1.0 | Recoverable deletes, restore support, permanent delete |
 | **System Services** | 1.0 | Tray clock & calendar, global theming, alerts, notifications |
 
 ### 🧩 Built-In Applications
 | **Application** | **Version** | **Key Capabilities** |
 |----------------|-------------|----------------------|
-| **Media Center** | 1.0 | Image/audio/video playback, custom controls, WebAudio visualizer |
+| **Media Center** | 2.0 | Image/audio/video playback, custom controls, WebAudio visualizer |
 | **Notepad** | 1.0 | Real-time saving, font scaling, theme synchronization |
 | **Calculator** | 1.0 | Basic & scientific modes, calculation history |
 | **Paint** | 1.0 | Drawing tools, shapes, layers, PNG/JPG export |
-| **Mentor AI** | 1.0 | Fully offline AI tutor, child-safe responses, taskbar dock |
-| **Settings** | 1.0 | User profiles, theme management, wallpaper selection |
+| **Mentor AI** | 2.0 | Fully offline AI tutor, child-safe responses, taskbar dock |
+| **Settings** | 3.0 | User profiles, theme management, wallpaper selection |
 
 
 

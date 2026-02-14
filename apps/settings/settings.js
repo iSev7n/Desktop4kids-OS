@@ -320,14 +320,55 @@ function storageInit() {
     return sum;
   }
 
-  async function refresh() {
-    const used = await folderBytes('user').catch(() => 0);
-    const free = Math.max(0, QUOTA_BYTES - used);
-    usedEl.textContent = fmtBytes(used);
-    freeEl.textContent = fmtBytes(free);
-    const pct = Math.min(100, Math.round((used / QUOTA_BYTES) * 100));
-    bar.style.width = pct + '%';
-  }
+ async function refresh() {
+  const used = await folderBytes('user').catch(() => 0);
+  const free = Math.max(0, QUOTA_BYTES - used);
+
+  usedEl.textContent = fmtBytes(used);
+  freeEl.textContent = fmtBytes(free);
+
+  const pct = Math.min(100, Math.round((used / QUOTA_BYTES) * 100));
+  bar.style.width = pct + '%';
+
+  // ===== Breakdown =====
+  const catsEl = document.querySelector('#storeCats');
+  if (!catsEl) return;
+
+  // Adjust these to match your actual virtual FS folders
+  const CATS = [
+    { name: 'Images',   rel: 'user/Pictures' },
+    { name: 'Videos',   rel: 'user/Videos' },
+    { name: 'Documents',rel: 'user/Documents' },
+    { name: 'Downloads',rel: 'user/Downloads' },
+    { name: 'Apps',     rel: 'user/Apps' },       // change if your apps live elsewhere
+    { name: 'App Data', rel: 'user/AppData' },    // change if needed
+  ];
+
+  // compute each folder size (missing folders will be 0)
+  const results = await Promise.all(CATS.map(async (c) => {
+    const bytes = await folderBytes(c.rel).catch(() => 0);
+    return { ...c, bytes };
+  }));
+
+  const listedSum = results.reduce((a, r) => a + (r.bytes || 0), 0);
+  const otherBytes = Math.max(0, used - listedSum);
+
+  const finalRows = [
+    ...results,
+    { name: 'Other', rel: '', bytes: otherBytes }
+  ].filter(r => r.bytes > 0); // hide empty rows (optional)
+
+  catsEl.innerHTML = finalRows.map(r => {
+    const p = used > 0 ? Math.min(100, Math.round((r.bytes / used) * 100)) : 0;
+    return `
+      <div class="store-cat">
+        <div class="name">${r.name}</div>
+        <div class="size">${fmtBytes(r.bytes)}</div>
+        <div class="mini" aria-hidden="true"><i style="width:${p}%"></i></div>
+      </div>
+    `;
+  }).join('');
+}
 
   btnRe?.addEventListener('click', refresh);
   btnOpen?.addEventListener('click', () =>
@@ -461,8 +502,22 @@ function updatesInit() {
 
 /* ---------- 7) About ---------- */
 function aboutInit() {
-  // Optionally set a real version via preload bridge:
-  // $('#aboutVersion').textContent = 'v1.1.0';
+  const verEl   = $('#aboutVersion');
+  const userEl  = $('#aboutUser');
+  const themeEl = $('#aboutTheme');
+
+  // Match your current version (update when you bump releases)
+  if (verEl) verEl.textContent = 'v1.3.0';
+
+  const user = getCurrentUser?.() || 'Guest';
+  if (userEl) userEl.textContent = user;
+
+  const theme =
+    document.documentElement.getAttribute('data-theme') ||
+    document.body.getAttribute('data-theme') ||
+    'dark';
+
+  if (themeEl) themeEl.textContent = theme;
 }
 
 

@@ -1,7 +1,7 @@
 # Desktop4Kids OS
 
 <p align="center">
-  <img src="https://i.postimg.cc/5tp2L72x/banner-logo-title.png" alt="Desktop4Kids OS banner" />
+  <img src="banner.svg" width="100%" />
 </p>
 
 <h2 align="center">

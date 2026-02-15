@@ -87,19 +87,51 @@ This release **v1.4.0** focuses on the **core desktop foundation** stability, sa
 ## 🖼️ Screenshots
 
 <p align="center">
-  <img src="https://iili.io/KPC0Wgt.md.png" width="45%" />
-  <img src="https://iili.io/KPC0Esp.md.png" width="45%" />
+<img src="docs/screenshots/showcase_1.png" width="70%" />
+</p>
+
+<h2> View More Below </h2>
+
+<details>
+<summary>Click to view more screenshots</summary>
+
+<br>
+
+<p align="center">
+  <img src="docs/screenshots/desktop-view.png" width="260">
+  <img src="docs/screenshots/startmenu.png" width="260">
+  <img src="docs/screenshots/settings_themes.png" width="260">
 </p>
 
 <p align="center">
-  <img src="https://iili.io/KPC0uqB.md.png" width="45%" />
-  <img src="https://iili.io/KPC0Rg1.md.png" width="45%" />
+  <img src="docs/screenshots/settings_storage.png" width="260">
+  <img src="docs/screenshots/media_1.png" width="260">
+  <img src="docs/screenshots/media_2.png" width="260">
 </p>
 
 <p align="center">
-  <img src="https://iili.io/KPC07dF.md.png" width="45%" />
-  <img src="https://iili.io/KPC0A0P.md.png" width="45%" />
+  <img src="docs/screenshots/paint_1.png" width="260">
+  <img src="docs/screenshots/paint_2.png" width="260">
+  <img src="docs/screenshots/paint_3.png" width="260">
 </p>
+
+<p align="center">
+  <img src="docs/screenshots/paint_4.png" width="260">
+  <img src="docs/screenshots/avatarbuilder_1.png" width="260">
+  <img src="docs/screenshots/avatarbuilder_2.png" width="260">
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/avatarbuilder_3.png" width="260">
+  <img src="docs/screenshots/avatarbuilder_4.png" width="260">
+  <img src="docs/screenshots/avatarbuilder_5.png" width="260">
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/large_photo.png" width="260">
+</p>
+
+</details>
 
 ---
 

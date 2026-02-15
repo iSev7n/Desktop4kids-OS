@@ -1,0 +1,187 @@
+<!-- Save as desktop4kids-aurora-mix.svg and open in Chrome/Edge/Firefox -->
+<svg viewBox="0 0 832 406" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-width:832px; display:block;">
+  <defs>
+    <style>
+      /* Keep the title perfectly still */
+      .title { transform: none !important; }
+
+      /* Aurora motion (SMIL-based like your sample) */
+      /* Optional: if a viewer blocks SMIL, open in a browser or embed inline in HTML */
+    </style>
+
+    <!-- Deep space + subtle color like your sample -->
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#123BFF" stop-opacity="0.55"/>
+      <stop offset="0.45" stop-color="#6D19E6" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#24021A" stop-opacity="0.85"/>
+    </linearGradient>
+
+    <!-- Extra dark space layer -->
+    <radialGradient id="deepSpace" cx="55%" cy="35%" r="85%">
+      <stop offset="0" stop-color="#0A0F2A" stop-opacity="0.0"/>
+      <stop offset="0.6" stop-color="#070A18" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0.85"/>
+    </radialGradient>
+
+    <!-- Aurora gradient that slowly shifts (from your snippet) -->
+    <linearGradient id="auroraGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2C6BFF" stop-opacity="0.0"/>
+      <stop offset="25%" stop-color="#5B2DFF" stop-opacity="0.65"/>
+      <stop offset="55%" stop-color="#FF2BD6" stop-opacity="0.75"/>
+      <stop offset="80%" stop-color="#7B2BFF" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#2C6BFF" stop-opacity="0.0"/>
+
+      <animate attributeName="x1" dur="10s" repeatCount="indefinite" values="0%;-60%;0%"/>
+      <animate attributeName="x2" dur="10s" repeatCount="indefinite" values="100%;40%;100%"/>
+    </linearGradient>
+
+    <!-- Second aurora gradient for extra realism (slightly greener/cyan) -->
+    <linearGradient id="auroraGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00F5D4" stop-opacity="0.0"/>
+      <stop offset="30%" stop-color="#00F5D4" stop-opacity="0.45"/>
+      <stop offset="55%" stop-color="#6C63FF" stop-opacity="0.40"/>
+      <stop offset="78%" stop-color="#FF2BD6" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#00F5D4" stop-opacity="0.0"/>
+
+      <animate attributeName="x1" dur="14s" repeatCount="indefinite" values="0%;-70%;0%"/>
+      <animate attributeName="x2" dur="14s" repeatCount="indefinite" values="100%;30%;100%"/>
+    </linearGradient>
+
+    <!-- Soft blur glow -->
+    <filter id="auroraBlur" x="-30%" y="-40%" width="160%" height="200%">
+      <feGaussianBlur stdDeviation="18" result="b"/>
+      <feColorMatrix in="b" type="matrix" values="
+        1 0 0 0 0
+        0 1 0 0 0
+        0 0 1 0 0
+        0 0 0 0.85 0" result="g"/>
+      <feMerge>
+        <feMergeNode in="g"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Tiny star twinkle -->
+    <filter id="star" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="0.7"/>
+    </filter>
+
+    <!-- Title glow/shadow -->
+    <filter id="textShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000" flood-opacity="0.45"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="2.4" flood-color="#fff" flood-opacity="0.18"/>
+    </filter>
+
+    <!-- Vignette -->
+    <radialGradient id="vignette" cx="50%" cy="50%" r="75%">
+      <stop offset="62%" stop-color="#000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0.35"/>
+    </radialGradient>
+
+    <!-- Aurora ribbon shapes (adapted to 832x406) -->
+    <path id="r1" d="M-60,260 C120,150 260,330 430,240 C600,150 710,310 900,200 L900,0 L-60,0 Z"/>
+    <path id="r2" d="M-80,310 C90,230 240,355 410,300 C590,250 710,365 920,280 L920,0 L-80,0 Z"/>
+    <path id="r3" d="M-100,220 C70,120 240,270 420,205 C610,135 730,270 940,170 L940,0 L-100,0 Z"/>
+
+    <!-- Rounded clip -->
+    <clipPath id="frameClip">
+      <rect x="10" y="10" width="812" height="386" rx="16" ry="16"/>
+    </clipPath>
+
+    <!-- Border glow -->
+    <filter id="borderGlow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="1.5" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="832" height="406" rx="18" fill="url(#sky)"/>
+  <rect width="832" height="406" fill="url(#deepSpace)"/>
+
+  <g clip-path="url(#frameClip)">
+    <!-- Stars -->
+    <g opacity="0.75" filter="url(#star)">
+      <circle cx="92" cy="72" r="1.6" fill="#ffffff">
+        <animate attributeName="opacity" dur="3.6s" repeatCount="indefinite" values="0.15;0.7;0.2;0.6;0.15"/>
+      </circle>
+      <circle cx="210" cy="52" r="1.1" fill="#ffffff">
+        <animate attributeName="opacity" dur="4.2s" repeatCount="indefinite" values="0.1;0.6;0.15;0.55;0.1"/>
+      </circle>
+      <circle cx="690" cy="86" r="1.4" fill="#ffffff">
+        <animate attributeName="opacity" dur="3.9s" repeatCount="indefinite" values="0.12;0.65;0.18;0.55;0.12"/>
+      </circle>
+      <circle cx="758" cy="58" r="1.2" fill="#ffffff">
+        <animate attributeName="opacity" dur="5s" repeatCount="indefinite" values="0.1;0.55;0.16;0.5;0.1"/>
+      </circle>
+
+      <!-- extra dust -->
+      <circle cx="610" cy="55" r="1.0" fill="#ffffff" opacity="0.35"/>
+      <circle cx="510" cy="90" r="1.2" fill="#ffffff" opacity="0.30"/>
+      <circle cx="360" cy="70" r="1.0" fill="#ffffff" opacity="0.28"/>
+      <circle cx="140" cy="140" r="0.7" fill="#ffffff" opacity="0.25"/>
+      <circle cx="270" cy="120" r="0.6" fill="#ffffff" opacity="0.22"/>
+      <circle cx="440" cy="150" r="0.6" fill="#ffffff" opacity="0.22"/>
+      <circle cx="590" cy="130" r="0.6" fill="#ffffff" opacity="0.22"/>
+      <circle cx="740" cy="155" r="0.7" fill="#ffffff" opacity="0.24"/>
+    </g>
+
+    <!-- Aurora layers (animated background ONLY) -->
+    <g filter="url(#auroraBlur)">
+      <!-- Layer 1 -->
+      <use href="#r1" fill="url(#auroraGrad)" opacity="0.70">
+        <animateTransform attributeName="transform" type="translate" dur="9s" repeatCount="indefinite"
+          values="-25 0; 25 -6; -25 0" />
+        <animateTransform attributeName="transform" additive="sum" type="skewX" dur="7s" repeatCount="indefinite"
+          values="-6; 6; -6" />
+      </use>
+
+      <!-- Layer 2 (slower parallax) -->
+      <use href="#r2" fill="url(#auroraGrad2)" opacity="0.55">
+        <animateTransform attributeName="transform" type="translate" dur="13s" repeatCount="indefinite"
+          values="20 0; -20 -10; 20 0" />
+        <animateTransform attributeName="transform" additive="sum" type="skewX" dur="10s" repeatCount="indefinite"
+          values="5; -5; 5" />
+      </use>
+
+      <!-- Layer 3 (thin, brighter ribbon) -->
+      <use href="#r3" fill="url(#auroraGrad)" opacity="0.60">
+        <animateTransform attributeName="transform" type="translate" dur="11s" repeatCount="indefinite"
+          values="-18 0; 18 8; -18 0" />
+        <animateTransform attributeName="transform" additive="sum" type="skewX" dur="8s" repeatCount="indefinite"
+          values="-4; 4; -4" />
+      </use>
+    </g>
+
+    <!-- Dark foreground corners for depth (static) -->
+    <path d="M0,406 L0,300 C70,340 140,360 210,406 Z" fill="#070A18" opacity="0.55"/>
+    <path d="M832,406 L832,285 C780,335 720,362 650,406 Z" fill="#070A18" opacity="0.55"/>
+
+    <!-- Static Text (NOT animated) -->
+    <g filter="url(#textShadow)">
+      <text x="92" y="235" font-size="86" font-family="Arial, system-ui, sans-serif" font-weight="800" fill="#FFFFFF">
+        Desktop4Kids
+      </text>
+    </g>
+
+    <!-- Static Cross on the right -->
+    <g opacity="0.90">
+      <rect x="742" y="276" width="4" height="44" rx="2" fill="#E6E6E6"/>
+      <rect x="728" y="289" width="32" height="5" rx="2" fill="#E6E6E6"/>
+    </g>
+
+    <!-- Vignette -->
+    <rect width="832" height="406" fill="url(#vignette)"/>
+  </g>
+
+  <!-- Frame / border -->
+  <g filter="url(#borderGlow)">
+    <rect x="10" y="10" width="812" height="386" rx="16" ry="16"
+          fill="none" stroke="#FFFFFF" stroke-opacity="0.18" stroke-width="2"/>
+    <rect x="18" y="18" width="796" height="370" rx="13" ry="13"
+          fill="none" stroke="#000000" stroke-opacity="0.28" stroke-width="2"/>
+  </g>
+</svg>

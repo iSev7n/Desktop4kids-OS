@@ -169,8 +169,8 @@
 
     <!-- Static Cross on the right -->
     <g opacity="0.90">
-      <rect x="742" y="276" width="4" height="44" rx="2" fill="#E6E6E6"/>
-      <rect x="728" y="289" width="32" height="5" rx="2" fill="#E6E6E6"/>
+      <rect x="742" y="306" width="4" height="44" rx="2" fill="#e6e6e6ad"/>
+      <rect x="728" y="319" width="32" height="5" rx="2" fill="#e6e6e6ad"/>
     </g>
 
     <!-- Vignette -->

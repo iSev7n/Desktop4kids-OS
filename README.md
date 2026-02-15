@@ -90,7 +90,9 @@ This release **v1.4.0** focuses on the **core desktop foundation** stability, sa
 <img src="docs/screenshots/showcase_1.png" width="70%" />
 </p>
 
-<h2> View More Below </h2>
+<p align="center">
+  <img src="banner_2.svg" width="70%" />
+</p>
 
 <details>
 <summary>Click to view more screenshots</summary>
